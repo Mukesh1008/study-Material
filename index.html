@@ -6,8 +6,8 @@
     <title>VMOU BA English (EG-01) - Poetry & Drama Study Guide</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chosen Palette: Calm Neutrals -->
-    <!-- Application Structure Plan: A single-page application (SPA) with a mobile-first, responsive layout. On mobile, a collapsible off-canvas navigation menu (hamburger menu) provides access to all sections. On larger screens, this menu is automatically expanded into a fixed sidebar. The main content area dynamically adjusts to screen size and content, ensuring no horizontal scrolling. The flow is designed for progressive learning: start with basics, move to detailed study, then practice with questions, and finally revise with quick notes. This non-linear but organized access is ideal for exam preparation. -->
-    <!-- Visualization & Content Choices: The content is entirely text-based, organized using headings, lists, and tables. Goal: Information & Organization. Method: Structured HTML and Tailwind CSS. Interaction: JavaScript-powered dynamic content display in the main panel based on sidebar navigation clicks. On mobile, JS also controls the visibility of the off-canvas menu. Justification: For a study guide, clarity, readability, and easy navigation are paramount. This design avoids complex visualizations, focusing instead on presenting textual information in the most digestible format for a student with a basic English level. It's a functional, content-first approach. -->
+    <!-- Application Structure Plan: A single-page application (SPA) with a mobile-first, responsive layout. On mobile, a collapsible off-canvas navigation menu (hamburger menu) provides access to all sections. On larger screens, this menu is automatically expanded into a fixed sidebar. The main content area dynamically adjusts to screen size and content. The sidebar now lists all individual poems and dramas directly under a "Study Material" heading, allowing users to navigate to any chapter with a single click. This structure prioritizes direct navigation over the accordion design, which may be preferred by users who want to see all chapters at a glance. -->
+    <!-- Visualization & Content Choices: The content is entirely text-based, organized using headings, lists, and tables. Goal: Information & Organization. Method: Structured HTML and Tailwind CSS. Interaction: JavaScript-powered dynamic content display in the main panel based on sidebar navigation clicks. Justification: For a study guide, clarity, readability, and easy navigation are paramount. This design avoids complex visualizations, focusing instead on presenting textual information in the most digestible format for a student with a basic English level. It's a functional, content-first approach. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -37,6 +37,7 @@
             .hamburger-button { display: none; }
             .main-layout { flex-direction: row; }
         }
+        .chapter-heading { font-weight: bold; color: #1e40af; padding-top: 1rem; }
     </style>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 </head>
@@ -63,35 +64,31 @@
             <ul class="space-y-1 p-2">
                 <li><a href="#" onclick="showContent('introduction'); return false;" class="sidebar-link active block py-2 px-4 rounded-md">Introduction</a></li>
                 <li><a href="#" onclick="showContent('basics'); return false;" class="sidebar-link block py-2 px-4 rounded-md">English Literature Basics</a></li>
-                <li>
-                    <a href="#" onclick="toggleSubmenu('study-material-submenu'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Study Material</a>
-                    <ul id="study-material-submenu" class="submenu mt-1 space-y-1">
-                        <li><a href="#" onclick="showContent('poem_sonnet116'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Sonnet 116</a></li>
-                        <li><a href="#" onclick="showContent('poem_fallingstar'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Go and Catch a Falling Star</a></li>
-                        <li><a href="#" onclick="showContent('poem_blindness'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">On His Blindness</a></li>
-                        <li><a href="#" onclick="showContent('poem_absalom'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">From Absalom & Achitophel</a></li>
-                        <li><a href="#" onclick="showContent('poem_arbuthnot'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">From An Epistle to Dr. Arbuthnot</a></li>
-                        <li><a href="#" onclick="showContent('poem_elegy'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Elegy Written in a...</a></li>
-                        <li><a href="#" onclick="showContent('poem_tyger'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">The Tyger</a></li>
-                        <li><a href="#" onclick="showContent('poem_world'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">The World is Too Much...</a></li>
-                        <li><a href="#" onclick="showContent('poem_westwind'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Ode to the West Wind</a></li>
-                        <li><a href="#" onclick="showContent('poem_urn'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Ode on a Grecian Urn</a></li>
-                        <li><a href="#" onclick="showContent('poem_ulysses'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Ulysses</a></li>
-                        <li><a href="#" onclick="showContent('poem_duchess'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">My Last Duchess</a></li>
-                        <li><a href="#" onclick="showContent('poem_dover'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Dover Beach</a></li>
-                        <li><a href="#" onclick="showContent('poem_secondcoming'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">The Second Coming</a></li>
-                        <li><a href="#" onclick="showContent('poem_prufrock'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">The Love Song of J. A. Prufrock</a></li>
-                        <hr class="my-2">
-                        <li><a href="#" onclick="showContent('drama_faustus'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Doctor Faustus</a></li>
-                        <li><a href="#" onclick="showContent('drama_asyoulikeit'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">As You Like It</a></li>
-                        <li><a href="#" onclick="showContent('drama_arms'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Arms and the Man</a></li>
-                    </ul>
-                </li>
                 <li><a href="#" onclick="showContent('pyq'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Past Year Questions</a></li>
                 <li><a href="#" onclick="showContent('model_answers'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Model Answers</a></li>
                 <li><a href="#" onclick="showContent('revision'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Quick Revision Section</a></li>
                 <li><a href="#" onclick="showContent('crash_course'); return false;" class="sidebar-link block py-2 px-4 rounded-md">2-Day Crash Course</a></li>
                 <li><a href="#" onclick="showContent('exam_tips'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Exam Day Tips</a></li>
+                <li class="chapter-heading px-4 pt-4">Study Material (Poems)</li>
+                <li><a href="#" onclick="showContent('poem_sonnet116'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Sonnet 116</a></li>
+                <li><a href="#" onclick="showContent('poem_fallingstar'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Go and Catch a Falling Star</a></li>
+                <li><a href="#" onclick="showContent('poem_blindness'); return false;" class="sidebar-link block py-2 px-4 rounded-md">On His Blindness</a></li>
+                <li><a href="#" onclick="showContent('poem_absalom'); return false;" class="sidebar-link block py-2 px-4 rounded-md">From Absalom and Achitophel</a></li>
+                <li><a href="#" onclick="showContent('poem_arbuthnot'); return false;" class="sidebar-link block py-2 px-4 rounded-md">From An Epistle to Dr. Arbuthnot</a></li>
+                <li><a href="#" onclick="showContent('poem_elegy'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Elegy Written in a Country Churchyard</a></li>
+                <li><a href="#" onclick="showContent('poem_tyger'); return false;" class="sidebar-link block py-2 px-4 rounded-md">The Tyger</a></li>
+                <li><a href="#" onclick="showContent('poem_world'); return false;" class="sidebar-link block py-2 px-4 rounded-md">The World is Too Much With Us</a></li>
+                <li><a href="#" onclick="showContent('poem_westwind'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Ode to the West Wind</a></li>
+                <li><a href="#" onclick="showContent('poem_urn'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Ode on a Grecian Urn</a></li>
+                <li><a href="#" onclick="showContent('poem_ulysses'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Ulysses</a></li>
+                <li><a href="#" onclick="showContent('poem_duchess'); return false;" class="sidebar-link block py-2 px-4 rounded-md">My Last Duchess</a></li>
+                <li><a href="#" onclick="showContent('poem_dover'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Dover Beach</a></li>
+                <li><a href="#" onclick="showContent('poem_secondcoming'); return false;" class="sidebar-link block py-2 px-4 rounded-md">The Second Coming</a></li>
+                <li><a href="#" onclick="showContent('poem_prufrock'); return false;" class="sidebar-link block py-2 px-4 rounded-md">The Love Song of J. Alfred Prufrock</a></li>
+                <li class="chapter-heading px-4 pt-4">Study Material (Dramas)</li>
+                <li><a href="#" onclick="showContent('drama_faustus'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Doctor Faustus</a></li>
+                <li><a href="#" onclick="showContent('drama_asyoulikeit'); return false;" class="sidebar-link block py-2 px-4 rounded-md">As You Like It</a></li>
+                <li><a href="#" onclick="showContent('drama_arms'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Arms and the Man</a></li>
             </ul>
         </div>
         <div id="backdrop" class="fixed inset-0 bg-black opacity-50 z-30 hidden md:hidden"></div>
@@ -103,8 +100,641 @@
     </div>
 
     <script>
-        const content = {
-            introduction: `
+        const allContent = {
+            poem_sonnet116: {
+                title: "Sonnet 116 - William Shakespeare",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>Shakespeare's Sonnet 116 is a powerful celebration of true, constant, and unchanging love. The poet defines true love by what it is not: it does not change when circumstances change, nor does it bend when faced with challenges. He compares true love to a fixed star (the North Star) that guides wandering ships. It is an "ever-fixed mark" that is not affected by storms. Love is not a fool of Time; physical beauty may fade with age, but true love remains constant until the end of life (the "edge of doom"). In the final couplet, the poet confidently states that if his definition of love is wrong, then he has never written anything, and no man has ever truly loved.</p>
+                    
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">शेक्सपियर का सॉनेट 116 सच्चे, स्थिर और अपरिवर्तनीय प्रेम का एक शक्तिशाली उत्सव है। कवि सच्चे प्रेम को इस बात से परिभाषित करता है कि वह क्या नहीं है: यह तब नहीं बदलता जब परिस्थितियाँ बदलती हैं, और न ही यह चुनौतियों का सामना करने पर झुकता है। वह सच्चे प्रेम की तुलना एक स्थिर तारे (ध्रुव तारे) से करते हैं जो भटकते जहाजों का मार्गदर्शन करता है। यह एक "हमेशा-निश्चित चिह्न" है जो तूफानों से प्रभावित नहीं होता है। प्रेम समय का मूर्ख नहीं है; शारीरिक सुंदरता उम्र के साथ फीकी पड़ सकती है, लेकिन सच्चा प्यार जीवन के अंत तक (कयामत के किनारे तक) स्थिर रहता है। अंतिम दोहे में, कवि आत्मविश्वास से कहता है कि यदि प्रेम की उसकी परिभाषा गलत है, तो उसने कभी कुछ नहीं लिखा है, और किसी भी व्यक्ति ने कभी सच्चा प्यार नहीं किया है।</p>
+                    
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">यह कविता सच्चे प्यार के बारे में है। कवि कहता है कि सच्चा प्यार कभी नहीं बदलता, चाहे कुछ भी हो जाए। यह एक ध्रुव तारे की तरह है जो हमेशा रास्ता दिखाता है और मौत तक बना रहता है।</p>
+                    
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>The Nature of True Love:</strong> The poem defines true love as constant, spiritual, and eternal. <span class="hindi-text">(सच्चे प्रेम की प्रकृति: कविता सच्चे प्रेम को स्थिर, आध्यात्मिक और शाश्वत के रूप में परिभाषित करती है।)</span></li>
+                        <li><strong>Love vs. Time:</strong> True love is presented as something that can conquer time. While physical beauty fades, love does not. <span class="hindi-text">(प्रेम बनाम समय: सच्चे प्रेम को कुछ ऐसा प्रस्तुत किया गया है जो समय पर विजय प्राप्त कर सकता है। जबकि शारीरिक सुंदरता फीकी पड़ जाती है, प्रेम नहीं।)</span></li>
+                        <li><strong>Permanence and Constancy:</strong> The central idea is that love is an "ever-fixed mark" that is permanent and never changes. <span class="hindi-text">(स्थायित्व और स्थिरता: केंद्रीय विचार यह है कि प्रेम एक "हमेशा-निश्चित चिह्न" है जो स्थायी है और कभी नहीं बदलता है।)</span></li>
+                    </ul>
+                    
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Metaphor:</strong> Love is compared to a star ("the star to every wand'ring bark") and a lighthouse ("an ever-fixed mark"). <span class="hindi-text">(रूपक: प्रेम की तुलना एक तारे और एक प्रकाशस्तंभ से की गई है।)</span></li>
+                        <li><strong>Personification:</strong> Time is personified as a character with a "bending sickle," but love is not its "fool." <span class="hindi-text">(मानवीकरण: समय को एक पात्र के रूप में चित्रित किया गया है जिसके पास "झुकने वाली दरांती" है, लेकिन प्रेम उसका "मूर्ख" नहीं है।)</span></li>
+                    </ul>
+                    
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>It is a classic example of a Shakespearean sonnet with three quatrains and a concluding couplet.</li>
+                        <li>The language is simple but powerful, using strong metaphors to define love.</li>
+                        <li>The poem makes a universal statement about the ideal of love, which is why it is still popular today.</li>
+                        <li>The final couplet acts as a proof, adding great force to the poet's argument.</li>
+                    </ul>
+                `
+            },
+            poem_fallingstar: {
+                title: "Go and Catch a Falling Star - John Donne",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>This poem is a cynical and witty commentary on the impossibility of finding a woman who is both beautiful and faithful. The poet begins by listing a series of impossible tasks, such as catching a falling star, getting a child from a mandrake root, or finding out where past years have gone. He says that finding a true and fair woman is just as impossible as these tasks. The speaker claims that even if one were to travel the entire world, they would see many strange sights but would never find a woman who is both beautiful and faithful. He says that if you did find one, you should let him know, but he wouldn't go to meet her. By the time he reached her, she would have already been unfaithful to two or three other men.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">यह कविता एक सुंदर और वफादार महिला को खोजने की असंभवता पर एक सनकी और मजाकिया टिप्पणी है। कवि असंभव कार्यों की एक श्रृंखला सूचीबद्ध करके शुरू करता है, जैसे टूटते तारे को पकड़ना, मैंड्रेक जड़ से बच्चा पैदा करना, या यह पता लगाना कि पिछले साल कहाँ चले गए। वह कहता है कि एक सच्ची और सुंदर महिला को खोजना इन कार्यों जितना ही असंभव है। वक्ता का दावा है कि यदि कोई पूरी दुनिया की यात्रा भी करे, तो उसे कई अजीबोगरीब नजारे देखने को मिलेंगे, लेकिन उसे कभी भी ऐसी महिला नहीं मिलेगी जो सुंदर और वफादार दोनों हो। वह कहता है कि यदि तुम्हें कोई ऐसी मिल भी जाए, तो उसे बताना, लेकिन वह उससे मिलने नहीं जाएगा। जब तक वह उसके पास पहुंचेगा, तब तक वह दो या तीन अन्य पुरुषों के साथ बेवफाई कर चुकी होगी।</p>
+                    
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">कवि कहता है कि दुनिया में सुंदर और वफादार औरत को ढूंढना नामुमकिन है। यह काम टूटते तारे को पकड़ने जैसा ही मुश्किल है। अगर कोई ऐसी औरत मिल भी जाए, तो वह पल भर में बेवफा हो जाएगी।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Female Inconstancy:</strong> The central theme is the idea that women are unfaithful and cannot be trusted. <span class="hindi-text">(नारी की अस्थिरता: केंद्रीय विषय यह विचार है कि महिलाएं बेवफा होती हैं और उन पर भरोसा नहीं किया जा सकता है।)</span></li>
+                        <li><strong>Cynicism and Misogyny:</strong> The poem reflects a cynical and somewhat anti-woman (misogynistic) attitude, which was common in Donne's time. <span class="hindi-text">(निराशावाद और स्त्री-द्वेष: कविता एक सनकी और कुछ हद तक महिला-विरोधी (स्त्री-द्वेषी) दृष्टिकोण को दर्शाती है, जो डोने के समय में आम था।)</span></li>
+                        <li><strong>Impossibility:</strong> The poet uses hyperbole (exaggeration) to emphasize the impossibility of finding an ideal woman. <span class="hindi-text">(असंभवता: कवि एक आदर्श महिला को खोजने की असंभवता पर जोर देने के लिए अतिशयोक्ति का उपयोग करता है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Hyperbole (Exaggeration):</strong> Listing impossible tasks like catching a falling star is a form of exaggeration. <span class="hindi-text">(अतिशयोक्ति: टूटते तारे को पकड़ने जैसे असंभव कार्यों को सूचीबद्ध करना अतिशयोक्ति का एक रूप है।)</span></li>
+                        <li><strong>Allusion:</strong> The mention of the "mandrake root" is an allusion to old myths and superstitions. <span class="hindi-text">(संकेत: "मैंड्रेक जड़" का उल्लेख पुरानी मिथकों और अंधविश्वासों का संकेत है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>The poem has a conversational and song-like quality.</li>
+                        <li>It is a typical example of metaphysical poetry, with its use of wit and unusual comparisons.</li>
+                        <li>The tone is light and humorous, even though the subject is cynical.</li>
+                        <li>The argument is built logically, moving from general impossibilities to the specific impossibility of finding a faithful woman.</li>
+                    </ul>
+                `
+            },
+            poem_blindness: {
+                title: "On His Blindness - John Milton",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>This sonnet is an autobiographical poem where John Milton reflects on his loss of eyesight in the middle of his life. He feels sad and questions God, asking why God would take away his sight when he wants to use his talent of writing to serve Him. Milton feels useless. However, a voice of "Patience" inside him replies. Patience tells him that God does not need man's work or gifts. God is like a king with thousands of servants who travel over land and ocean. Those who truly serve God are the ones who patiently bear their burdens and accept His will. Patience concludes that "They also serve who only stand and wait," meaning that even those who cannot be active can serve God by patiently waiting for His commands.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">यह सॉनेट एक आत्मकथात्मक कविता है जिसमें जॉन मिल्टन अपने जीवन के मध्य में अपनी आंखों की रोशनी खोने पर विचार करते हैं। वह दुखी महसूस करते हैं और भगवान से सवाल करते हैं, पूछते हैं कि जब वह उनकी सेवा के लिए अपनी लेखन प्रतिभा का उपयोग करना चाहते हैं तो भगवान उनकी दृष्टि क्यों छीन लेंगे। मिल्टन खुद को बेकार महसूस करते हैं। हालांकि, उनके अंदर से "धैर्य" की एक आवाज जवाब देती है। धैर्य उन्हें बताता है कि भगवान को मनुष्य के काम या उपहार की आवश्यकता नहीं है। भगवान एक राजा की तरह हैं जिसके हजारों सेवक हैं जो जमीन और महासागर में यात्रा करते हैं। जो लोग वास्तव में भगवान की सेवा करते हैं, वे वे हैं जो धैर्यपूर्वक अपने बोझ को सहन करते हैं और उनकी इच्छा को स्वीकार करते हैं। धैर्य यह कहकर समाप्त होता है कि "वे भी सेवा करते हैं जो केवल खड़े रहते हैं और प्रतीक्षा करते हैं," जिसका अर्थ है कि जो लोग सक्रिय नहीं हो सकते वे भी भगवान के आदेशों की धैर्यपूर्वक प्रतीक्षा करके उनकी सेवा कर सकते हैं।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">कवि अंधा होने पर दुखी है और सोचता है कि अब वह भगवान की सेवा कैसे करेगा। तब उसका धैर्य उसे समझाता है कि भगवान की सच्ची सेवा सिर्फ काम करके नहीं, बल्कि मुश्किलों को चुपचाप सहकर और भगवान की इच्छा का इंतजार करके भी की जा सकती है।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Faith in God:</strong> The poem is a journey from doubt and complaint to complete faith and submission to God's will. <span class="hindi-text">(ईश्वर में विश्वास: यह कविता संदेह और शिकायत से पूर्ण विश्वास और ईश्वर की इच्छा के प्रति समर्पण तक की यात्रा है।)</span></li>
+                        <li><strong>Service to God:</strong> Milton redefines the idea of service. It is not just about doing great work, but also about patient suffering. <span class="hindi-text">(ईश्वर की सेवा: मिल्टन सेवा के विचार को फिर से परिभाषित करते हैं। यह केवल महान कार्य करने के बारे में नहीं है, बल्कि धैर्यपूर्वक पीड़ा सहने के बारे में भी है।)</span></li>
+                        <li><strong>Patience and Acceptance:</strong> The central message is the importance of having patience and accepting one's fate without complaint. <span class="hindi-text">(धैर्य और स्वीकृति: केंद्रीय संदेश धैर्य रखने और अपनी नियति को बिना किसी शिकायत के स्वीकार करने का महत्व है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Personification:</strong> Patience is personified as a character who speaks to the poet and gives him advice. <span class="hindi-text">(मानवीकरण: धैर्य को एक ऐसे पात्र के रूप में चित्रित किया गया है जो कवि से बात करता है और उसे सलाह देता है।)</span></li>
+                        <li><strong>Metaphor:</strong> Milton's life is compared to "light" which is "spent," and his poetic talent is a "talent" (referring to the biblical parable). <span class="hindi-text">(रूपक: मिल्टन के जीवन की तुलना "प्रकाश" से की गई है जो "खर्च" हो गया है, और उनकी काव्य प्रतिभा एक "प्रतिभा" है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>It is a Petrarchan sonnet, with an octave (first 8 lines) that raises a problem and a sestet (last 6 lines) that resolves it.</li>
+                        <li>The poem is deeply personal and emotional, reflecting Milton's own spiritual crisis.</li>
+                        <li>The language is grand and majestic, typical of Milton's style.</li>
+                        <li>The concluding line, "They also serve who only stand and wait," is one of the most famous lines in English literature.</li>
+                    </ul>
+                `
+            },
+            poem_absalom: {
+                title: "From Absalom and Achitophel - John Dryden",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>This long satirical poem is a political allegory, meaning it tells a story with a hidden political meaning. It is about the political situation in England in the 1680s, where a group of people tried to prevent Charles II from becoming king. The biblical story of King David and his son Absalom is used to represent this situation. Absalom represents the Duke of Monmouth (Charles II's illegitimate son), and King David represents King Charles II. Achitophel, David's clever but disloyal adviser, represents the Earl of Shaftesbury, a political leader who tried to overthrow the king. The poem praises King Charles II and criticizes his enemies, showing them as corrupt and foolish.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">यह लंबी व्यंग्यात्मक कविता एक राजनीतिक रूपक है, जिसका अर्थ है कि यह एक छिपे हुए राजनीतिक अर्थ के साथ एक कहानी बताती है। यह 1680 के दशक में इंग्लैंड की राजनीतिक स्थिति के बारे में है, जहां लोगों के एक समूह ने चार्ल्स द्वितीय को राजा बनने से रोकने की कोशिश की। इस स्थिति का प्रतिनिधित्व करने के लिए राजा डेविड और उनके बेटे अबशालोम की बाइबिल की कहानी का उपयोग किया गया है। अबशालोम ड्यूक ऑफ मोनमाउथ (चार्ल्स द्वितीय के नाजायज बेटे) का प्रतिनिधित्व करता है, और राजा डेविड राजा चार्ल्स द्वितीय का प्रतिनिधित्व करते हैं। अचिटोफेल, डेविड के चतुर लेकिन बेवफा सलाहकार, अर्ल ऑफ शाफ्ट्सबरी का प्रतिनिधित्व करते हैं, जो एक राजनीतिक नेता थे जिसने राजा को उखाड़ फेंकने की कोशिश की थी। कविता राजा चार्ल्स द्वितीय की प्रशंसा करती है और उनके दुश्मनों की आलोचना करती है, उन्हें भ्रष्ट और मूर्ख के रूप में दिखाती है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">यह कविता इंग्लैंड की राजनीति पर एक व्यंग्य है। इसमें बाइबिल की कहानी का उपयोग करके राजा चार्ल्स द्वितीय की प्रशंसा की गई है और उनके राजनीतिक दुश्मनों को भ्रष्ट और धोखेबाज दिखाया गया है।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Political Satire:</strong> The poem uses satire to mock and criticize political opponents. <span class="hindi-text">(राजनीतिक व्यंग्य: कविता राजनीतिक विरोधियों का मज़ाक उड़ाने और उनकी आलोचना करने के लिए व्यंग्य का उपयोग करती है।)</span></li>
+                        <li><strong>Allegory:</strong> The entire poem is a biblical allegory that represents real political figures and events. <span class="hindi-text">(रूपक: पूरी कविता एक बाइबिल का रूपक है जो वास्तविक राजनीतिक व्यक्तियों और घटनाओं का प्रतिनिधित्व करती है।)</span></li>
+                        <li><strong>Kingship and Rebellion:</strong> It explores the themes of what makes a good king and the dangers of rebellion against the state. <span class="hindi-text">(राजत्व और विद्रोह: यह पता लगाता है कि एक अच्छा राजा क्या बनाता है और राज्य के खिलाफ विद्रोह के खतरे क्या हैं।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Allegory:</strong> The poem is a primary example of a political allegory. <span class="hindi-text">(रूपक: कविता एक राजनीतिक रूपक का एक प्राथमिक उदाहरण है।)</span></li>
+                        <li><strong>Heroic Couplets:</strong> It is written in rhyming pairs of lines called heroic couplets, which give it a formal and controlled feel. <span class="hindi-text">(वीर युगल: यह तुकबंदी वाली पंक्तियों के जोड़े में लिखा गया है जिसे वीर युगल कहा जाता है, जो इसे एक औपचारिक और नियंत्रित अहसास देता है।)</span></li>
+                        <li><strong>Satire:</strong> The poem uses sharp wit and humor to expose the follies and corruption of public life. <span class="hindi-text">(व्यंग्य: कविता सार्वजनिक जीवन की मूर्खताओं और भ्रष्टाचार को उजागर करने के लिए तीक्ष्ण बुद्धि और हास्य का उपयोग करती है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>The poem is considered one of the greatest satires in English literature.</li>
+                        <li>It shows Dryden's mastery of the heroic couplet and his skill as a political commentator.</li>
+                        <li>The characters, while based on real people, are vividly and memorably drawn.</li>
+                        <li>The poem's success lies in its ability to present a complex political situation in a clear and engaging way.</li>
+                    </ul>
+                `
+            },
+            poem_arbuthnot: {
+                title: "From An Epistle to Dr. Arbuthnot - Alexander Pope",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>This is a long satirical poem in the form of a letter to Pope's friend, Dr. Arbuthnot. Pope uses the poem to defend his own work and attack his literary enemies, critics, and bad writers of his time. He talks about how many foolish people try to become poets and bother him for his approval. Pope claims that he writes poetry not for money or fame, but because he has a moral duty to use his talent to correct the follies of society. He strongly defends his own satirical style, saying that his "satires" are meant to correct people, not just to hurt them. He attacks specific writers and critics, using powerful and witty language to show their foolishness and lack of talent. He presents himself as a true, honest, and moral writer, in contrast to his corrupt enemies.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">यह पोप के मित्र, डॉ. अरबुथनोट को एक पत्र के रूप में एक लंबी व्यंग्यात्मक कविता है। पोप अपनी रचना का बचाव करने और अपने साहित्यिक दुश्मनों, आलोचकों और अपने समय के बुरे लेखकों पर हमला करने के लिए कविता का उपयोग करते हैं। वह बताते हैं कि कैसे कई मूर्ख लोग कवि बनने की कोशिश करते हैं और उनकी मंजूरी के लिए उन्हें परेशान करते हैं। पोप का दावा है कि वह धन या प्रसिद्धि के लिए कविता नहीं लिखते हैं, बल्कि इसलिए कि उनका समाज की मूर्खताओं को ठीक करने के लिए अपनी प्रतिभा का उपयोग करने का नैतिक कर्तव्य है। वह अपनी व्यंग्यात्मक शैली का दृढ़ता से बचाव करते हैं, यह कहते हुए कि उनके "व्यंग्य" लोगों को ठीक करने के लिए हैं, न कि सिर्फ उन्हें चोट पहुँचाने के लिए। वह विशिष्ट लेखकों और आलोचकों पर हमला करते हैं, उनकी मूर्खता और प्रतिभा की कमी को दिखाने के लिए शक्तिशाली और मजाकिया भाषा का उपयोग करते हैं। वह खुद को एक सच्चे, ईमानदार और नैतिक लेखक के रूप में प्रस्तुत करते हैं, जो उनके भ्रष्ट दुश्मनों के विपरीत है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">इस कविता में पोप अपने साहित्यिक दुश्मनों और आलोचकों पर हमला करते हैं। वह कहते हैं कि वह सिर्फ लोगों की गलतियों को सुधारने के लिए व्यंग्य लिखते हैं, न कि उन्हें नुकसान पहुंचाने के लिए।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Literary Satire:</strong> The poem is a strong example of literary satire, criticizing the bad writing and foolish behavior of other writers. <span class="hindi-text">(साहित्यिक व्यंग्य: कविता साहित्यिक व्यंग्य का एक मजबूत उदाहरण है, जो अन्य लेखकों के बुरे लेखन और मूर्खतापूर्ण व्यवहार की आलोचना करती है।)</span></li>
+                        <li><strong>Role of the Poet:</strong> Pope defines his role as a moral guide who uses satire to correct society's wrongs. <span class="hindi-text">(कवि की भूमिका: पोप अपनी भूमिका को एक नैतिक मार्गदर्शक के रूप में परिभाषित करते हैं जो समाज की गलतियों को सुधारने के लिए व्यंग्य का उपयोग करता है।)</span></li>
+                        <li><strong>Truth vs. Falsehood:</strong> The poem contrasts Pope's own honesty and moral integrity with the corruption and falsehood of his enemies. <span class="hindi-text">(सत्य बनाम झूठ: कविता पोप की अपनी ईमानदारी और नैतिक अखंडता की तुलना उनके दुश्मनों के भ्रष्टाचार और झूठ से करती है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Satire:</strong> The entire poem is a satire that uses wit and ridicule to expose folly. <span class="hindi-text">(व्यंग्य: पूरी कविता एक व्यंग्य है जो मूर्खता को उजागर करने के लिए बुद्धि और उपहास का उपयोग करती है।)</span></li>
+                        <li><strong>Heroic Couplets:</strong> Like Dryden, Pope writes in heroic couplets, giving the poem a balanced and controlled style. <span class="hindi-text">(वीर युगल: ड्राइडन की तरह, पोप वीर युगल में लिखते हैं, जो कविता को एक संतुलित और नियंत्रित शैली देता है।)</span></li>
+                        <li><strong>Persona:</strong> Pope creates a persona of a patient, honest man who is constantly bothered by foolish people. <span class="hindi-text">(व्यक्तित्व: पोप एक धैर्यवान, ईमानदार व्यक्ति का व्यक्तित्व बनाता है जिसे लगातार मूर्ख लोग परेशान करते हैं।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>It is considered Pope's most personal and emotional satire.</li>
+                        <li>The poem is a great example of a 'verse epistle' (a poem in the form of a letter).</li>
+                        <li>It gives us a lot of information about the literary world and the rivalries of Pope's time.</li>
+                        <li>The language is sharp, clever, and often very funny.</li>
+                    </ul>
+                `
+            },
+            poem_elegy: {
+                title: "Elegy Written in a Country Churchyard - Thomas Gray",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>This poem is a deep meditation on death, poverty, and the lives of the poor. The poet stands in a quiet country churchyard at sunset and thinks about the simple, poor villagers buried there. He imagines their lives, their hard work in the fields, and their simple joys. He feels sad that they could not become great leaders, poets, or kings because they were poor. He thinks that their poverty and lack of education prevented them from reaching their full potential. However, he also realizes that this poverty protected them from the crimes and ambitions of the rich and powerful. He concludes that even if they could not achieve fame, they still lived honest lives and have a place in God's memory. The poem ends with the poet thinking about his own death and burial, hoping that someone will remember him in a similar way.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">यह कविता मृत्यु, गरीबी और गरीबों के जीवन पर एक गहरा ध्यान है। कवि सूर्यास्त के समय एक शांत देश के कब्रिस्तान में खड़ा होता है और वहाँ दफन साधारण, गरीब ग्रामीणों के बारे में सोचता है। वह उनके जीवन, खेतों में उनकी कड़ी मेहनत और उनके साधारण सुखों की कल्पना करता है। वह दुखी महसूस करता है कि वे गरीब होने के कारण महान नेता, कवि या राजा नहीं बन सके। वह सोचता है कि उनकी गरीबी और शिक्षा की कमी ने उन्हें अपनी पूरी क्षमता तक पहुंचने से रोक दिया। हालांकि, वह यह भी महसूस करता है कि इस गरीबी ने उन्हें अमीर और शक्तिशाली लोगों के अपराधों और महत्वाकांक्षाओं से बचाया। वह निष्कर्ष निकालता है कि भले ही वे प्रसिद्धि प्राप्त नहीं कर सके, फिर भी उन्होंने ईमानदार जीवन जिया और ईश्वर की स्मृति में उनका स्थान है। कविता कवि के अपनी खुद की मृत्यु और दफन के बारे में सोचने के साथ समाप्त होती है, यह उम्मीद करते हुए कि कोई उसे भी इसी तरह याद करेगा।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">कवि एक कब्रिस्तान में गरीब लोगों की कब्रें देखकर उनके जीवन के बारे में सोचता है। वह महसूस करता है कि गरीबी ने उन्हें महान बनने से रोका, पर यह भी सच है कि उन्होंने सादा और अच्छा जीवन जिया।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Death as the Great Leveller:</strong> The poem shows that in death, everyone is equal, whether they were rich or poor, famous or unknown. <span class="hindi-text">(मृत्यु एक महान समानता लाने वाली: कविता दर्शाती है कि मृत्यु में, हर कोई समान होता है, चाहे वह अमीर हो या गरीब, प्रसिद्ध हो या अज्ञात।)</span></li>
+                        <li><strong>Unfulfilled Potential:</strong> The poem talks about the potential and talent of the poor that was wasted because of a lack of opportunity. <span class="hindi-text">(अधूरा रह गया सामर्थ्य: कविता गरीबों की क्षमता और प्रतिभा के बारे में बात करती है जो अवसरों की कमी के कारण बर्बाद हो गई।)</span></li>
+                        <li><strong>Remembrance and Humility:</strong> The poet emphasizes the importance of being remembered for a good life, not just for fame and wealth. <span class="hindi-text">(स्मृति और विनम्रता: कवि प्रसिद्धि और धन के लिए नहीं, बल्कि एक अच्छे जीवन के लिए याद किए जाने के महत्व पर जोर देता है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Personification:</strong> Death, Ambition, and Knowledge are personified as characters. <span class="hindi-text">(मानवीकरण: मृत्यु, महत्वाकांक्षा और ज्ञान को पात्रों के रूप में चित्रित किया गया है।)</span></li>
+                        <li><strong>Elegy:</strong> The poem is a perfect example of an elegy, a poem written to mourn the dead. <span class="hindi-text">(शोकगीत: कविता एक शोकगीत का एक आदर्श उदाहरण है, जो मृतकों का शोक मनाने के लिए लिखी गई एक कविता है।)</span></li>
+                        <li><strong>Symbolism:</strong> The churchyard symbolizes the final resting place of all people. <span class="hindi-text">(प्रतीकवाद: कब्रिस्तान सभी लोगों के अंतिम विश्राम स्थल का प्रतीक है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>The poem is a landmark of the 'Pre-Romantic' period, with its focus on nature, emotion, and the lives of common people.</li>
+                        <li>It has a quiet, reflective, and sad tone that stays with the reader.</li>
+                        <li>The language is simple, clear, and very moving.</li>
+                        <li>The final stanzas about the poet's own death add a personal touch to the universal theme.</li>
+                    </ul>
+                `
+            },
+            poem_tyger: {
+                title: "The Tyger - William Blake",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>William Blake's "The Tyger" is one of his most famous poems. It is a powerful and mysterious poem that questions the nature of creation and the creator (God). The poet sees a terrifying tiger burning brightly in the darkness of the forest. He wonders who could have created such a fearful and powerful creature. He asks questions like "What immortal hand or eye could frame thy fearful symmetry?" The central question of the poem is how the same God who created the gentle lamb could also create the terrifying tiger. The poem explores the idea of opposites: innocence vs. experience, good vs. evil, and creation vs. destruction. The mystery of the creator's power and intent remains unresolved.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">विलियम ब्लेक की "द टाइगर" उनकी सबसे प्रसिद्ध कविताओं में से एक है। यह एक शक्तिशाली और रहस्यमय कविता है जो सृष्टि और निर्माता (ईश्वर) की प्रकृति पर सवाल उठाती है। कवि जंगल के अंधेरे में एक भयानक बाघ को चमकते हुए देखता है। वह सोचता है कि ऐसे भयानक और शक्तिशाली प्राणी को किसने बनाया होगा। वह सवाल पूछता है जैसे "किस अमर हाथ या आंख ने तेरी भयानक समरूपता को गढ़ा होगा?" कविता का केंद्रीय सवाल यह है कि जिस भगवान ने कोमल मेमने को बनाया, वही भगवान भयानक बाघ को कैसे बना सकता है। कविता विपरीत विचारों का पता लगाती है: मासूमियत बनाम अनुभव, अच्छा बनाम बुराई, और सृष्टि बनाम विनाश। निर्माता की शक्ति और इरादे का रहस्य अनसुलझा रहता है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">यह कविता एक भयानक बाघ के बारे में है। कवि सोचता है कि जिस भगवान ने एक प्यारे मेमने को बनाया, उसी ने इतने खतरनाक बाघ को कैसे बनाया? यह कविता अच्छाई और बुराई के बारे में है।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Duality of Creation:</strong> The poem explores the idea that God created both the gentle and the terrifying, both good and evil. <span class="hindi-text">(सृष्टि की द्वैतता: कविता इस विचार की पड़ताल करती है कि ईश्वर ने कोमल और भयानक दोनों, अच्छे और बुरे दोनों को बनाया।)</span></li>
+                        <li><strong>Good vs. Evil:</strong> The Lamb represents good and innocence, while the Tiger represents evil, violence, and experience. <span class="hindi-text">(अच्छा बनाम बुराई: मेमना अच्छाई और मासूमियत का प्रतिनिधित्व करता है, जबकि बाघ बुराई, हिंसा और अनुभव का प्रतिनिधित्व करता है।)</span></li>
+                        <li><strong>The Sublime and the Terrifying:</strong> The poem evokes a feeling of awe and fear in the face of nature's powerful and mysterious creations. <span class="hindi-text">(अति-भव्य और भयानक: कविता प्रकृति की शक्तिशाली और रहस्यमय रचनाओं के सामने विस्मय और भय की भावना पैदा करती है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Metaphor:</strong> The tiger is a metaphor for the terrifying and powerful aspects of creation. The lamb is a metaphor for innocence. <span class="hindi-text">(रूपक: बाघ सृष्टि के भयानक और शक्तिशाली पहलुओं के लिए एक रूपक है। मेमना मासूमियत के लिए एक रूपक है।)</span></li>
+                        <li><strong>Rhetorical Questions:</strong> The poem is filled with unanswered questions that make the reader think deeply. <span class="hindi-text">(अलंकारिक प्रश्न: कविता अनुत्तरित प्रश्नों से भरी है जो पाठक को गहराई से सोचने पर मजबूर करती हैं।)</span></li>
+                        <li><strong>Alliteration:</strong> The use of repeated sounds, like "fearful symmetry" and "burning bright," creates a strong rhythm. <span class="hindi-text">(अनुप्रास: दोहराए गए ध्वनियों का उपयोग, एक मजबूत लय बनाता है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>"The Tyger" is part of Blake's collection <em>Songs of Experience</em> and is a companion poem to "The Lamb" from <em>Songs of Innocence</em>.</li>
+                        <li>The poem's simple, direct language adds to its powerful and mysterious effect.</li>
+                        <li>It raises profound philosophical and theological questions about God's nature that remain relevant.</li>
+                        <li>The poem's imagery of fire and darkness is very striking and memorable.</li>
+                    </ul>
+                `
+            },
+            poem_world: {
+                title: "The World is Too Much With Us - William Wordsworth",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>In this sonnet, Wordsworth criticizes humanity for losing its connection with nature due to its focus on materialism and money ("getting and spending"). He feels that people have given their hearts away and no longer appreciate the beauty of the natural world. They do not care about the sea that "bares her bosom to the moon" or the winds that howl. The poet feels sad and alienated from this modern world. He says he would rather be a pagan (a person who worships nature gods) than be part of a society that has lost its soul. He wishes he could see the Greek god Proteus rising from the sea or hear Triton's horn. This desire shows his longing for a time when people were more connected to nature and the supernatural world.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">इस सॉनेट में, वर्ड्सवर्थ भौतिकवाद और पैसे पर ध्यान केंद्रित करने ("कमाना और खर्च करना") के कारण प्रकृति के साथ अपना संबंध खोने के लिए मानवता की आलोचना करते हैं। उन्हें लगता है कि लोगों ने अपने दिल को दूर कर दिया है और अब प्राकृतिक दुनिया की सुंदरता की सराहना नहीं करते हैं। उन्हें समुद्र की परवाह नहीं है जो "चाँद के सामने अपनी छाती खोलता है" या हवाओं की जो चिल्लाती हैं। कवि इस आधुनिक दुनिया से दुखी और अलग-थलग महसूस करता है। वह कहते हैं कि वह एक ऐसे समाज का हिस्सा बनने के बजाय एक मूर्तिपूजक (एक व्यक्ति जो प्रकृति के देवताओं की पूजा करता है) होना पसंद करेंगे जिसने अपनी आत्मा खो दी है। वह काश ग्रीक देवता प्रोटेउस को समुद्र से उठते हुए देख पाते या ट्राइटन के सींग की आवाज सुन पाते। यह इच्छा प्रकृति और अलौकिक दुनिया से अधिक जुड़े हुए समय के लिए उनकी लालसा को दर्शाती है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">कवि कहता है कि लोग पैसा कमाने में इतने व्यस्त हैं कि उन्होंने प्रकृति से अपना रिश्ता तोड़ लिया है। वह इस बात से बहुत दुखी है और कहता है कि वह एक ऐसे समाज का हिस्सा बनने के बजाय एक मूर्तिपूजक होना पसंद करेगा जो प्रकृति की सुंदरता की परवाह नहीं करता।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Nature vs. Industrialization/Materialism:</strong> The poem contrasts the beauty of nature with the ugly effects of materialism and progress. <span class="hindi-text">(प्रकृति बनाम औद्योगीकरण/भौतिकवाद: कविता भौतिकवाद और प्रगति के बदसूरत प्रभावों के साथ प्रकृति की सुंदरता की तुलना करती है।)</span></li>
+                        <li><strong>Loss of Spiritual Connection:</strong> The poem laments that people have lost their spiritual connection to the natural world. <span class="hindi-text">(आध्यात्मिक संबंध का नुकसान: कविता इस बात पर शोक व्यक्त करती है कि लोगों ने प्राकृतिक दुनिया के साथ अपना आध्यात्मिक संबंध खो दिया है।)</span></li>
+                        <li><strong>Romanticism:</strong> The poem is a key example of the Romantic belief in the importance of nature and emotion over reason and science. <span class="hindi-text">(रोमांटिकवाद: कविता प्रकृति और भावना के महत्व में रोमांटिक विश्वास का एक प्रमुख उदाहरण है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Personification:</strong> Nature is personified, with the sea baring "her bosom" and the winds howling "at all hours." <span class="hindi-text">(मानवीकरण: प्रकृति को मानवीकृत किया गया है, जिसमें समुद्र "अपनी छाती" खोलता है और हवाएं "हर समय" चिल्लाती हैं।)</span></li>
+                        <li><strong>Allusion:</strong> The poet alludes to pagan gods (Proteus and Triton) to show a deeper connection to nature. <span class="hindi-text">(संकेत: कवि प्रकृति के साथ एक गहरे संबंध को दिखाने के लिए मूर्तिपूजक देवताओं (प्रोटेउस और ट्राइटन) का संकेत देता है।)</span></li>
+                        <li><strong>Metaphor:</strong> "The world is too much with us" is a metaphor for the excessive focus on worldly affairs. <span class="hindi-text">(रूपक: "दुनिया हमारे साथ बहुत अधिक है" सांसारिक मामलों पर अत्यधिक ध्यान केंद्रित करने के लिए एक रूपक है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>This is a Petrarchan sonnet, but Wordsworth uses it for a powerful social and environmental critique.</li>
+                        <li>The tone is one of sad complaint and frustration.</li>
+                        <li>The poem's direct and powerful opening line makes it very memorable.</li>
+                        <li>It is a clear statement of Wordsworth's Romantic beliefs and his criticism of modern life.</li>
+                    </ul>
+                `
+            },
+            poem_westwind: {
+                title: "Ode to the West Wind - P.B. Shelley",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>In this famous ode, Shelley addresses the powerful and untamed West Wind. He describes the wind's dual power: it is both a destroyer and a preserver. It destroys old leaves, which are compared to dead people, but also spreads new seeds that will grow in the spring. Shelley wants the wind to destroy his old, worn-out thoughts and to scatter his new ideas like seeds among people. He asks the wind to be his spirit and his voice. The poem moves from a description of the wind's power over nature (leaves, clouds, and oceans) to a plea for it to inspire the poet and humanity. The final lines express a feeling of hope for the future: "If Winter comes, can Spring be far behind?" This means that even after a time of sadness and destruction, a time of hope and new life (like a revolution) will surely come.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">इस प्रसिद्ध ओड में, शेली शक्तिशाली और अनियंत्रित पश्चिमी हवा को संबोधित करते हैं। वह हवा की दोहरी शक्ति का वर्णन करते हैं: यह एक ही समय में एक विध्वंसक और एक संरक्षक दोनों है। यह पुराने पत्तों को नष्ट कर देती है, जिनकी तुलना मृत लोगों से की गई है, लेकिन नए बीज भी फैलाती है जो वसंत में उगेंगे। शेली चाहते हैं कि हवा उनके पुराने, थके हुए विचारों को नष्ट कर दे और उनके नए विचारों को लोगों के बीच बीजों की तरह बिखेर दे। वह हवा से अपनी आत्मा और अपनी आवाज बनने के लिए कहते हैं। कविता हवा की प्रकृति (पत्तियों, बादलों और महासागरों) पर शक्ति के वर्णन से कवि और मानवता को प्रेरित करने की याचना में बदल जाती है। अंतिम पंक्तियाँ भविष्य के लिए आशा की भावना व्यक्त करती हैं: "यदि सर्दी आती है, तो क्या वसंत बहुत पीछे हो सकता है?" इसका मतलब है कि दुख और विनाश के समय के बाद भी, आशा और नए जीवन का समय (एक क्रांति की तरह) निश्चित रूप से आएगा।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">कवि पश्चिमी हवा से बात करता है और उसकी शक्ति की प्रशंसा करता है। वह चाहता है कि हवा उसके क्रांतिकारी विचारों को पूरी दुनिया में फैला दे ताकि लोगों में नई आशा और नया जीवन आ सके।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Power of Nature:</strong> The West Wind is a symbol of the raw and untamable power of nature. <span class="hindi-text">(प्रकृति की शक्ति: पश्चिमी हवा प्रकृति की कच्ची और अनियंत्रित शक्ति का प्रतीक है।)</span></li>
+                        <li><strong>Change and Revolution:</strong> The poem uses the cycle of seasons to represent the idea of political and social revolution and renewal. <span class="hindi-text">(परिवर्तन और क्रांति: कविता राजनीतिक और सामाजिक क्रांति और नवीकरण के विचार का प्रतिनिधित्व करने के लिए मौसमों के चक्र का उपयोग करती है।)</span></li>
+                        <li><strong>Hope and Optimism:</strong> The final lines offer a message of hope, suggesting that after a period of suffering, a better future is coming. <span class="hindi-text">(आशा और आशावाद: अंतिम पंक्तियाँ आशा का संदेश देती हैं, यह सुझाव देती हैं कि दुख की अवधि के बाद, एक बेहतर भविष्य आ रहा है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Apostrophe:</strong> The poet directly addresses the West Wind as if it were a person. <span class="hindi-text">(संबोधन: कवि सीधे पश्चिमी हवा को संबोधित करता है जैसे कि वह एक व्यक्ति हो।)</span></li>
+                        <li><strong>Metaphor and Simile:</strong> The leaves are compared to "ghosts from an enchanter fleeing," and the poet's words are compared to "ashes and sparks." <span class="hindi-text">(रूपक और उपमा: पत्तियों की तुलना "एक जादूगर से भागने वाले भूतों" से की जाती है, और कवि के शब्दों की तुलना "राख और चिंगारियों" से की जाती है।)</span></li>
+                        <li><strong>Personification:</strong> The wind is personified as a powerful being that can "drive" and "awaken" things. <span class="hindi-text">(मानवीकरण: हवा को एक शक्तिशाली प्राणी के रूप में चित्रित किया गया है जो चीजों को "चला" और "जगा" सकता है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>This is a classic ode that uses an elevated and complex verse form to convey deep emotions.</li>
+                        <li>The poem moves from the natural world to the poet's inner feelings and finally to a universal message of hope.</li>
+                        <li>The language is full of rich imagery of sound, movement, and color.</li>
+                        <li>It is one of the most famous poems of the Romantic period, reflecting its key ideas of nature's power and political revolution.</li>
+                    </ul>
+                `
+            },
+            poem_urn: {
+                title: "Ode on a Grecian Urn - John Keats",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>In this famous ode, John Keats looks at a beautiful, ancient Greek urn and is fascinated by the pictures carved on it. He sees images of people and scenes frozen in time, like a young man playing a pipe to his beloved, a group of lovers chasing each other, and a priest leading a cow for sacrifice. The poet feels that these scenes are more beautiful and perfect than real life because they are unchanging. The lovers on the urn will never get old, and their love will be "for ever warm, and still to be enjoyed." The music from the pipe will always be sweet. He believes that art is a way to stop time and hold onto perfect moments. He concludes the poem with the famous lines, "Beauty is truth, truth beauty," meaning that art, which captures eternal beauty, shows us the highest truth in life.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">इस प्रसिद्ध ओड में, जॉन कीट्स एक सुंदर, प्राचीन ग्रीक कलश को देखते हैं और उस पर उकेरी गई तस्वीरों से मंत्रमुग्ध हो जाते हैं। वह समय में जमी हुई लोगों और दृश्यों की छवियां देखते हैं, जैसे एक युवक अपनी प्रेमिका के लिए बांसुरी बजा रहा है, प्रेमियों का एक समूह एक-दूसरे का पीछा कर रहा है, और एक पुजारी बलिदान के लिए एक गाय को ले जा रहा है। कवि महसूस करता है कि ये दृश्य वास्तविक जीवन की तुलना में अधिक सुंदर और आदर्श हैं क्योंकि वे अपरिवर्तनीय हैं। कलश पर प्रेमी कभी बूढ़े नहीं होंगे, और उनका प्यार "हमेशा गर्म, और अभी भी आनंद लेने के लिए" रहेगा। बांसुरी से निकलने वाला संगीत हमेशा मधुर रहेगा। उनका मानना है कि कला समय को रोकने और आदर्श क्षणों को पकड़े रहने का एक तरीका है। वह प्रसिद्ध पंक्तियों के साथ कविता का समापन करते हैं, "सौंदर्य ही सत्य है, सत्य ही सौंदर्य है," जिसका अर्थ है कि कला, जो शाश्वत सुंदरता को कैद करती है, हमें जीवन में सर्वोच्च सत्य दिखाती है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">कवि एक पुराने यूनानी कलश पर बनी तस्वीरों को देखता है। वह सोचता है कि ये तस्वीरें असली दुनिया से बेहतर हैं क्योंकि इनमें सुंदरता कभी खत्म नहीं होती। कविता का मुख्य विचार यह है कि 'सुंदरता ही सच है, और सच ही सुंदरता है'।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Art vs. Life:</strong> The poem contrasts the unchanging, perfect world of art with the temporary and imperfect nature of human life. <span class="hindi-text">(कला बनाम जीवन: कविता कला की अपरिवर्तनीय, आदर्श दुनिया की तुलना मानव जीवन की अस्थायी और अपूर्ण प्रकृति से करती है।)</span></li>
+                        <li><strong>Beauty and Truth:</strong> Keats connects beauty and truth, suggesting that the beauty found in art can reveal a deeper, timeless truth about life. <span class="hindi-text">(सुंदरता और सत्य: कीट्स सुंदरता और सत्य को जोड़ते हैं, यह सुझाव देते हुए कि कला में पाई जाने वाली सुंदरता जीवन के बारे में एक गहरा, कालातीत सत्य प्रकट कर सकती है।)</span></li>
+                        <li><strong>Eternity and Immortality:</strong> The urn represents a kind of immortality, as the scenes on it are forever frozen and can never die. <span class="hindi-text">(शाश्वतता और अमरता: कलश एक प्रकार की अमरता का प्रतिनिधित्व करता है, क्योंकि उस पर बने दृश्य हमेशा के लिए जमे हुए हैं और कभी मर नहीं सकते।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Apostrophe:</strong> The poet directly addresses the urn as "Thou still unravish'd bride of quietness." <span class="hindi-text">(संबोधन: कवि सीधे कलश को "तू अभी भी शांति की अविवाहित दुल्हन" के रूप में संबोधित करता है।)</span></li>
+                        <li><strong>Imagery:</strong> The poem uses rich visual imagery to describe the scenes on the urn, such as "marble men and maidens overwrought." <span class="hindi-text">(बिंब: कविता कलश पर बने दृश्यों का वर्णन करने के लिए समृद्ध दृश्य बिंब का उपयोग करती है।)</span></li>
+                        <li><strong>Paradox:</strong> The idea that the unplayed music is "sweeter" is a paradox that shows the superiority of imagination over reality. <span class="hindi-text">(विरोधाभास: यह विचार कि न बजाया गया संगीत "अधिक मधुर" है, एक विरोधाभास है जो वास्तविकता पर कल्पना की श्रेष्ठता को दर्शाता है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>The poem is considered one of the greatest odes in English literature and a masterpiece of the Romantic movement.</li>
+                        <li>Its famous concluding lines have been debated for centuries and are a core part of Keats's philosophy.</li>
+                        <li>The poem's quiet and meditative tone creates a sense of deep thought and reverence for art.</li>
+                        <li>The use of both question and statement forms makes the poem feel like a conversation with the urn itself.</li>
+                    </ul>
+                `
+            },
+            poem_ulysses: {
+                title: "Ulysses - Lord Alfred Tennyson",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>In this dramatic monologue, the Greek hero Ulysses (Odysseus) speaks his thoughts aloud. He is an old man, back in his kingdom of Ithaca after a long and difficult journey. He is tired of his peaceful life and finds it boring to rule his "savage race" of people. He feels his soul is restless and wants to travel and explore again. He believes that a life of rest is not for him and that his purpose is to keep striving and pushing forward. He wants to sail beyond the horizon and die a heroic death while exploring. He says that even though he and his men are old, they still have the will to fight and do something great. The poem ends with the famous line: "To strive, to seek, to find, and not to yield," which perfectly summarizes his heroic and adventurous spirit.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">इस नाटकीय एकालाप में, ग्रीक नायक यूलिसेस (ओडिसीअस) अपने विचारों को जोर से बोलता है। वह एक बूढ़ा व्यक्ति है, जो एक लंबी और कठिन यात्रा के बाद अपने इथाका राज्य में वापस आ गया है। वह अपने शांतिपूर्ण जीवन से थक गया है और अपने लोगों की "असभ्य जाति" पर शासन करना उबाऊ पाता है। वह महसूस करता है कि उसकी आत्मा बेचैन है और वह फिर से यात्रा करना और खोजना चाहता है। उनका मानना है कि आराम का जीवन उनके लिए नहीं है और उनका उद्देश्य प्रयास करते रहना और आगे बढ़ते रहना है। वह क्षितिज से परे नौकायन करना चाहता है और खोज करते समय एक वीर मृत्यु मरना चाहता है। वह कहता है कि भले ही वह और उसके पुरुष बूढ़े हो गए हैं, फिर भी उनमें लड़ने और कुछ महान करने की इच्छा है। कविता प्रसिद्ध पंक्ति के साथ समाप्त होती है: "प्रयास करना, खोजना, पाना, और हार न मानना," जो उसकी वीर और साहसी भावना को पूरी तरह से सारांशित करता है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">यह कविता एक बूढ़े राजा यूलिसेस के बारे में है जो अपने राज्य से ऊब गया है। वह फिर से यात्रा पर जाना चाहता है ताकि वह अपने जीवन का आखिरी हिस्सा एक बहादुर योद्धा की तरह जी सके।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>The Spirit of Adventure:</strong> The central theme is the human desire for adventure, knowledge, and exploration that continues even in old age. <span class="hindi-text">(साहस की भावना: केंद्रीय विषय साहस, ज्ञान और अन्वेषण के लिए मानव की इच्छा है जो बुढ़ापे में भी जारी रहती है।)</span></li>
+                        <li><strong>Discontent with Stagnation:</strong> Ulysses feels discontent with a quiet, passive life and believes that a man's purpose is to always keep moving. <span class="hindi-text">(स्थिरता से असंतोष: यूलिसेस एक शांत, निष्क्रिय जीवन से असंतोष महसूस करता है और मानता है कि एक आदमी का उद्देश्य हमेशा आगे बढ़ते रहना है।)</span></li>
+                        <li><strong>Mortality and Immortality:</strong> The poem deals with the fear of death and the desire to achieve a kind of immortality through great deeds and fame. <span class="hindi-text">(नश्वरता और अमरता: कविता मृत्यु के भय और महान कर्मों और प्रसिद्धि के माध्यम से एक प्रकार की अमरता प्राप्त करने की इच्छा से संबंधित है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Dramatic Monologue:</strong> This is a classic example of a dramatic monologue, where we learn about the character's personality and thoughts through his own speech. <span class="hindi-text">(नाटकीय एकालाप: यह एक नाटकीय एकालाप का एक आदर्श उदाहरण है, जहां हम चरित्र के व्यक्तित्व और विचारों के बारे में उसके अपने भाषण के माध्यम से सीखते हैं।)</span></li>
+                        <li><strong>Metaphor:</strong> The journey is a metaphor for a meaningful life of continuous striving. <span class="hindi-text">(रूपक: यात्रा निरंतर प्रयास के एक सार्थक जीवन के लिए एक रूपक है।)</span></li>
+                        <li><strong>Allusion:</strong> The poem is a literary allusion to Homer's epic poems, <em>The Iliad</em> and <em>The Odyssey</em>. <span class="hindi-text">(संकेत: कविता होमर की महाकाव्य कविताओं, <em>द इलियड</em> और <em>द ओडिसी</em> का एक साहित्यिक संकेत है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>The poem is written in blank verse, which gives it a powerful, natural rhythm.</li>
+                        <li>The character of Ulysses is a symbol of the Victorian spirit of progress and exploration.</li>
+                        <li>It contrasts the active, heroic life with the passive, domestic life.</li>
+                        <li>The poem's final lines have become a famous motto for perseverance and striving.</li>
+                    </ul>
+                `
+            },
+            poem_duchess: {
+                title: "My Last Duchess - Robert Browning",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>This poem is a dramatic monologue spoken by the Duke of Ferrara to a visitor, who is a messenger from a Count whose daughter the Duke wishes to marry. The Duke shows the visitor a painting of his "last Duchess" (his former wife). While talking about the painting, the Duke reveals his own cruel and possessive nature. He disliked his Duchess because she was too happy and kind to everyone. He was angry that she smiled at others just as she smiled at him. He could not control her. He talks about how he gave "commands" and all the smiles stopped, which suggests that he had her killed or sent to a convent. He is now looking for a new wife who will obey him completely. The poem ends with the Duke's final cold and arrogant words, showing his lack of humanity.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">यह कविता फेरारा के ड्यूक द्वारा एक आगंतुक से बात करते हुए एक नाटकीय एकालाप है, जो एक काउंट का दूत है जिसकी बेटी से ड्यूक शादी करना चाहता है। ड्यूक आगंतुक को अपनी "पिछली डचेस" (अपनी पूर्व पत्नी) की एक पेंटिंग दिखाता है। पेंटिंग के बारे में बात करते हुए, ड्यूक अपने क्रूर और अधिकार-जमाने वाले स्वभाव को प्रकट करता है। वह अपनी डचेस को नापसंद करता था क्योंकि वह सभी के प्रति बहुत खुश और दयालु थी। वह नाराज था कि वह दूसरों पर भी उसी तरह मुस्कुराती थी जैसे वह उस पर मुस्कुराती थी। वह उसे नियंत्रित नहीं कर सका। वह बताता है कि उसने "आदेश" दिए और सभी मुस्कान बंद हो गईं, जिसका अर्थ है कि उसने उसे मार डाला या एक कॉन्वेंट में भेज दिया। वह अब एक नई पत्नी की तलाश में है जो उसकी पूरी तरह से आज्ञा का पालन करेगी। कविता ड्यूक के अंतिम ठंडे और अहंकारी शब्दों के साथ समाप्त होती है, जो उसकी मानवता की कमी को दर्शाती है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">एक ड्यूक अपने मेहमान को अपनी मरी हुई पत्नी की तस्वीर दिखाता है। बात करते-करते वह बताता है कि वह अपनी पत्नी से नफरत करता था क्योंकि वह बहुत खुश रहती थी और दूसरों पर भी मुस्कुराती थी। वह उसे नियंत्रित करना चाहता था और शायद उसने उसे मार दिया।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Power and Control:</strong> The Duke's speech is all about his desire for absolute control over his wife, both in life and in art. <span class="hindi-text">(शक्ति और नियंत्रण: ड्यूक का भाषण अपनी पत्नी पर पूर्ण नियंत्रण की उसकी इच्छा के बारे में है, जीवन और कला दोनों में।)</span></li>
+                        <li><strong>Jealousy and Arrogance:</strong> The Duke's immense arrogance and jealousy are clear as he complains about his wife's innocent kindness. <span class="hindi-text">(ईर्ष्या और अहंकार: ड्यूक का भारी अहंकार और ईर्ष्या स्पष्ट है क्योंकि वह अपनी पत्नी की निर्दोष दयालुता के बारे में शिकायत करता है।)</span></li>
+                        <li><strong>Art and Reality:</strong> The poem contrasts the painting of the Duchess, which the Duke can finally control, with the real Duchess who was free-spirited. <span class="hindi-text">(कला और वास्तविकता: कविता डचेस की पेंटिंग, जिसे ड्यूक अंततः नियंत्रित कर सकता है, की तुलना असली डचेस से करती है जो स्वतंत्र विचारों वाली थी।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Dramatic Monologue:</strong> The poem is a classic example of this form, where a single speaker reveals their character to a silent listener. <span class="hindi-text">(नाटकीय एकालाप: कविता इस रूप का एक आदर्श उदाहरण है, जहां एक अकेला वक्ता एक मूक श्रोता को अपना चरित्र प्रकट करता है।)</span></li>
+                        <li><strong>Irony:</strong> The Duke's attempt to look powerful actually makes him look cruel and inhuman to the reader. <span class="hindi-text">(विडंबना: शक्तिशाली दिखने का ड्यूक का प्रयास वास्तव में उसे पाठक के लिए क्रूर और अमानवीय दिखाता है।)</span></li>
+                        <li><strong>Euphemism:</strong> The Duke uses soft language ("I gave commands") to hint at the horrible act of murder. <span class="hindi-text">(संकेत: ड्यूक हत्या के भयानक कृत्य का संकेत देने के लिए नरम भाषा ("मैंने आदेश दिए") का उपयोग करता है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>The poem is considered one of Browning's greatest works.</li>
+                        <li>The language is very conversational, making the Duke's speech feel natural and real.</li>
+                        <li>The poem's power lies in what is left unsaid; the reader must guess the horrible truth.</li>
+                        <li>It is a deep psychological study of a controlling and narcissistic character.</li>
+                    </ul>
+                `
+            },
+            poem_dover: {
+                title: "Dover Beach - Matthew Arnold",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>The poem begins with the speaker standing on Dover Beach at night with his beloved. He describes the calm sea and the full moon. He then hears the sound of the waves pulling back on the pebbles, a sound he calls the "eternal note of sadness." This sound makes him think of the ancient Greek playwright Sophocles, who heard a similar sad sound on a different sea. The poet then uses this idea to talk about the loss of religious faith in the modern world. He says that the "Sea of Faith" was once full but is now slowly going away, leaving the world empty and cold. He feels a great sense of sadness and alienation. He concludes by saying that in this world without faith, the only true comfort is the love between him and his beloved. He asks her to be true to him because they are the only real and certain things left in a world that is "darkling" and full of confusion.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">कविता वक्ता के साथ डोवर बीच पर रात में अपने प्रिय के साथ खड़े होने से शुरू होती है। वह शांत समुद्र और पूर्णिमा का वर्णन करता है। फिर वह लहरों की आवाज सुनता है जो कंकड़ों पर पीछे हट रही हैं, एक आवाज जिसे वह "उदासी का शाश्वत नोट" कहता है। यह आवाज उसे प्राचीन ग्रीक नाटककार सोफोकल्स के बारे में सोचने पर मजबूर करती है, जिसने एक अलग समुद्र पर इसी तरह की एक दुखद आवाज सुनी थी। कवि तब इस विचार का उपयोग आधुनिक दुनिया में धार्मिक आस्था के नुकसान के बारे में बात करने के लिए करता है। वह कहते हैं कि "आस्था का सागर" कभी भरा हुआ था, लेकिन अब धीरे-धीरे दूर जा रहा है, दुनिया को खाली और ठंडा छोड़ रहा है। वह उदासी और अलगाव की एक महान भावना महसूस करता है। वह यह कहकर समाप्त करते हैं कि आस्था के बिना इस दुनिया में, एकमात्र सच्चा आराम उसके और उसकी प्रिय के बीच का प्यार है। वह उससे सच्चा रहने के लिए कहता है क्योंकि वे एक ऐसी दुनिया में बचे हुए एकमात्र वास्तविक और निश्चित चीजें हैं जो "अंधेरी" और भ्रम से भरी है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">कवि एक समुद्र तट पर खड़ा होकर धार्मिक आस्था के खत्म होने के बारे में सोचता है। उसे लगता है कि दुनिया में अब सिर्फ अंधेरा और दुख है, और इस दुख भरी दुनिया में, सच्चा प्यार ही एकमात्र उम्मीद है।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Loss of Faith:</strong> The poem's central theme is the decline of religious faith and the spiritual emptiness of the modern world. <span class="hindi-text">(आस्था का नुकसान: कविता का केंद्रीय विषय धार्मिक आस्था का पतन और आधुनिक दुनिया की आध्यात्मिक शून्यता है।)</span></li>
+                        <li><strong>Love as a Refuge:</strong> In a world without faith, love is presented as the only source of truth, light, and comfort. <span class="hindi-text">(आश्रय के रूप में प्रेम: आस्था के बिना एक दुनिया में, प्रेम को सत्य, प्रकाश और आराम के एकमात्र स्रोत के रूप में प्रस्तुत किया गया है।)</span></li>
+                        <li><strong>Alienation and Disillusionment:</strong> The speaker feels a sense of being lost and separated from a world that has lost its meaning. <span class="hindi-text">(अलगाव और मोहभंग: वक्ता एक ऐसी दुनिया से खोया हुआ और अलग महसूस करता है जिसने अपना अर्थ खो दिया है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Metaphor:</strong> The "Sea of Faith" is a metaphor for religious belief. The world is a "darkling plain." <span class="hindi-text">(रूपक: "आस्था का सागर" धार्मिक विश्वास के लिए एक रूपक है। दुनिया एक "अंधेरा मैदान" है।)</span></li>
+                        <li><strong>Simile:</strong> The world is compared to a "darkling plain, swept with confused alarms of struggle and flight." <span class="hindi-text">(उपमा: दुनिया की तुलना एक "अंधेरे मैदान" से की गई है, जो संघर्ष और उड़ान के भ्रमित अलार्म से भरा है।)</span></li>
+                        <li><strong>Allusion:</strong> The poem alludes to the ancient Greek writer Sophocles. <span class="hindi-text">(संकेत: कविता प्राचीन ग्रीक लेखक सोफोकल्स का संकेत देती है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>The poem has a reflective and melancholic tone.</li>
+                        <li>The contrast between the calm beginning and the sad end is very powerful.</li>
+                        <li>It perfectly captures the feeling of spiritual crisis in the Victorian era.</li>
+                        <li>The poem's language is simple and direct, which makes its emotional message even more effective.</li>
+                    </ul>
+                `
+            },
+            poem_secondcoming: {
+                title: "The Second Coming - W.B. Yeats",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>This poem is a famous and difficult poem about the collapse of society and the arrival of a new, terrible age. The poet says that the current world is falling apart. The "falcon," which symbolizes reason and order, cannot hear the "falconer" anymore, showing that things are out of control. "Things fall apart; the centre cannot hold." The best people lack confidence, and the worst people are full of passionate intensity. The poet then gets a frightening vision. He sees a huge "Spiritus Mundi," or Spirit of the World. He imagines a terrifying beast with the body of a lion and the head of a man, moving slowly towards Bethlehem (the birthplace of Christ). This beast is a symbol of a new and violent era that is replacing the Christian age. The poem ends with the poet wondering what kind of terrible future is coming to replace the old world of order and faith.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">यह कविता समाज के पतन और एक नए, भयानक युग के आगमन के बारे में एक प्रसिद्ध और कठिन कविता है। कवि कहता है कि वर्तमान दुनिया बिखर रही है। "बाज़," जो कारण और व्यवस्था का प्रतीक है, अब "बाज़ पालक" को नहीं सुन सकता, यह दर्शाता है कि चीजें नियंत्रण से बाहर हैं। "चीजें बिखर जाती हैं; केंद्र पकड़ नहीं सकता।" सबसे अच्छे लोगों में आत्मविश्वास की कमी होती है, और सबसे बुरे लोग भावुक तीव्रता से भरे होते हैं। फिर कवि को एक डरावना दर्शन होता है। वह एक विशाल "स्पिरिटस मुंडी" या विश्व की आत्मा देखता है। वह एक भयानक जानवर की कल्पना करता है जिसका शरीर शेर जैसा और सिर एक आदमी जैसा है, जो धीरे-धीरे बेथलहम (मसीह के जन्मस्थान) की ओर बढ़ रहा है। यह जानवर एक नए और हिंसक युग का प्रतीक है जो ईसाई युग की जगह ले रहा है। कविता कवि के यह सोचने के साथ समाप्त होती है कि व्यवस्था और विश्वास की पुरानी दुनिया को बदलने के लिए किस तरह का भयानक भविष्य आ रहा है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">यह कविता समाज के बिखरने के बारे में है। कवि कहता है कि दुनिया अराजकता में बदल रही है और एक भयानक जानवर एक नए, हिंसक युग की शुरुआत करने के लिए आ रहा है। यह कविता एक डरावने भविष्य की बात करती है।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Societal Collapse and Chaos:</strong> The poem describes a world where order and control have completely broken down, leading to chaos. <span class="hindi-text">(सामाजिक पतन और अराजकता: कविता एक ऐसी दुनिया का वर्णन करती है जहां व्यवस्था और नियंत्रण पूरी तरह से टूट गया है, जिससे अराजकता पैदा हो गई है।)</span></li>
+                        <li><strong>Prophecy and Fear:</strong> The poem is a prophecy of a new, terrible, and violent age that is about to begin. <span class="hindi-text">(भविष्यवाणी और भय: कविता एक नए, भयानक और हिंसक युग की भविष्यवाणी है जो शुरू होने वाला है।)</span></li>
+                        <li><strong>Cyclical History:</strong> Yeats believed that history moves in cycles. The poem suggests that one historical cycle (the Christian era) is ending and a new one is beginning. <span class="hindi-text">(चक्रीय इतिहास: येट्स का मानना था कि इतिहास चक्रों में चलता है। कविता बताती है कि एक ऐतिहासिक चक्र (ईसाई युग) समाप्त हो रहा है और एक नया शुरू हो रहा है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Symbolism:</strong> The falcon and falconer symbolize order and reason. The rough beast symbolizes a new, violent civilization. <span class="hindi-text">(प्रतीकवाद: बाज़ और बाज़ पालक व्यवस्था और कारण का प्रतीक हैं। खुरदरा जानवर एक नई, हिंसक सभ्यता का प्रतीक है।)</span></li>
+                        <li><strong>Metaphor:</strong> "The Second Coming" is a metaphor for a new era, not the return of Christ. <span class="hindi-text">(रूपक: "दूसरा आगमन" एक नए युग के लिए एक रूपक है, न कि मसीह की वापसी के लिए।)</span></li>
+                        <li><strong>Paradox:</strong> The "worst" people are full of "passionate intensity," which is a surprising and paradoxical idea. <span class="hindi-text">(विरोधाभास: "सबसे बुरे" लोग "भावुक तीव्रता" से भरे होते हैं, जो एक आश्चर्यजनक और विरोधाभासी विचार है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>The poem is considered one of the most important and influential poems of the 20th century.</li>
+                        <li>It was written in the aftermath of World War I and the Irish Civil War, which explains its pessimistic and chaotic tone.</li>
+                        <li>The poem's powerful and mysterious imagery has a lasting impact on the reader.</li>
+                        <li>It is a deep look into Yeats's ideas about history and spirituality.</li>
+                    </ul>
+                `
+            },
+            poem_prufrock: {
+                title: "The Love Song of J. Alfred Prufrock - T.S. Eliot",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>This is a dramatic monologue spoken by J. Alfred Prufrock, a modern man who is indecisive and full of social anxiety. The poem follows Prufrock's confused thoughts as he walks through a city's streets to a social gathering. He is worried about how others will judge him. He keeps thinking about whether he should talk to a woman and what he should say, but he is too afraid. He feels he has become old and that his life is small and unimportant. He compares himself to a bug on a pin, and to a character in Shakespeare's plays, but he feels he is not a hero. He is terrified of being misunderstood. The poem shows his loneliness and his inability to connect with people. In the end, he realizes that he is not brave enough to "dare" to talk to the women and that he will never find a place in the world.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">यह जे. अल्फ्रेड प्रुफ्रोक द्वारा बोला गया एक नाटकीय एकालाप है, जो एक आधुनिक व्यक्ति है जो अनिर्णायक और सामाजिक चिंता से भरा है। कविता प्रुफ्रोक के भ्रमित विचारों का अनुसरण करती है जब वह एक सामाजिक सभा में जाने के लिए शहर की सड़कों से चलता है। वह चिंतित है कि दूसरे लोग उसके बारे में क्या सोचेंगे। वह सोचता रहता है कि क्या उसे एक महिला से बात करनी चाहिए और उसे क्या कहना चाहिए, लेकिन वह बहुत डरता है। वह महसूस करता है कि वह बूढ़ा हो गया है और उसका जीवन छोटा और महत्वहीन है। वह खुद की तुलना एक पिन पर लगे कीड़े से करता है, और शेक्सपियर के नाटकों के एक चरित्र से करता है, लेकिन वह महसूस करता है कि वह एक नायक नहीं है। वह गलत समझे जाने से भयभीत है। कविता उसकी अकेलेपन और लोगों से जुड़ने में उसकी असमर्थता को दिखाती है। अंत में, उसे पता चलता है कि वह महिलाओं से बात करने का "साहस" करने के लिए पर्याप्त बहादुर नहीं है और उसे दुनिया में कभी कोई जगह नहीं मिलेगी।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">यह एक ऐसे आदमी की कहानी है जो बहुत अकेला है और लोगों से बात करने से डरता है। वह सोचता रहता है कि उसे क्या करना चाहिए, लेकिन कुछ भी करने की हिम्मत नहीं जुटा पाता। वह अपने आप को बहुत छोटा और बेकार महसूस करता है।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Alienation and Loneliness:</strong> Prufrock is unable to connect with others, which leads to a deep sense of loneliness and isolation. <span class="hindi-text">(अलगाव और अकेलापन: प्रुफ्रोक दूसरों के साथ जुड़ने में असमर्थ है, जिससे अकेलेपन और अलगाव की गहरी भावना पैदा होती है।)</span></li>
+                        <li><strong>Social Anxiety and Indecision:</strong> The poem is a study of a modern man who is paralyzed by his fear of being judged and his inability to make a decision. <span class="hindi-text">(सामाजिक चिंता और अनिर्णय: कविता एक आधुनिक व्यक्ति का अध्ययन है जो न्याय किए जाने के डर और निर्णय लेने में अपनी असमर्थता से पंगु हो गया है।)</span></li>
+                        <li><strong>Doubt and Inaction:</strong> The poem shows how a person's life can be wasted due to constant doubt and a lack of action. <span class="hindi-text">(संदेह और निष्क्रियता: कविता दिखाती है कि कैसे किसी व्यक्ति का जीवन निरंतर संदेह और निष्क्रियता के कारण बर्बाद हो सकता है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Dramatic Monologue:</strong> The poem is a stream of consciousness, but it is a dramatic monologue where the speaker addresses an imaginary listener. <span class="hindi-text">(नाटकीय एकालाप: कविता चेतना की एक धारा है, लेकिन यह एक नाटकीय एकालाप है जहां वक्ता एक काल्पनिक श्रोता को संबोधित करता है।)</span></li>
+                        <li><strong>Allusion:</strong> Eliot uses many allusions to Shakespeare (e.g., Hamlet) and other literary works to show Prufrock's vast knowledge, which contrasts with his social incompetence. <span class="hindi-text">(संकेत: इलियट शेक्सपियर (जैसे, हेमलेट) और अन्य साहित्यिक कार्यों के कई संकेतों का उपयोग प्रुफ्रोक के विशाल ज्ञान को दिखाने के लिए करते हैं, जो उसकी सामाजिक अक्षमता के विपरीत है।)</span></li>
+                        <li><strong>Simile and Metaphor:</strong> Prufrock compares himself to a pinned insect and the evening sky to a "patient etherised upon a table." <span class="hindi-text">(उपमा और रूपक: प्रुफ्रोक खुद की तुलना एक पिन किए गए कीड़े से करता है और शाम के आकाश की तुलना "एक मेज पर एक रोगी" से करता है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>The poem is considered a masterpiece of modernism because it captures the disillusionment and anxiety of the modern age.</li>
+                        <li>The language is fragmented and irregular, reflecting Prufrock's confused mind.</li>
+                        <li>It is one of the first poems to use a "stream of consciousness" technique to show a character's thoughts.</li>
+                        <li>The poem's title is ironic, as it is a love song without any love or song.</li>
+                    </ul>
+                `
+            },
+            drama_faustus: {
+                title: "Doctor Faustus - Christopher Marlowe",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p>Doctor Faustus is a brilliant scholar from Wittenberg, Germany, who feels that he has learned everything possible from traditional subjects like logic, medicine, and law. Thirsty for more knowledge and power, he turns to black magic. He summons a devil named Mephistophilis and makes a deal with him: Faustus will sell his soul to Lucifer (the devil) in exchange for 24 years of absolute power and knowledge, with Mephistophilis as his servant. Despite warnings from a Good Angel and his own conscience, Faustus signs the contract in his own blood.</p>
+                    <p>For 24 years, Faustus uses his powers for petty tricks and worldly pleasures, like playing pranks on the Pope and summoning the spirit of Helen of Troy. He wastes his great power instead of doing something meaningful. As his time runs out, he becomes terrified of eternal damnation. In his final hour, he gives a powerful soliloquy expressing his regret and terror, but it is too late. He is dragged down to Hell by devils, serving as a tragic warning against excessive pride and ambition.</p>
+                    
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text">डॉक्टर फॉस्टस, विटनबर्ग, जर्मनी का एक प्रतिभाशाली विद्वान है, जिसे लगता है कि उसने तर्क, चिकित्सा और कानून जैसे पारंपरिक विषयों से सब कुछ सीख लिया है। अधिक ज्ञान और शक्ति के प्यासे, वह काले जादू की ओर मुड़ता है। वह मेफिस्टोफिलिस नामक एक शैतान को बुलाता है और उसके साथ एक सौदा करता है: फॉस्टस अपनी आत्मा को लूसिफर (शैतान) को 24 साल की पूर्ण शक्ति और ज्ञान के बदले में बेच देगा, जिसमें मेफिस्टोफिलिस उसका सेवक होगा। एक अच्छे दूत और अपनी अंतरात्मा की चेतावनियों के बावजूद, फॉस्टस अपने ही खून से अनुबंध पर हस्ताक्षर करता है।</p>
+                    <p class="hindi-text">24 वर्षों तक, फॉस्टस अपनी शक्तियों का उपयोग छोटे-मोटे करतबों और सांसारिक सुखों के लिए करता है, जैसे पोप पर मज़ाक करना और ट्रॉय की हेलेन की आत्मा को बुलाना। वह कुछ सार्थक करने के बजाय अपनी महान शक्ति को बर्बाद कर देता है। जैसे ही उसका समय समाप्त होता है, वह शाश्वत नरक की सजा से भयभीत हो जाता है। अपने अंतिम घंटे में, वह अपने पश्चाताप और आतंक को व्यक्त करते हुए एक शक्तिशाली स्वगत भाषण देता है, लेकिन बहुत देर हो चुकी होती है। उसे शैतानों द्वारा नरक में घसीट लिया जाता है, जो अत्यधिक अभिमान और महत्वाकांक्षा के खिलाफ एक दुखद चेतावनी के रूप में काम करता है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">डॉक्टर फॉस्टस एक बहुत ज्ञानी आदमी था, लेकिन उसे और शक्ति चाहिए थी। उसने 24 साल की जादुई शक्ति के लिए अपनी आत्मा शैतान को बेच दी। उसने अपनी शक्ति का गलत इस्तेमाल किया और अंत में, उसे पछतावा हुआ पर तब तक बहुत देर हो चुकी थी और उसे नरक ले जाया गया।</p>
+                    
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Sin, Redemption, and Damnation:</strong> The play explores the Christian concepts of sin (Faustus's deal), the possibility of redemption (which he rejects), and final damnation. <span class="hindi-text">(पाप, मोक्ष और नरक: नाटक पाप (फॉस्टस का सौदा), मोक्ष की संभावना (जिसे वह अस्वीकार करता है), और अंतिम नरक की सजा की ईसाई अवधारणाओं की पड़ताल करता है।)</span></li>
+                        <li><strong>Conflict between Medieval and Renaissance Values:</strong> Faustus represents the Renaissance man's thirst for knowledge and power, which conflicts with the medieval world's focus on God and religion. <span class="hindi-text">(मध्यकालीन और पुनर्जागरण मूल्यों के बीच संघर्ष: फॉस्टस ज्ञान और शक्ति के लिए पुनर्जागरण के व्यक्ति की प्यास का प्रतिनिधित्व करता है, जो मध्ययुगीन दुनिया के ईश्वर और धर्म पर ध्यान केंद्रित करने से टकराता है।)</span></li>
+                        <li><strong>Power and Corruption:</strong> The play shows how absolute power can corrupt a person, leading them to waste it on foolish things. <span class="hindi-text">(शक्ति और भ्रष्टाचार: नाटक दिखाता है कि कैसे पूर्ण शक्ति एक व्यक्ति को भ्रष्ट कर सकती है, जिससे वह इसे मूर्खतापूर्ण चीजों पर बर्बाद कर देता है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Soliloquy:</strong> Faustus's final speech is a famous soliloquy where he reveals his terror and despair. <span class="hindi-text">(स्वगत भाषण: फॉस्टस का अंतिम भाषण एक प्रसिद्ध स्वगत भाषण है जिसमें वह अपने आतंक और निराशा को प्रकट करता है।)</span></li>
+                        <li><strong>Allegory:</strong> The Good and Evil Angels are allegorical figures, representing the two sides of Faustus's conscience. <span class="hindi-text">(रूपक कथा: अच्छे और बुरे दूत रूपक पात्र हैं, जो फॉस्टस की अंतरात्मा के दो पक्षों का प्रतिनिधित्व करते हैं।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>It is considered one of the greatest tragedies of the Elizabethan era.</li>
+                        <li>The character of Faustus is complex - he is both a hero for his ambition and a fool for his choices.</li>
+                        <li>Marlowe's use of blank verse is powerful and poetic, often called "Marlowe's mighty line."</li>
+                        <li>The play serves as a moral lesson (a morality play) for the audience about the dangers of pride.</li>
+                    </ul>
+                `
+            },
+            drama_asyoulikeit: {
+                title: "As You Like It - William Shakespeare",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p><em>As You Like It</em> is a romantic comedy that begins in a court ruled by the cruel Duke Frederick, who has banished his older brother, Duke Senior. Rosalind, Duke Senior's daughter, is banished next. She decides to flee to the Forest of Arden, where her father lives in exile. For safety, she disguises herself as a young man named Ganymede. Her cousin Celia, Duke Frederick's daughter, goes with her, disguised as a poor girl named Aliena. They are accompanied by the court jester, Touchstone. In the forest, they meet a variety of interesting characters, including the melancholy Jaques.</p>
+                    <p>Meanwhile, Orlando, a young man who has fallen in love with Rosalind, also escapes to the Forest of Arden to avoid his cruel brother, Oliver. In the forest, Orlando writes love poems to Rosalind and hangs them on trees. Rosalind (as Ganymede) meets Orlando and playfully offers to cure him of his love by pretending to be Rosalind. The play is filled with comical situations, witty conversations, and multiple love plots. In the end, identities are revealed, the evil characters repent, and the play concludes with four happy marriages. The rightful Duke is restored to his position, and harmony is established.</p>
+                    
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text"><em>As You Like It</em> एक रोमांटिक कॉमेडी है जो क्रूर ड्यूक फ्रेडरिक द्वारा शासित एक दरबार में शुरू होती है, जिसने अपने बड़े भाई, ड्यूक सीनियर को निर्वासित कर दिया है। ड्यूक सीनियर की बेटी रोजालिंड को अगला निर्वासित किया जाता है। वह आर्डेन के जंगल में भागने का फैसला करती है, जहां उसके पिता निर्वासन में रहते हैं। सुरक्षा के लिए, वह गैनीमेड नामक एक युवक का वेश धारण करती है। उसकी चचेरी बहन सीलिया, ड्यूक फ्रेडरिक की बेटी, उसके साथ जाती है, जो अलीना नामक एक गरीब लड़की के वेश में है। उनके साथ दरबारी विदूषक, टचस्टोन भी है। जंगल में, वे कई दिलचस्प पात्रों से मिलते हैं, जिसमें उदास जैक्स भी शामिल है।</p>
+                    <p class="hindi-text">इस बीच, ऑरलैंडो, एक युवक जो रोजालिंड से प्यार करने लगा है, वह भी अपने क्रूर भाई, ओलिवर से बचने के लिए आर्डेन के जंगल में भाग जाता है। जंगल में, ऑरलैंडो रोजालिंड के लिए प्रेम कविताएँ लिखता है और उन्हें पेड़ों पर लटका देता है। रोजालिंड (गैनीमेड के रूप में) ऑरलैंडो से मिलती है और रोजालिंड होने का नाटक करके उसे उसके प्यार से ठीक करने की पेशकश करती है। नाटक हास्य स्थितियों, मजाकिया बातचीत और कई प्रेम कथाओं से भरा है। अंत में, पहचान उजागर होती है, बुरे पात्र पश्चाताप करते हैं, और नाटक चार सुखद विवाहों के साथ समाप्त होता है। सही ड्यूक को उसके पद पर बहाल कर दिया जाता है, और सद्भाव स्थापित होता है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">यह एक रोमांटिक कॉमेडी है जिसमें रोजालिंड नाम की लड़की लड़के का भेष बदलकर आर्डेन के जंगल में चली जाती है। वहां वह अपने प्रेमी ऑरलैंडो से मिलती है और उसके साथ प्यार का नाटक करती है। अंत में, सब कुछ ठीक हो जाता है, सबकी सच्चाई सामने आती है और चार जोड़ों की शादी हो जाती है।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Love in its Various Forms:</strong> The play explores different types of love, from romantic love (Rosalind and Orlando) to lustful love and friendship. <span class="hindi-text">(विभिन्न रूपों में प्रेम: नाटक विभिन्न प्रकार के प्रेम की पड़ताल करता है, रोमांटिक प्रेम (रोजालिंड और ऑरलैंडो) से लेकर वासनापूर्ण प्रेम और दोस्ती तक।)</span></li>
+                        <li><strong>Court vs. Country Life:</strong> The corrupt, political life of the court is contrasted with the simple, natural, and free life in the Forest of Arden. <span class="hindi-text">(दरबार बनाम ग्रामीण जीवन: दरबार के भ्रष्ट, राजनीतिक जीवन की तुलना आर्डेन के जंगल के सरल, प्राकृतिक और स्वतंत्र जीवन से की जाती है।)</span></li>
+                        <li><strong>Disguise and Identity:</strong> Rosalind's disguise as Ganymede allows her to control her own love story and explore gender roles, creating much of the play's humor. <span class="hindi-text">(भेष और पहचान: गैनीमेड के रूप में रोजालिंड का भेष उसे अपनी प्रेम कहानी को नियंत्रित करने और लिंग भूमिकाओं का पता लगाने की अनुमति देता है, जिससे नाटक का अधिकांश हास्य पैदा होता है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Pastoral Comedy:</strong> The play is a pastoral, meaning it idealizes the simple life of shepherds in a rural setting (the Forest of Arden). <span class="hindi-text">(पेस्टोरल कॉमेडी: यह नाटक एक पेस्टोरल है, जिसका अर्थ है कि यह एक ग्रामीण परिवेश (आर्डेन का जंगल) में चरवाहों के सरल जीवन को आदर्श बनाता है।)</span></li>
+                        <li><strong>Dramatic Irony:</strong> The audience knows that Ganymede is actually Rosalind, but Orlando does not. This creates many humorous situations. <span class="hindi-text">(नाटकीय विडंबना: दर्शक जानते हैं कि गैनीमेड वास्तव में रोजालिंड है, लेकिन ऑरलैंडो नहीं जानता। यह कई हास्यपूर्ण स्थितियाँ पैदा करता है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>Rosalind is one of Shakespeare's strongest and most intelligent female characters.</li>
+                        <li>The play is famous for its witty dialogue and wordplay.</li>
+                        <li>Jaques's speech "All the world's a stage" is one of the most famous speeches in all of literature.</li>
+                        <li>It perfectly fits the genre of romantic comedy with its focus on love, obstacles, and a happy resolution with multiple marriages.</li>
+                    </ul>
+                `
+            },
+            drama_arms: {
+                title: "Arms and the Man - G.B. Shaw",
+                content: `
+                    <h2>English Summary (Exam Style)</h2>
+                    <p><em>Arms and the Man</em> is an "anti-romantic" comedy set during the Serbo-Bulgarian War of 1885. The play makes fun of the romantic, idealistic ideas about war and love. The story begins in the bedroom of Raina Petkoff, a young Bulgarian woman engaged to the dashing war hero, Major Sergius Saranoff. During a battle, a Swiss mercenary (a soldier for hire) named Captain Bluntschli climbs into her room to escape capture. Unlike the heroic Sergius, Bluntschli is a practical and professional soldier who carries chocolates in his cartridge belt instead of extra bullets, earning him the nickname "the chocolate cream soldier."</p>
+                    <p>Raina, initially shocked, helps him hide. Later, when the war is over, Bluntschli returns to the Petkoff house. His practical and realistic nature contrasts sharply with the foolish and fake heroism of Sergius and the romantic fantasies of Raina. Over time, Raina and Sergius realize that their "higher love" is a sham. Sergius falls for the clever servant girl Louka, and Raina falls for the sensible and efficient Bluntschli. The play ends with Raina breaking her engagement to Sergius and getting engaged to the wealthy and practical Captain Bluntschli, showing the victory of realism over romanticism.</p>
+
+                    <h2>Hindi Explanation (Detailed)</h2>
+                    <p class="hindi-text"><em>आर्म्स एंड द मैन</em> 1885 के सर्बो-बल्गेरियाई युद्ध के दौरान सेट की गई एक "एंटी-रोमांटिक" कॉमेडी है। यह नाटक युद्ध और प्रेम के बारे में रोमांटिक, आदर्शवादी विचारों का मज़ाक उड़ाता है। कहानी रैना पेटकोफ के बेडरूम में शुरू होती है, जो एक युवा बल्गेरियाई महिला है जिसकी सगाई बहादुर युद्ध नायक, मेजर सर्जियस सरानॉफ से हुई है। एक लड़ाई के दौरान, कैप्टन ब्लंटशली नामक एक स्विस भाड़े का सैनिक पकड़ से बचने के लिए उसके कमरे में चढ़ जाता है। वीर सर्जियस के विपरीत, ब्लंटशली एक व्यावहारिक और पेशेवर सैनिक है जो अतिरिक्त गोलियों के बजाय अपनी कारतूस बेल्ट में चॉकलेट रखता है, जिससे उसे "चॉकलेट क्रीम सैनिक" का उपनाम मिलता है।</p>
+                    <p class="hindi-text">रैना, शुरू में हैरान, उसे छिपाने में मदद करती है। बाद में, जब युद्ध समाप्त हो जाता है, तो ब्लंटशली पेटकोफ घर लौटता है। उसकी व्यावहारिक और यथार्थवादी प्रकृति सर्जियस की मूर्खतापूर्ण और नकली वीरता और रैना की रोमांटिक कल्पनाओं से तेजी से विपरीत है। समय के साथ, रैना और सर्जियस को एहसास होता है कि उनका "उच्च प्रेम" एक दिखावा है। सर्जियस चतुर नौकरानी लुका के लिए गिर जाता है, और रैना समझदार और कुशल ब्लंटशली के लिए गिर जाती है। नाटक रैना द्वारा सर्जियस से अपनी सगाई तोड़ने और धनी और व्यावहारिक कैप्टन ब्लंटशली से सगाई करने के साथ समाप्त होता है, जो रोमांटिकतावाद पर यथार्थवाद की जीत को दर्शाता है।</p>
+
+                    <h3>Simple Hindi Summary (2-3 lines)</h3>
+                    <p class="hindi-text">यह नाटक युद्ध और प्यार के झूठे दिखावे का मजाक उड़ाता है। रैना नाम की लड़की का मंगेतर सर्जियस एक बनावटी हीरो है। रैना की मुलाकात ब्लंटशली नाम के एक सच्चे और व्यावहारिक सैनिक से होती है और अंत में वह सर्जियस को छोड़कर ब्लंटशली से शादी कर लेती है। यह नाटक दिखाता है कि असलियत, कल्पना से बेहतर होती है।</p>
+
+                    <h2>Themes</h2>
+                    <ul>
+                        <li><strong>Realism vs. Romanticism:</strong> This is the central theme. Shaw contrasts the foolish romantic ideals of war and love with the practical reality. <span class="hindi-text">(यथार्थवाद बनाम रोमांटिकतावाद: यह केंद्रीय विषय है। शॉ युद्ध और प्रेम के मूर्खतापूर्ण रोमांटिक आदर्शों की तुलना व्यावहारिक वास्तविकता से करते हैं।)</span></li>
+                        <li><strong>The Falsity of Heroism:</strong> The play satirizes the traditional idea of a war hero. Sergius is brave but foolish, while the real professional, Bluntschli, is practical and avoids unnecessary risks. <span class="hindi-text">(वीरता का मिथ्यात्व: नाटक युद्ध नायक के पारंपरिक विचार पर व्यंग्य करता है। सर्जियस बहादुर लेकिन मूर्ख है, जबकि असली पेशेवर, ब्लंटशली, व्यावहारिक है और अनावश्यक जोखिमों से बचता है।)</span></li>
+                        <li><strong>Class and Social Pretence:</strong> The play makes fun of the Petkoff family's attempts to appear rich and sophisticated, and shows the intelligence of the servant class (Louka). <span class="hindi-text">(वर्ग और सामाजिक दिखावा: नाटक पेटकोफ परिवार के अमीर और परिष्कृत दिखने के प्रयासों का मज़ाक उड़ाता है, और नौकर वर्ग (लुका) की बुद्धिमत्ता को दिखाता है।)</span></li>
+                    </ul>
+
+                    <h2>Literary Devices</h2>
+                    <ul>
+                        <li><strong>Satire:</strong> The entire play is a satire on 19th-century society's romantic ideas about war and love. <span class="hindi-text">(व्यंग्य: पूरा नाटक 19वीं सदी के समाज के युद्ध और प्रेम के बारे में रोमांटिक विचारों पर एक व्यंग्य है।)</span></li>
+                        <li><strong>Irony:</strong> There is irony in the fact that the "hero" Sergius is a fool, and the "coward" Bluntschli (who carries chocolates) is the more competent soldier. <span class="hindi-text">(विडंबना: इस तथ्य में विडंबना है कि "नायक" सर्जियस एक मूर्ख है, और "कायर" ब्लंटशली (जो चॉकलेट रखता है) अधिक सक्षम सैनिक है।)</span></li>
+                    </ul>
+
+                    <h2>Critical Appreciation Points</h2>
+                    <ul>
+                        <li>It is a classic example of a "Comedy of Ideas," where the focus is on debating social and philosophical ideas rather than just on the plot.</li>
+                        <li>Shaw uses witty and intelligent dialogue to expose the hypocrisy of his characters and society.</li>
+                        <li>The characters are not just individuals but represent different ideas (Raina = Romanticism, Bluntschli = Realism).</li>
+                        <li>The play was revolutionary for its time because it challenged the audience's cherished beliefs about war and love.</li>
+                    </ul>
+                `
+            }
+        };
+
+        const topLevelContent = {
+            'introduction': `
                 <div class="content-section">
                 <h1>Welcome! Your Guide to Scoring 70%+</h1>
                 <p>Hello! Welcome to your personal study guide for the VMOU BA English paper on Poetry & Drama (EG-01). This material is specially made for you, keeping in mind that you are from a Hindi medium background and need to learn everything from the beginning. Don't worry, we will cover everything you need to score more than 70% in your exam. Just follow this guide step-by-step.</p>
@@ -139,7 +769,7 @@
                 </div>
                 </div>
             `,
-            basics: `
+            'basics': `
                 <div class="content-section">
                 <h1>Quick English Literature Basics</h1>
                 <p>These are some important terms you must know. They will help you understand poems and dramas better and write good answers.</p>
@@ -186,223 +816,89 @@
                 </ul>
                 </div>
             `,
-            poem_sonnet116: `
+            'pyq': `
+                 <div class="content-section">
+                 <h1>Past Year Questions (High-Priority)</h1>
+                 <p>These are not exact past year papers, but they are the most important and frequently asked types of questions for your syllabus. Practice them well.</p>
+                 <p class="hindi-text">ये सटीक पिछले वर्ष के पेपर नहीं हैं, लेकिन ये आपके पाठ्यक्रम के लिए सबसे महत्वपूर्ण और अक्सर पूछे जाने वाले प्रकार के प्रश्न हैं। इनका अच्छे से अभ्यास करें।</p>
+                 
+                 <h2>Section A (Very Short Answers - 30 words)</h2>
+                 <ol class="list-decimal list-inside space-y-4">
+                    <li>What is the central idea of Shakespeare's Sonnet 116? <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Why does the poet in "Go and Catch a Falling Star" think it's impossible to find a faithful woman?</li>
+                    <li>What is Milton's final understanding of service to God in "On His Blindness"? <span class="high-priority">🔥 High Priority</span></li>
+                    <li>What is a dramatic monologue? Give an example from your syllabus.</li>
+                    <li>Why does the Duke in "My Last Duchess" dislike his former wife? <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Who is the "chocolate cream soldier" in <em>Arms and the Man</em>?</li>
+                    <li>Why does Rosalind disguise herself as Ganymede in <em>As You Like It</em>?</li>
+                    <li>What deal does Doctor Faustus make with the devil? <span class="high-priority">🔥 High Priority</span></li>
+                 </ol>
+                 
+                 <h2>Section B (Short Answers - 200 words)</h2>
+                 <ol class="list-decimal list-inside space-y-4">
+                    <li>Write a critical appreciation of the poem "The Tyger" by William Blake.</li>
+                    <li>Discuss the theme of loss of faith in Matthew Arnold's "Dover Beach". <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Explain the conflict between realism and romanticism in <em>Arms and the Man</em>.</li>
+                    <li>Write a short note on the Forest of Arden in <em>As You Like It</em>.</li>
+                    <li>Analyze the character of Mephistophilis in <em>Doctor Faustus</em>.</li>
+                    <li>What are the main ideas in Shelley's "Ode to the West Wind"? <span class="high-priority">🔥 High Priority</span></li>
+                 </ol>
+
+                 <h2>Section C (Long Answers - 500 words)</h2>
+                 <ol class="list-decimal list-inside space-y-4">
+                    <li>Discuss <em>Doctor Faustus</em> as a Renaissance tragedy. <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Comment on <em>As You Like It</em> as a typical Shakespearean romantic comedy. <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Critically analyze G.B. Shaw's play <em>Arms and the Man</em> as a satire on war and love. <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Write a critical summary of John Keats' "Ode on a Grecian Urn," focusing on its theme of art and reality.</li>
+                 </ol>
+                 </div>
+            `,
+            'model_answers': `
                 <div class="content-section">
-                <h1>"Let me not to the Marriage of True Minds" (Sonnet 116) - William Shakespeare</h1>
+                <h1>Model Answers for Expected Questions</h1>
+                <p>Here are some model answers to help you understand how to write in the exam.</p>
+                <p class="hindi-text">परीक्षा में कैसे लिखना है, यह समझने में आपकी मदद करने के लिए यहां कुछ मॉडल उत्तर दिए गए हैं।</p>
                 
-                <h2>English Summary (Exam Style)</h2>
-                <p>Shakespeare's Sonnet 116 is a powerful celebration of true, constant, and unchanging love. The poet defines true love by what it is not: it does not change when circumstances change, nor does it bend when faced with challenges. He compares true love to a fixed star (the North Star) that guides wandering ships. It is an "ever-fixed mark" that is not affected by storms. Love is not a fool of Time; physical beauty may fade with age, but true love remains constant until the end of life (the "edge of doom"). In the final couplet, the poet confidently states that if his definition of love is wrong, then he has never written anything, and no man has ever truly loved.</p>
+                <h2>Short Answer Example (Section B)</h2>
+                <h3>Q: Discuss the theme of loss of faith in Matthew Arnold's "Dover Beach".</h3>
+                <p><strong>Answer:</strong> Matthew Arnold's "Dover Beach" is a powerful poem about the loss of religious faith in the modern world, which was influenced by science and new ideas. The poet uses the image of the sea as a metaphor for faith. He says that the "Sea of Faith" was once full and surrounded the world like a girdle. But now, he can only hear its "melancholy, long, withdrawing roar." This sound represents the declining belief in God and religion.</p>
+                <p>The world, which seems beautiful like a "land of dreams," is actually a dark and confusing place without the light of faith. It is full of struggle and pain, where people fight without any clear purpose ("as on a darkling plain... where ignorant armies clash by night"). In this sad and faithless world, the only hope for the poet is true and faithful personal love. He asks his beloved to be true to him, as their love is the only real and certain thing left.</p>
                 
-                <h2>Hindi Explanation (Detailed)</h2>
-                <p class="hindi-text">शेक्सपियर का सॉनेट 116 सच्चे, स्थिर और अपरिवर्तनीय प्रेम का एक शक्तिशाली उत्सव है। कवि सच्चे प्रेम को इस बात से परिभाषित करता है कि वह क्या नहीं है: यह तब नहीं बदलता जब परिस्थितियाँ बदलती हैं, और न ही यह चुनौतियों का सामना करने पर झुकता है। वह सच्चे प्रेम की तुलना एक स्थिर तारे (ध्रुव तारे) से करते हैं जो भटकते जहाजों का मार्गदर्शन करता है। यह एक "हमेशा-निश्चित चिह्न" है जो तूफानों से प्रभावित नहीं होता है। प्रेम समय का मूर्ख नहीं है; शारीरिक सुंदरता उम्र के साथ फीकी पड़ सकती है, लेकिन सच्चा प्यार जीवन के अंत तक (कयामत के किनारे तक) स्थिर रहता है। अंतिम दोहे में, कवि आत्मविश्वास से कहता है कि यदि प्रेम की उसकी परिभाषा गलत है, तो उसने कभी कुछ नहीं लिखा है, और किसी भी व्यक्ति ने कभी सच्चा प्यार नहीं किया है।</p>
-                
-                <h3>Simple Hindi Summary (2-3 lines)</h3>
-                <p class="hindi-text">यह कविता सच्चे प्यार के बारे में है। कवि कहता है कि सच्चा प्यार कभी नहीं बदलता, चाहे कुछ भी हो जाए। यह एक ध्रुव तारे की तरह है जो हमेशा रास्ता दिखाता है और मौत तक बना रहता है।</p>
-                
-                <h2>Themes</h2>
-                <ul>
-                    <li><strong>The Nature of True Love:</strong> The poem defines true love as constant, spiritual, and eternal. <span class="hindi-text">(सच्चे प्रेम की प्रकृति: कविता सच्चे प्रेम को स्थिर, आध्यात्मिक और शाश्वत के रूप में परिभाषित करती है।)</span></li>
-                    <li><strong>Love vs. Time:</strong> True love is presented as something that can conquer time. While physical beauty fades, love does not. <span class="hindi-text">(प्रेम बनाम समय: सच्चे प्रेम को कुछ ऐसा प्रस्तुत किया गया है जो समय पर विजय प्राप्त कर सकता है। जबकि शारीरिक सुंदरता फीकी पड़ जाती है, प्रेम नहीं।)</span></li>
-                    <li><strong>Permanence and Constancy:</strong> The central idea is that love is an "ever-fixed mark" that is permanent and never changes. <span class="hindi-text">(स्थायित्व और स्थिरता: केंद्रीय विचार यह है कि प्रेम एक "हमेशा-निश्चित चिह्न" है जो स्थायी है और कभी नहीं बदलता है।)</span></li>
-                </ul>
-                
-                <h2>Literary Devices</h2>
-                <ul>
-                    <li><strong>Metaphor:</strong> Love is compared to a star ("the star to every wand'ring bark") and a lighthouse ("an ever-fixed mark"). <span class="hindi-text">(रूपक: प्रेम की तुलना एक तारे और एक प्रकाशस्तंभ से की गई है।)</span></li>
-                    <li><strong>Personification:</strong> Time is personified as a character with a "bending sickle," but love is not its "fool." <span class="hindi-text">(मानवीकरण: समय को एक पात्र के रूप में चित्रित किया गया है जिसके पास "झुकने वाली दरांती" है, लेकिन प्रेम उसका "मूर्ख" नहीं है।)</span></li>
-                </ul>
-                
-                <h2>Critical Appreciation Points</h2>
-                <ul>
-                    <li>It is a classic example of a Shakespearean sonnet with three quatrains and a concluding couplet.</li>
-                    <li>The language is simple but powerful, using strong metaphors to define love.</li>
-                    <li>The poem makes a universal statement about the ideal of love, which is why it is still popular today.</li>
-                    <li>The final couplet acts as a proof, adding great force to the poet's argument.</li>
-                </ul>
+                <p class="hindi-text"><strong>हिंदी स्पष्टीकरण:</strong> मैथ्यू अर्नोल्ड की कविता "डोवर बीच" आधुनिक दुनिया में धार्मिक आस्था के नुकसान के बारे में एक शक्तिशाली कविता है। कवि आस्था के लिए समुद्र की छवि का उपयोग रूपक के रूप में करता है। वह कहता है कि "आस्था का सागर" कभी भरा हुआ था, लेकिन अब वह केवल इसकी "उदास, लंबी, घटती हुई गर्जना" सुन सकता है। यह घटते विश्वास का प्रतीक है। आस्था के बिना, दुनिया एक अंधेरी और दर्दनाक जगह है। इस विश्वासहीन दुनिया में, कवि के लिए एकमात्र आशा सच्चा व्यक्तिगत प्रेम है।</p>
+
+                <h2>Long Answer Example (Section C)</h2>
+                <h3>Q: Discuss <em>As You Like It</em> as a typical Shakespearean romantic comedy. <span class="high-priority">🔥 High Priority</span></h3>
+                <p><strong>Introduction</strong><br>
+                <em>As You Like It</em> is one of William Shakespeare's most famous plays and a perfect example of a romantic comedy. This genre has specific features like a focus on love, obstacles that lovers must overcome, a pastoral setting, witty dialogue, and a happy ending with multiple marriages. <em>As You Like It</em> contains all these elements, making it a classic of its kind.</p>
+                <p class="hindi-text"><em>(परिचय: As You Like It शेक्सपियर का एक आदर्श रोमांटिक कॉमेडी है। इसमें प्रेम, प्रेमियों के सामने आने वाली बाधाएं, एक ग्रामीण सेटिंग, और कई विवाहों के साथ एक सुखद अंत जैसी सभी विशेषताएं हैं।)</em></p>
+
+                <p><strong>Main Points</strong></p>
+                <ol class="list-decimal list-inside space-y-3">
+                    <li>
+                        <strong>Central Theme of Love:</strong> The main plot revolves around the love between Rosalind and Orlando. The play also explores other kinds of love, like the playful love of Celia and Oliver, the physical love of Touchstone and Audrey, and the unrequited love of Silvius for Phebe. This variety shows love in all its forms, which is a key feature of romantic comedy.
+                        <br><span class="hindi-text">(प्रेम का केंद्रीय विषय: नाटक का मुख्य कथानक रोजालिंड और ऑरलैंडो के बीच प्रेम के इर्द-गिर्द घूमता है, और यह अन्य प्रकार के प्रेम को भी दर्शाता है।)</span>
+                    </li>
+                    <li>
+                        <strong>Obstacles and Resolution:</strong> The lovers face many problems. Rosalind is banished by her uncle, and Orlando has to flee his cruel brother. These obstacles force them into the Forest of Arden. The resolution comes when the evil characters, Duke Frederick and Oliver, change their hearts, allowing the lovers to unite happily.
+                        <br><span class="hindi-text">(बाधाएं और समाधान: प्रेमियों को कई समस्याओं का सामना करना पड़ता है, लेकिन अंत में, बुरी पात्रों के हृदय परिवर्तन से सब कुछ ठीक हो जाता है।)</span>
+                    </li>
+                    <li>
+                        <strong>Pastoral Setting:</strong> Much of the action takes place in the Forest of Arden. This is a typical pastoral setting - an idealized, natural world that is free from the corruption of the court. The forest provides a space where characters can find freedom, fall in love, and discover their true selves.
+                        <br><span class="hindi-text">(ग्रामीण सेटिंग: नाटक का अधिकांश भाग आर्डेन के जंगल में घटित होता है, जो दरबार के भ्रष्टाचार से मुक्त एक आदर्श प्राकृतिक दुनिया है।)</span>
+                    </li>
+                    <li>
+                        <strong>A Strong Heroine and Disguise:</strong> Romantic comedies often feature a clever and strong female lead. Rosalind is intelligent, witty, and controls the plot through her disguise as Ganymede. The use of disguise creates dramatic irony and many humorous situations, which is another common element of this genre.
+                        <br><span class="hindi-text">(भेष और पहचान: गैनीमेड के रूप में रोजालिंड का भेष उसे अपनी प्रेम कहानी को नियंत्रित करने और लिंग भूमिकाओं का पता लगाने की अनुमति देता है, जिससे नाटक का अधिकांश हास्य पैदा होता है।)</span>
+                    </li>
+                </ol>
+
+                <p><strong>Conclusion</strong><br>
+                In conclusion, <em>As You Like It</em> perfectly embodies the spirit of Shakespearean romantic comedy. With its focus on love overcoming all difficulties, its escape to a magical forest, its clever heroine, and its joyful conclusion with four marriages, the play celebrates love, forgiveness, and the triumph of good over evil in a light-hearted and optimistic way.
+                <br><span class="hindi-text">(निष्कर्ष: As You Like It में रोमांटिक कॉमेडी के सभी तत्व हैं: प्रेम की जीत, एक जादुई जंगल, एक चतुर नायिका, और एक सुखद अंत। यह नाटक प्रेम और क्षमा का उत्सव मनाता है।)</span></p>
+
                 </div>
             `,
-            poem_fallingstar: `
-                <div class="content-section">
-                <h1>"Go and Catch a Falling Star" - John Donne</h1>
-
-                <h2>English Summary (Exam Style)</h2>
-                <p>This poem is a cynical and witty commentary on the impossibility of finding a woman who is both beautiful and faithful. The poet begins by listing a series of impossible tasks, such as catching a falling star, getting a child from a mandrake root, or finding out where past years have gone. He says that finding a true and fair woman is just as impossible as these tasks. The speaker claims that even if one were to travel the entire world, they would see many strange sights but would never find a woman who is both beautiful and faithful. He says that if you did find one, you should let him know, but he wouldn't go to meet her. By the time he reached her, she would have already been unfaithful to two or three other men.</p>
-
-                <h2>Hindi Explanation (Detailed)</h2>
-                <p class="hindi-text">यह कविता एक सुंदर और वफादार महिला को खोजने की असंभवता पर एक सनकी और मजाकिया टिप्पणी है। कवि असंभव कार्यों की एक श्रृंखला सूचीबद्ध करके शुरू करता है, जैसे टूटते तारे को पकड़ना, मैंड्रेक जड़ से बच्चा पैदा करना, या यह पता लगाना कि पिछले साल कहाँ चले गए। वह कहता है कि एक सच्ची और सुंदर महिला को खोजना इन कार्यों जितना ही असंभव है। वक्ता का दावा है कि यदि कोई पूरी दुनिया की यात्रा भी करे, तो उसे कई अजीबोगरीब नजारे देखने को मिलेंगे, लेकिन उसे कभी भी ऐसी महिला नहीं मिलेगी जो सुंदर और वफादार दोनों हो। वह कहता है कि यदि तुम्हें कोई ऐसी मिल भी जाए, तो उसे बताना, लेकिन वह उससे मिलने नहीं जाएगा। जब तक वह उसके पास पहुंचेगा, तब तक वह दो या तीन अन्य पुरुषों के साथ बेवफाई कर चुकी होगी।</p>
-                
-                <h3>Simple Hindi Summary (2-3 lines)</h3>
-                <p class="hindi-text">कवि कहता है कि दुनिया में सुंदर और वफादार औरत को ढूंढना नामुमकिन है। यह काम टूटते तारे को पकड़ने जैसा ही मुश्किल है। अगर कोई ऐसी औरत मिल भी जाए, तो वह पल भर में बेवफा हो जाएगी।</p>
-
-                <h2>Themes</h2>
-                <ul>
-                    <li><strong>Female Inconstancy:</strong> The central theme is the idea that women are unfaithful and cannot be trusted. <span class="hindi-text">(नारी की अस्थिरता: केंद्रीय विषय यह विचार है कि महिलाएं बेवफा होती हैं और उन पर भरोसा नहीं किया जा सकता है।)</span></li>
-                    <li><strong>Cynicism and Misogyny:</strong> The poem reflects a cynical and somewhat anti-woman (misogynistic) attitude, which was common in Donne's time. <span class="hindi-text">(निराशावाद और स्त्री-द्वेष: कविता एक सनकी और कुछ हद तक महिला-विरोधी (स्त्री-द्वेषी) दृष्टिकोण को दर्शाती है, जो डोने के समय में आम था।)</span></li>
-                    <li><strong>Impossibility:</strong> The poet uses hyperbole (exaggeration) to emphasize the impossibility of finding an ideal woman. <span class="hindi-text">(असंभवता: कवि एक आदर्श महिला को खोजने की असंभवता पर जोर देने के लिए अतिशयोक्ति का उपयोग करता है।)</span></li>
-                </ul>
-
-                <h2>Literary Devices</h2>
-                <ul>
-                    <li><strong>Hyperbole (Exaggeration):</strong> Listing impossible tasks like catching a falling star is a form of exaggeration. <span class="hindi-text">(अतिशयोक्ति: टूटते तारे को पकड़ने जैसे असंभव कार्यों को सूचीबद्ध करना अतिशयोक्ति का एक रूप है।)</span></li>
-                    <li><strong>Allusion:</strong> The mention of the "mandrake root" is an allusion to old myths and superstitions. <span class="hindi-text">(संकेत: "मैंड्रेक जड़" का उल्लेख पुरानी मिथकों और अंधविश्वासों का संकेत है।)</span></li>
-                </ul>
-
-                <h2>Critical Appreciation Points</h2>
-                <ul>
-                    <li>The poem has a conversational and song-like quality.</li>
-                    <li>It is a typical example of metaphysical poetry, with its use of wit and unusual comparisons.</li>
-                    <li>The tone is light and humorous, even though the subject is cynical.</li>
-                    <li>The argument is built logically, moving from general impossibilities to the specific impossibility of finding a faithful woman.</li>
-                </ul>
-                </div>
-            `,
-            poem_blindness: `
-                <div class="content-section">
-                <h1>"On His Blindness" - John Milton</h1>
-
-                <h2>English Summary (Exam Style)</h2>
-                <p>This sonnet is an autobiographical poem where John Milton reflects on his loss of eyesight in the middle of his life. He feels sad and questions God, asking why God would take away his sight when he wants to use his talent of writing to serve Him. Milton feels useless. However, a voice of "Patience" inside him replies. Patience tells him that God does not need man's work or gifts. God is like a king with thousands of servants who travel over land and ocean. Those who truly serve God are the ones who patiently bear their burdens and accept His will. Patience concludes that "They also serve who only stand and wait," meaning that even those who cannot be active can serve God by patiently waiting for His commands.</p>
-
-                <h2>Hindi Explanation (Detailed)</h2>
-                <p class="hindi-text">यह सॉनेट एक आत्मकथात्मक कविता है जिसमें जॉन मिल्टन अपने जीवन के मध्य में अपनी आंखों की रोशनी खोने पर विचार करते हैं। वह दुखी महसूस करते हैं और भगवान से सवाल करते हैं, पूछते हैं कि जब वह उनकी सेवा के लिए अपनी लेखन प्रतिभा का उपयोग करना चाहते हैं तो भगवान उनकी दृष्टि क्यों छीन लेंगे। मिल्टन खुद को बेकार महसूस करते हैं। हालांकि, उनके अंदर से "धैर्य" की एक आवाज जवाब देती है। धैर्य उन्हें बताता है कि भगवान को मनुष्य के काम या उपहार की आवश्यकता नहीं है। भगवान एक राजा की तरह हैं जिसके हजारों सेवक हैं जो जमीन और महासागर में यात्रा करते हैं। जो लोग वास्तव में भगवान की सेवा करते हैं, वे वे हैं जो धैर्यपूर्वक अपने बोझ को सहन करते हैं और उनकी इच्छा को स्वीकार करते हैं। धैर्य यह कहकर समाप्त होता है कि "वे भी सेवा करते हैं जो केवल खड़े रहते हैं और प्रतीक्षा करते हैं," जिसका अर्थ है कि जो लोग सक्रिय नहीं हो सकते वे भी भगवान के आदेशों की धैर्यपूर्वक प्रतीक्षा करके उनकी सेवा कर सकते हैं।</p>
-
-                <h3>Simple Hindi Summary (2-3 lines)</h3>
-                <p class="hindi-text">कवि अंधा होने पर दुखी है और सोचता है कि अब वह भगवान की सेवा कैसे करेगा। तब उसका धैर्य उसे समझाता है कि भगवान की सच्ची सेवा सिर्फ काम करके नहीं, बल्कि मुश्किलों को चुपचाप सहकर और भगवान की इच्छा का इंतजार करके भी की जा सकती है।</p>
-
-                <h2>Themes</h2>
-                <ul>
-                    <li><strong>Faith in God:</strong> The poem is a journey from doubt and complaint to complete faith and submission to God's will. <span class="hindi-text">(ईश्वर में विश्वास: यह कविता संदेह और शिकायत से पूर्ण विश्वास और ईश्वर की इच्छा के प्रति समर्पण तक की यात्रा है।)</span></li>
-                    <li><strong>Service to God:</strong> Milton redefines the idea of service. It is not just about doing great work, but also about patient suffering. <span class="hindi-text">(ईश्वर की सेवा: मिल्टन सेवा के विचार को फिर से परिभाषित करते हैं। यह केवल महान कार्य करने के बारे में नहीं है, बल्कि धैर्यपूर्वक पीड़ा सहने के बारे में भी है।)</span></li>
-                    <li><strong>Patience and Acceptance:</strong> The central message is the importance of having patience and accepting one's fate without complaint. <span class="hindi-text">(धैर्य और स्वीकृति: केंद्रीय संदेश धैर्य रखने और अपनी नियति को बिना किसी शिकायत के स्वीकार करने का महत्व है।)</span></li>
-                </ul>
-
-                <h2>Literary Devices</h2>
-                <ul>
-                    <li><strong>Personification:</strong> Patience is personified as a character who speaks to the poet and gives him advice. <span class="hindi-text">(मानवीकरण: धैर्य को एक ऐसे पात्र के रूप में चित्रित किया गया है जो कवि से बात करता है और उसे सलाह देता है।)</span></li>
-                    <li><strong>Metaphor:</strong> Milton's life is compared to "light" which is "spent," and his poetic talent is a "talent" (referring to the biblical parable). <span class="hindi-text">(रूपक: मिल्टन के जीवन की तुलना "प्रकाश" से की गई है जो "खर्च" हो गया है, और उनकी काव्य प्रतिभा एक "प्रतिभा" है।)</span></li>
-                </ul>
-
-                <h2>Critical Appreciation Points</h2>
-                <ul>
-                    <li>It is a Petrarchan sonnet, with an octave (first 8 lines) that raises a problem and a sestet (last 6 lines) that resolves it.</li>
-                    <li>The poem is deeply personal and emotional, reflecting Milton's own spiritual crisis.</li>
-                    <li>The language is grand and majestic, typical of Milton's style.</li>
-                    <li>The concluding line, "They also serve who only stand and wait," is one of the most famous lines in English literature.</li>
-                </ul>
-                </div>
-            `,
-            drama_faustus: `
-                <div class="content-section">
-                <h1>Doctor Faustus - Christopher Marlowe</h1>
-
-                <h2>English Summary (Exam Style)</h2>
-                <p>Doctor Faustus is a brilliant scholar from Wittenberg, Germany, who feels that he has learned everything possible from traditional subjects like logic, medicine, and law. Thirsty for more knowledge and power, he turns to black magic. He summons a devil named Mephistophilis and makes a deal with him: Faustus will sell his soul to Lucifer (the devil) in exchange for 24 years of absolute power and knowledge, with Mephistophilis as his servant. Despite warnings from a Good Angel and his own conscience, Faustus signs the contract in his own blood.</p>
-                <p>For 24 years, Faustus uses his powers for petty tricks and worldly pleasures, like playing pranks on the Pope and summoning the spirit of Helen of Troy. He wastes his great power instead of doing something meaningful. As his time runs out, he becomes terrified of eternal damnation. In his final hour, he gives a powerful soliloquy expressing his regret and terror, but it is too late. He is dragged down to Hell by devils, serving as a tragic warning against excessive pride and ambition.</p>
-                
-                <h2>Hindi Explanation (Detailed)</h2>
-                <p class="hindi-text">डॉक्टर फॉस्टस, विटनबर्ग, जर्मनी का एक प्रतिभाशाली विद्वान है, जिसे लगता है कि उसने तर्क, चिकित्सा और कानून जैसे पारंपरिक विषयों से सब कुछ सीख लिया है। अधिक ज्ञान और शक्ति के प्यासे, वह काले जादू की ओर मुड़ता है। वह मेफिस्टोफिलिस नामक एक शैतान को बुलाता है और उसके साथ एक सौदा करता है: फॉस्टस अपनी आत्मा को लूसिफर (शैतान) को 24 साल की पूर्ण शक्ति और ज्ञान के बदले में बेच देगा, जिसमें मेफिस्टोफिलिस उसका सेवक होगा। एक अच्छे दूत और अपनी अंतरात्मा की चेतावनियों के बावजूद, फॉस्टस अपने ही खून से अनुबंध पर हस्ताक्षर करता है।</p>
-                <p class="hindi-text">24 वर्षों तक, फॉस्टस अपनी शक्तियों का उपयोग छोटे-मोटे करतबों और सांसारिक सुखों के लिए करता है, जैसे पोप पर मज़ाक करना और ट्रॉय की हेलेन की आत्मा को बुलाना। वह कुछ सार्थक करने के बजाय अपनी महान शक्ति को बर्बाद कर देता है। जैसे ही उसका समय समाप्त होता है, वह शाश्वत नरक की सजा से भयभीत हो जाता है। अपने अंतिम घंटे में, वह अपने पश्चाताप और आतंक को व्यक्त करते हुए एक शक्तिशाली स्वगत भाषण देता है, लेकिन बहुत देर हो चुकी होती है। उसे शैतानों द्वारा नरक में घसीट लिया जाता है, जो अत्यधिक अभिमान और महत्वाकांक्षा के खिलाफ एक दुखद चेतावनी के रूप में काम करता है।</p>
-
-                <h3>Simple Hindi Summary (2-3 lines)</h3>
-                <p class="hindi-text">डॉक्टर फॉस्टस एक बहुत ज्ञानी आदमी था, लेकिन उसे और शक्ति चाहिए थी। उसने 24 साल की जादुई शक्ति के लिए अपनी आत्मा शैतान को बेच दी। उसने अपनी शक्ति का गलत इस्तेमाल किया और अंत में, उसे पछतावा हुआ पर तब तक बहुत देर हो चुकी थी और उसे नरक ले जाया गया।</p>
-                
-                <h2>Themes</h2>
-                <ul>
-                    <li><strong>Sin, Redemption, and Damnation:</strong> The play explores the Christian concepts of sin (Faustus's deal), the possibility of redemption (which he rejects), and final damnation. <span class="hindi-text">(पाप, मोक्ष और नरक: नाटक पाप (फॉस्टस का सौदा), मोक्ष की संभावना (जिसे वह अस्वीकार करता है), और अंतिम नरक की सजा की ईसाई अवधारणाओं की पड़ताल करता है।)</span></li>
-                    <li><strong>Conflict between Medieval and Renaissance Values:</strong> Faustus represents the Renaissance man's thirst for knowledge and power, which conflicts with the medieval world's focus on God and religion. <span class="hindi-text">(मध्यकालीन और पुनर्जागरण मूल्यों के बीच संघर्ष: फॉस्टस ज्ञान और शक्ति के लिए पुनर्जागरण के व्यक्ति की प्यास का प्रतिनिधित्व करता है, जो मध्ययुगीन दुनिया के ईश्वर और धर्म पर ध्यान केंद्रित करने से टकराता है।)</span></li>
-                    <li><strong>Power and Corruption:</strong> The play shows how absolute power can corrupt a person, leading them to waste it on foolish things. <span class="hindi-text">(शक्ति और भ्रष्टाचार: नाटक दिखाता है कि कैसे पूर्ण शक्ति एक व्यक्ति को भ्रष्ट कर सकती है, जिससे वह इसे मूर्खतापूर्ण चीजों पर बर्बाद कर देता है।)</span></li>
-                </ul>
-
-                <h2>Literary Devices</h2>
-                <ul>
-                    <li><strong>Soliloquy:</strong> Faustus's final speech is a famous soliloquy where he reveals his terror and despair. <span class="hindi-text">(स्वगत भाषण: फॉस्टस का अंतिम भाषण एक प्रसिद्ध स्वगत भाषण है जिसमें वह अपने आतंक और निराशा को प्रकट करता है।)</span></li>
-                    <li><strong>Allegory:</strong> The Good and Evil Angels are allegorical figures, representing the two sides of Faustus's conscience. <span class="hindi-text">(रूपक कथा: अच्छे और बुरे दूत रूपक पात्र हैं, जो फॉस्टस की अंतरात्मा के दो पक्षों का प्रतिनिधित्व करते हैं।)</span></li>
-                </ul>
-
-                <h2>Critical Appreciation Points</h2>
-                <ul>
-                    <li>It is considered one of the greatest tragedies of the Elizabethan era.</li>
-                    <li>The character of Faustus is complex - he is both a hero for his ambition and a fool for his choices.</li>
-                    <li>Marlowe's use of blank verse is powerful and poetic, often called "Marlowe's mighty line."</li>
-                    <li>The play serves as a moral lesson (a morality play) for the audience about the dangers of pride.</li>
-                </ul>
-                </div>
-            `,
-            drama_asyoulikeit: `
-                <div class="content-section">
-                <h1>As You Like It - William Shakespeare</h1>
-                
-                <h2>English Summary (Exam Style)</h2>
-                <p><em>As You Like It</em> is a romantic comedy that begins in a court ruled by the cruel Duke Frederick, who has banished his older brother, Duke Senior. Rosalind, Duke Senior's daughter, is banished next. She decides to flee to the Forest of Arden, where her father lives in exile. For safety, she disguises herself as a young man named Ganymede. Her cousin Celia, Duke Frederick's daughter, goes with her, disguised as a poor girl named Aliena. They are accompanied by the court jester, Touchstone. In the forest, they meet a variety of interesting characters, including the melancholy Jaques.</p>
-                <p>Meanwhile, Orlando, a young man who has fallen in love with Rosalind, also escapes to the Forest of Arden to avoid his cruel brother, Oliver. In the forest, Orlando writes love poems to Rosalind and hangs them on trees. Rosalind (as Ganymede) meets Orlando and playfully offers to cure him of his love by pretending to be Rosalind. The play is filled with comical situations, witty conversations, and multiple love plots. In the end, identities are revealed, the evil characters repent, and the play concludes with four happy marriages. The rightful Duke is restored to his position, and harmony is established.</p>
-                
-                <h2>Hindi Explanation (Detailed)</h2>
-                <p class="hindi-text"><em>As You Like It</em> एक रोमांटिक कॉमेडी है जो क्रूर ड्यूक फ्रेडरिक द्वारा शासित एक दरबार में शुरू होती है, जिसने अपने बड़े भाई, ड्यूक सीनियर को निर्वासित कर दिया है। ड्यूक सीनियर की बेटी रोजालिंड को अगला निर्वासित किया जाता है। वह आर्डेन के जंगल में भागने का फैसला करती है, जहां उसके पिता निर्वासन में रहते हैं। सुरक्षा के लिए, वह गैनीमेड नामक एक युवक का वेश धारण करती है। उसकी चचेरी बहन सीलिया, ड्यूक फ्रेडरिक की बेटी, उसके साथ जाती है, जो अलीना नामक एक गरीब लड़की के वेश में है। उनके साथ दरबारी विदूषक, टचस्टोन भी है। जंगल में, वे कई दिलचस्प पात्रों से मिलते हैं, जिसमें उदास जैक्स भी शामिल है।</p>
-                <p class="hindi-text">इस बीच, ऑरलैंडो, एक युवक जो रोजालिंड से प्यार करने लगा है, वह भी अपने क्रूर भाई, ओलिवर से बचने के लिए आर्डेन के जंगल में भाग जाता है। जंगल में, ऑरलैंडो रोजालिंड के लिए प्रेम कविताएँ लिखता है और उन्हें पेड़ों पर लटका देता है। रोजालिंड (गैनीमेड के रूप में) ऑरलैंडो से मिलती है और रोजालिंड होने का नाटक करके उसे उसके प्यार से ठीक करने की पेशकश करती है। नाटक हास्य स्थितियों, मजाकिया बातचीत और कई प्रेम कथाओं से भरा है। अंत में, पहचान उजागर होती है, बुरे पात्र पश्चाताप करते हैं, और नाटक चार सुखद विवाहों के साथ समाप्त होता है। सही ड्यूक को उसके पद पर बहाल कर दिया जाता है, और सद्भाव स्थापित होता है।</p>
-
-                <h3>Simple Hindi Summary (2-3 lines)</h3>
-                <p class="hindi-text">यह एक रोमांटिक कॉमेडी है जिसमें रोजालिंड नाम की लड़की लड़के का भेष बदलकर आर्डेन के जंगल में चली जाती है। वहां वह अपने प्रेमी ऑरलैंडो से मिलती है और उसके साथ प्यार का नाटक करती है। अंत में, सब कुछ ठीक हो जाता है, सबकी सच्चाई सामने आती है और चार जोड़ों की शादी हो जाती है।</p>
-
-                <h2>Themes</h2>
-                <ul>
-                    <li><strong>Love in its Various Forms:</strong> The play explores different types of love, from romantic love (Rosalind and Orlando) to lustful love and friendship. <span class="hindi-text">(विभिन्न रूपों में प्रेम: नाटक विभिन्न प्रकार के प्रेम की पड़ताल करता है, रोमांटिक प्रेम (रोजालिंड और ऑरलैंडो) से लेकर वासनापूर्ण प्रेम और दोस्ती तक।)</span></li>
-                    <li><strong>Court vs. Country Life:</strong> The corrupt, political life of the court is contrasted with the simple, natural, and free life in the Forest of Arden. <span class="hindi-text">(दरबार बनाम ग्रामीण जीवन: दरबार के भ्रष्ट, राजनीतिक जीवन की तुलना आर्डेन के जंगल के सरल, प्राकृतिक और स्वतंत्र जीवन से की जाती है।)</span></li>
-                    <li><strong>Disguise and Identity:</strong> Rosalind's disguise as Ganymede allows her to control her own love story and explore gender roles, creating much of the play's humor. <span class="hindi-text">(भेष और पहचान: गैनीमेड के रूप में रोजालिंड का भेष उसे अपनी प्रेम कहानी को नियंत्रित करने और लिंग भूमिकाओं का पता लगाने की अनुमति देता है, जिससे नाटक का अधिकांश हास्य पैदा होता है।)</span></li>
-                </ul>
-
-                <h2>Literary Devices</h2>
-                <ul>
-                    <li><strong>Pastoral Comedy:</strong> The play is a pastoral, meaning it idealizes the simple life of shepherds in a rural setting (the Forest of Arden). <span class="hindi-text">(पेस्टोरल कॉमेडी: यह नाटक एक पेस्टोरल है, जिसका अर्थ है कि यह एक ग्रामीण परिवेश (आर्डेन का जंगल) में चरवाहों के सरल जीवन को आदर्श बनाता है।)</span></li>
-                    <li><strong>Dramatic Irony:</strong> The audience knows that Ganymede is actually Rosalind, but Orlando does not. This creates many humorous situations. <span class="hindi-text">(नाटकीय विडंबना: दर्शक जानते हैं कि गैनीमेड वास्तव में रोजालिंड है, लेकिन ऑरलैंडो नहीं जानता। यह कई हास्यपूर्ण स्थितियाँ पैदा करता है।)</span></li>
-                </ul>
-
-                <h2>Critical Appreciation Points</h2>
-                <ul>
-                    <li>Rosalind is one of Shakespeare's strongest and most intelligent female characters.</li>
-                    <li>The play is famous for its witty dialogue and wordplay.</li>
-                    <li>Jaques's speech "All the world's a stage" is one of the most famous speeches in all of literature.</li>
-                    <li>It perfectly fits the genre of romantic comedy with its focus on love, obstacles, and a happy resolution with multiple marriages.</li>
-                </ul>
-                </div>
-            `,
-            drama_arms: `
-                <div class="content-section">
-                <h1>Arms and the Man - G.B. Shaw</h1>
-
-                <h2>English Summary (Exam Style)</h2>
-                <p><em>Arms and the Man</em> is an "anti-romantic" comedy set during the Serbo-Bulgarian War of 1885. The play makes fun of the romantic, idealistic ideas about war and love. The story begins in the bedroom of Raina Petkoff, a young Bulgarian woman engaged to the dashing war hero, Major Sergius Saranoff. During a battle, a Swiss mercenary (a soldier for hire) named Captain Bluntschli climbs into her room to escape capture. Unlike the heroic Sergius, Bluntschli is a practical and professional soldier who carries chocolates in his cartridge belt instead of extra bullets, earning him the nickname "the chocolate cream soldier."</p>
-                <p>Raina, initially shocked, helps him hide. Later, when the war is over, Bluntschli returns to the Petkoff house. His practical and realistic nature contrasts sharply with the foolish and fake heroism of Sergius and the romantic fantasies of Raina. Over time, Raina and Sergius realize that their "higher love" is a sham. Sergius falls for the clever servant girl Louka, and Raina falls for the sensible and efficient Bluntschli. The play ends with Raina breaking her engagement to Sergius and getting engaged to the wealthy and practical Captain Bluntschli, showing the victory of realism over romanticism.</p>
-
-                <h2>Hindi Explanation (Detailed)</h2>
-                <p class="hindi-text"><em>आर्म्स एंड द मैन</em> 1885 के सर्बो-बल्गेरियाई युद्ध के दौरान सेट की गई एक "एंटी-रोमांटिक" कॉमेडी है। यह नाटक युद्ध और प्रेम के बारे में रोमांटिक, आदर्शवादी विचारों का मज़ाक उड़ाता है। कहानी रैना पेटकोफ के बेडरूम में शुरू होती है, जो एक युवा बल्गेरियाई महिला है जिसकी सगाई बहादुर युद्ध नायक, मेजर सर्जियस सरानॉफ से हुई है। एक लड़ाई के दौरान, कैप्टन ब्लंटशली नामक एक स्विस भाड़े का सैनिक पकड़ से बचने के लिए उसके कमरे में चढ़ जाता है। वीर सर्जियस के विपरीत, ब्लंटशली एक व्यावहारिक और पेशेवर सैनिक है जो अतिरिक्त गोलियों के बजाय अपनी कारतूस बेल्ट में चॉकलेट रखता है, जिससे उसे "चॉकलेट क्रीम सैनिक" का उपनाम मिलता है।</p>
-                <p class="hindi-text">रैना, शुरू में हैरान, उसे छिपाने में मदद करती है। बाद में, जब युद्ध समाप्त हो जाता है, तो ब्लंटशली पेटकोफ घर लौटता है। उसकी व्यावहारिक और यथार्थवादी प्रकृति सर्जियस की मूर्खतापूर्ण और नकली वीरता और रैना की रोमांटिक कल्पनाओं से तेजी से विपरीत है। समय के साथ, रैना और सर्जियस को एहसास होता है कि उनका "उच्च प्रेम" एक दिखावा है। सर्जियस चतुर नौकरानी लुका के लिए गिर जाता है, और रैना समझदार और कुशल ब्लंटशली के लिए गिर जाती है। नाटक रैना द्वारा सर्जियस से अपनी सगाई तोड़ने और धनी और व्यावहारिक कैप्टन ब्लंटशली से सगाई करने के साथ समाप्त होता है, जो रोमांटिकतावाद पर यथार्थवाद की जीत को दर्शाता है।</p>
-
-                <h3>Simple Hindi Summary (2-3 lines)</h3>
-                <p class="hindi-text">यह नाटक युद्ध और प्यार के झूठे दिखावे का मजाक उड़ाता है। रैना नाम की लड़की का मंगेतर सर्जियस एक बनावटी हीरो है। रैना की मुलाकात ब्लंटशली नाम के एक सच्चे और व्यावहारिक सैनिक से होती है और अंत में वह सर्जियस को छोड़कर ब्लंटशली से शादी कर लेती है। यह नाटक दिखाता है कि असलियत, कल्पना से बेहतर होती है।</p>
-
-                <h2>Themes</h2>
-                <ul>
-                    <li><strong>Realism vs. Romanticism:</strong> This is the central theme. Shaw contrasts the foolish romantic ideals of war and love with the practical reality. <span class="hindi-text">(यथार्थवाद बनाम रोमांटिकतावाद: यह केंद्रीय विषय है। शॉ युद्ध और प्रेम के मूर्खतापूर्ण रोमांटिक आदर्शों की तुलना व्यावहारिक वास्तविकता से करते हैं।)</span></li>
-                    <li><strong>The Falsity of Heroism:</strong> The play satirizes the traditional idea of a war hero. Sergius is brave but foolish, while the real professional, Bluntschli, is practical and avoids unnecessary risks. <span class="hindi-text">(वीरता का मिथ्यात्व: नाटक युद्ध नायक के पारंपरिक विचार पर व्यंग्य करता है। सर्जियस बहादुर लेकिन मूर्ख है, जबकि असली पेशेवर, ब्लंटशली, व्यावहारिक है और अनावश्यक जोखिमों से बचता है।)</span></li>
-                    <li><strong>Class and Social Pretence:</strong> The play makes fun of the Petkoff family's attempts to appear rich and sophisticated, and shows the intelligence of the servant class (Louka). <span class="hindi-text">(वर्ग और सामाजिक दिखावा: नाटक पेटकोफ परिवार के अमीर और परिष्कृत दिखने के प्रयासों का मज़ाक उड़ाता है, और नौकर वर्ग (लुका) की बुद्धिमत्ता को दिखाता है।)</span></li>
-                </ul>
-
-                <h2>Literary Devices</h2>
-                <ul>
-                    <li><strong>Satire:</strong> The entire play is a satire on 19th-century society's romantic ideas about war and love. <span class="hindi-text">(व्यंग्य: पूरा नाटक 19वीं सदी के समाज के युद्ध और प्रेम के बारे में रोमांटिक विचारों पर एक व्यंग्य है।)</span></li>
-                    <li><strong>Irony:</strong> There is irony in the fact that the "hero" Sergius is a fool, and the "coward" Bluntschli (who carries chocolates) is the more competent soldier. <span class="hindi-text">(विडंबना: इस तथ्य में विडंबना है कि "नायक" सर्जियस एक मूर्ख है, और "कायर" ब्लंटशली (जो चॉकलेट रखता है) अधिक सक्षम सैनिक है।)</span></li>
-                </ul>
-
-                <h2>Critical Appreciation Points</h2>
-                <ul>
-                    <li>It is a classic example of a "Comedy of Ideas," where the focus is on debating social and philosophical ideas rather than just on the plot.</li>
-                    <li>Shaw uses witty and intelligent dialogue to expose the hypocrisy of his characters and society.</li>
-                    <li>The characters are not just individuals but represent different ideas (Raina = Romanticism, Bluntschli = Realism).</li>
-                    <li>The play was revolutionary for its time because it challenged the audience's cherished beliefs about war and love.</li>
-                </ul>
-                </div>
-            `,
-            revision: `
+            'revision': `
                 <div class="content-section">
                 <h1>Quick Revision Section</h1>
                 <p>This table is for your last-minute revision. It has the most important points for each text.</p>
@@ -513,7 +1009,7 @@
                 </div>
                 </div>
             `,
-            crash_course: `
+            'crash_course': `
                 <div class="content-section">
                 <h1>2-Day Crash Course Plan</h1>
                 <p>Follow this plan strictly for the last two days before your exam. It is designed to cover everything important.</p>
@@ -589,7 +1085,7 @@
                 </div>
                 </div>
             `,
-            exam_tips: `
+            'exam_tips': `
                 <div class="content-section">
                 <h1>Exam Day Tips</h1>
                 <p>Some final tips to help you perform your best in the exam hall.</p>
@@ -632,119 +1128,7 @@
                 </ul>
                 </div>
             `,
-            pyq: `
-                 <div class="content-section">
-                 <h1>Past Year Questions (High-Priority)</h1>
-                 <p>These are not exact past year papers, but they are the most important and frequently asked types of questions for your syllabus. Practice them well.</p>
-                 <p class="hindi-text">ये सटीक पिछले वर्ष के पेपर नहीं हैं, लेकिन ये आपके पाठ्यक्रम के लिए सबसे महत्वपूर्ण और अक्सर पूछे जाने वाले प्रकार के प्रश्न हैं। इनका अच्छे से अभ्यास करें।</p>
-                 
-                 <h2>Section A (Very Short Answers - 30 words)</h2>
-                 <ol class="list-decimal list-inside space-y-4">
-                    <li>What is the central idea of Shakespeare's Sonnet 116? <span class="high-priority">🔥 High Priority</span></li>
-                    <li>Why does the poet in "Go and Catch a Falling Star" think it's impossible to find a faithful woman?</li>
-                    <li>What is Milton's final understanding of service to God in "On His Blindness"? <span class="high-priority">🔥 High Priority</span></li>
-                    <li>What is a dramatic monologue? Give an example from your syllabus.</li>
-                    <li>Why does the Duke in "My Last Duchess" dislike his former wife? <span class="high-priority">🔥 High Priority</span></li>
-                    <li>Who is the "chocolate cream soldier" in <em>Arms and the Man</em>?</li>
-                    <li>Why does Rosalind disguise herself as Ganymede in <em>As You Like It</em>?</li>
-                    <li>What deal does Doctor Faustus make with the devil? <span class="high-priority">🔥 High Priority</span></li>
-                 </ol>
-                 
-                 <h2>Section B (Short Answers - 200 words)</h2>
-                 <ol class="list-decimal list-inside space-y-4">
-                    <li>Write a critical appreciation of the poem "The Tyger" by William Blake.</li>
-                    <li>Discuss the theme of loss of faith in Matthew Arnold's "Dover Beach". <span class="high-priority">🔥 High Priority</span></li>
-                    <li>Explain the conflict between realism and romanticism in <em>Arms and the Man</em>.</li>
-                    <li>Write a short note on the Forest of Arden in <em>As You Like It</em>.</li>
-                    <li>Analyze the character of Mephistophilis in <em>Doctor Faustus</em>.</li>
-                    <li>What are the main ideas in Shelley's "Ode to the West Wind"? <span class="high-priority">🔥 High Priority</span></li>
-                 </ol>
-
-                 <h2>Section C (Long Answers - 500 words)</h2>
-                 <ol class="list-decimal list-inside space-y-4">
-                    <li>Discuss <em>Doctor Faustus</em> as a Renaissance tragedy. <span class="high-priority">🔥 High Priority</span></li>
-                    <li>Comment on <em>As You Like It</em> as a typical Shakespearean romantic comedy. <span class="high-priority">🔥 High Priority</span></li>
-                    <li>Critically analyze G.B. Shaw's play <em>Arms and the Man</em> as a satire on war and love. <span class="high-priority">🔥 High Priority</span></li>
-                    <li>Write a critical summary of John Keats' "Ode on a Grecian Urn," focusing on its theme of art and reality.</li>
-                 </ol>
-                 </div>
-            `,
-            model_answers: `
-                <div class="content-section">
-                <h1>Model Answers for Expected Questions</h1>
-                <p>Here are some model answers to help you understand how to write in the exam.</p>
-                <p class="hindi-text">परीक्षा में कैसे लिखना है, यह समझने में आपकी मदद करने के लिए यहां कुछ मॉडल उत्तर दिए गए हैं।</p>
-                
-                <h2>Short Answer Example (Section B)</h2>
-                <h3>Q: Discuss the theme of loss of faith in Matthew Arnold's "Dover Beach".</h3>
-                <p><strong>Answer:</strong> Matthew Arnold's "Dover Beach" is a powerful poem about the loss of religious faith in the modern world, which was influenced by science and new ideas. The poet uses the image of the sea as a metaphor for faith. He says that the "Sea of Faith" was once full and surrounded the world like a girdle. But now, he can only hear its "melancholy, long, withdrawing roar." This sound represents the declining belief in God and religion.</p>
-                <p>The world, which seems beautiful like a "land of dreams," is actually a dark and confusing place without the light of faith. It is full of struggle and pain, where people fight without any clear purpose ("as on a darkling plain... where ignorant armies clash by night"). In this sad and faithless world, the only hope for the poet is true and faithful personal love. He asks his beloved to be true to him, as their love is the only real and certain thing left.</p>
-                
-                <p class="hindi-text"><strong>हिंदी स्पष्टीकरण:</strong> मैथ्यू अर्नोल्ड की कविता "डोवर बीच" आधुनिक दुनिया में धार्मिक आस्था के नुकसान के बारे में एक शक्तिशाली कविता है। कवि आस्था के लिए समुद्र की छवि का उपयोग रूपक के रूप में करता है। वह कहता है कि "आस्था का सागर" कभी भरा हुआ था, लेकिन अब वह केवल इसकी "उदास, लंबी, घटती हुई गर्जना" सुन सकता है। यह घटते विश्वास का प्रतीक है। आस्था के बिना, दुनिया एक अंधेरी और दर्दनाक जगह है। इस विश्वासहीन दुनिया में, कवि के लिए एकमात्र आशा सच्चा व्यक्तिगत प्रेम है।</p>
-
-                <h2>Long Answer Example (Section C)</h2>
-                <h3>Q: Discuss <em>As You Like It</em> as a typical Shakespearean romantic comedy. <span class="high-priority">🔥 High Priority</span></h3>
-                <p><strong>Introduction</strong><br>
-                <em>As You Like It</em> is one of William Shakespeare's most famous plays and a perfect example of a romantic comedy. This genre has specific features like a focus on love, obstacles that lovers must overcome, a pastoral setting, witty dialogue, and a happy ending with multiple marriages. <em>As You Like It</em> contains all these elements, making it a classic of its kind.</p>
-                <p class="hindi-text"><em>(परिचय: As You Like It शेक्सपियर का एक आदर्श रोमांटिक कॉमेडी है। इसमें प्रेम, प्रेमियों के सामने आने वाली बाधाएं, एक ग्रामीण सेटिंग, और कई विवाहों के साथ एक सुखद अंत जैसी सभी विशेषताएं हैं।)</em></p>
-
-                <p><strong>Main Points</strong></p>
-                <ol class="list-decimal list-inside space-y-3">
-                    <li>
-                        <strong>Central Theme of Love:</strong> The main plot revolves around the love between Rosalind and Orlando. The play also explores other kinds of love, like the playful love of Celia and Oliver, the physical love of Touchstone and Audrey, and the unrequited love of Silvius for Phebe. This variety shows love in all its forms, which is a key feature of romantic comedy.
-                        <br><span class="hindi-text">(प्रेम का केंद्रीय विषय: नाटक का मुख्य कथानक रोजालिंड और ऑरलैंडो के बीच प्रेम के इर्द-गिर्द घूमता है, और यह अन्य प्रकार के प्रेम को भी दर्शाता है।)</span>
-                    </li>
-                    <li>
-                        <strong>Obstacles and Resolution:</strong> The lovers face many problems. Rosalind is banished by her uncle, and Orlando has to flee his cruel brother. These obstacles force them into the Forest of Arden. The resolution comes when the evil characters, Duke Frederick and Oliver, change their hearts, allowing the lovers to unite happily.
-                        <br><span class="hindi-text">(बाधाएं और समाधान: प्रेमियों को कई समस्याओं का सामना करना पड़ता है, लेकिन अंत में, बुरी पात्रों के हृदय परिवर्तन से सब कुछ ठीक हो जाता है।)</span>
-                    </li>
-                    <li>
-                        <strong>Pastoral Setting:</strong> Much of the action takes place in the Forest of Arden. This is a typical pastoral setting - an idealized, natural world that is free from the corruption of the court. The forest provides a space where characters can find freedom, fall in love, and discover their true selves.
-                        <br><span class="hindi-text">(ग्रामीण सेटिंग: नाटक का अधिकांश भाग आर्डेन के जंगल में घटित होता है, जो दरबार के भ्रष्टाचार से मुक्त एक आदर्श प्राकृतिक दुनिया है।)</span>
-                    </li>
-                    <li>
-                        <strong>A Strong Heroine and Disguise:</strong> Romantic comedies often feature a clever and strong female lead. Rosalind is intelligent, witty, and controls the plot through her disguise as Ganymede. The use of disguise creates dramatic irony and many humorous situations, which is another common element of this genre.
-                        <br><span class="hindi-text">(एक मजबूत नायिका और भेष: रोजालिंड एक चतुर नायिका है जो गैनीमेड के रूप में अपने भेष का उपयोग करके कथानक को नियंत्रित करती है, जिससे हास्य पैदा होता है।)</span>
-                    </li>
-                </ol>
-
-                <p><strong>Conclusion</strong><br>
-                In conclusion, <em>As You Like It</em> perfectly embodies the spirit of Shakespearean romantic comedy. With its focus on love overcoming all difficulties, its escape to a magical forest, its clever heroine, and its joyful conclusion with four marriages, the play celebrates love, forgiveness, and the triumph of good over evil in a light-hearted and optimistic way.
-                <br><span class="hindi-text">(निष्कर्ष: As You Like It में रोमांटिक कॉमेडी के सभी तत्व हैं: प्रेम की जीत, एक जादुई जंगल, एक चतुर नायिका, और एक सुखद अंत। यह नाटक प्रेम और क्षमा का उत्सव मनाता है।)</span></p>
-
-                </div>
-            `
         };
-        
-        // Add placeholders for all poems
-        const poems = [
-            { id: 'poem_absalom', title: 'From Absalom and Achitophel - John Dryden' },
-            { id: 'poem_arbuthnot', title: 'From An Epistle to Dr. Arbuthnot - Alexander Pope' },
-            { id: 'poem_elegy', title: 'Elegy Written in a Country Churchyard - Thomas Gray' },
-            { id: 'poem_tyger', title: 'The Tyger - William Blake' },
-            { id: 'poem_world', title: 'The World is Too Much With Us - William Wordsworth' },
-            { id: 'poem_westwind', title: 'Ode to the West Wind - P.B. Shelley' },
-            { id: 'poem_urn', title: 'Ode on a Grecian Urn - John Keats' },
-            { id: 'poem_ulysses', title: 'Ulysses - Lord Alfred Tennyson' },
-            { id: 'poem_duchess', title: 'My Last Duchess - Robert Browning' },
-            { id: 'poem_dover', title: 'Dover Beach - Matthew Arnold' },
-            { id: 'poem_secondcoming', title: 'The Second Coming - W.B. Yeats' },
-            { id: 'poem_prufrock', title: 'The Love Song of J. Alfred Prufrock - T.S. Eliot' }
-        ];
-
-        poems.forEach(poem => {
-            content[poem.id] = `
-                <div class="content-section">
-                <h1>${poem.title}</h1>
-                <div class="p-4 my-6 bg-blue-100 border-l-4 border-blue-500 text-blue-700 rounded-md">
-                    <p class="font-bold">Content Coming Soon</p>
-                    <p>Detailed notes for this text will be added shortly. Please check back later.</p>
-                    <p class="hindi-text mt-2">इस पाठ के लिए विस्तृत नोट्स जल्द ही जोड़े जाएंगे। कृपया बाद में जांचें।</p>
-                </div>
-                </div>
-            `;
-        });
-
 
         const mainContent = document.getElementById('main-content');
         const sidebarContainer = document.getElementById('sidebar-container');
@@ -754,12 +1138,21 @@
         const sidebarLinks = document.querySelectorAll('.sidebar-link');
 
         function showContent(id) {
-            mainContent.innerHTML = content[id] || '<p>Content not found.</p>';
-            mainContent.scrollTop = 0; // Scroll to top
+            mainContent.innerHTML = '';
+            if (allContent[id]) {
+                mainContent.innerHTML = `
+                    <div class="content-section">
+                        <h1>${allContent[id].title}</h1>
+                        ${allContent[id].content}
+                    </div>
+                `;
+            } else if (topLevelContent[id]) {
+                 mainContent.innerHTML = topLevelContent[id];
+            }
+            mainContent.scrollTop = 0;
             
             sidebarLinks.forEach(link => {
                 link.classList.remove('active');
-                 // Check if the link's onclick corresponds to the current id
                 if (link.getAttribute('onclick').includes(`'${id}'`)) {
                     link.classList.add('active');
                 }
@@ -770,15 +1163,6 @@
             }
         }
         
-        function toggleSubmenu(id) {
-            const submenu = document.getElementById(id);
-            if (submenu.style.display === 'block') {
-                submenu.style.display = 'none';
-            } else {
-                submenu.style.display = 'block';
-            }
-        }
-
         function openSidebar() {
             sidebarContainer.classList.add('open');
             backdrop.classList.remove('hidden');
@@ -793,7 +1177,6 @@
         closeButton.addEventListener('click', closeSidebar);
         backdrop.addEventListener('click', closeSidebar);
 
-        // Load introduction content by default
         window.onload = () => showContent('introduction');
 
     </script>
