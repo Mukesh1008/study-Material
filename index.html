@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VMOU BA English (EG-01) - Poetry & Drama Study Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: A single-page application (SPA) with a mobile-first, responsive layout. On mobile, a collapsible off-canvas navigation menu (hamburger menu) provides access to all sections. On larger screens, this menu is automatically expanded into a fixed sidebar. The main content area dynamically adjusts to screen size and content, ensuring no horizontal scrolling. The flow is designed for progressive learning: start with basics, move to detailed study, then practice with questions, and finally revise with quick notes. This non-linear but organized access is ideal for exam preparation. -->
+    <!-- Visualization & Content Choices: The content is entirely text-based, organized using headings, lists, and tables. Goal: Information & Organization. Method: Structured HTML and Tailwind CSS. Interaction: JavaScript-powered dynamic content display in the main panel based on sidebar navigation clicks. On mobile, JS also controls the visibility of the off-canvas menu. Justification: For a study guide, clarity, readability, and easy navigation are paramount. This design avoids complex visualizations, focusing instead on presenting textual information in the most digestible format for a student with a basic English level. It's a functional, content-first approach. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-link { transition: all 0.2s ease-in-out; }
+        .sidebar-link:hover, .sidebar-link.active { background-color: #e5e7eb; color: #111827; }
+        .content-section h1 { font-size: 1.875rem; font-weight: bold; color: #1e3a8a; border-bottom: 2px solid #3b82f6; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+        .content-section h2 { font-size: 1.5rem; font-weight: bold; color: #1d4ed8; margin-top: 2rem; margin-bottom: 1rem; }
+        .content-section h3 { font-size: 1.25rem; font-weight: bold; color: #1e40af; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .content-section p { margin-bottom: 1rem; line-height: 1.7; }
+        .content-section ul, .content-section ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+        .content-section ul li { list-style-type: disc; }
+        .content-section ol li { list-style-type: decimal; }
+        .hindi-text { color: #4b5563; font-style: italic; }
+        .exam-tip { background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 1rem; margin-bottom: 1rem; border-radius: 0.25rem; }
+        .high-priority { color: #ef4444; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { border: 1px solid #d1d5db; padding: 0.75rem; text-align: left; }
+        th { background-color: #f3f4f6; }
+        .submenu { display: none; padding-left: 1rem; }
+        /* Mobile-specific styles for the hamburger menu */
+        .sidebar-container { transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+        .sidebar-container.open { transform: translateX(0); }
+        .backdrop { background-color: rgba(0,0,0,0.5); z-index: 40; }
+        .z-50 { z-index: 50; }
+        @media (min-width: 768px) {
+            .sidebar-container { transform: translateX(0); }
+            .hamburger-button { display: none; }
+            .main-layout { flex-direction: row; }
+        }
+    </style>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Hamburger Menu Button (visible on mobile) -->
+        <div class="md:hidden p-4 flex items-center justify-between bg-white shadow-lg z-50">
+            <h2 class="text-xl font-bold text-blue-800">VMOU Guide</h2>
+            <button id="hamburger-button" class="text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-4 6h4"></path></svg>
+            </button>
+        </div>
+
+        <!-- Sidebar Navigation (hidden on mobile, fixed on desktop) -->
+        <div id="sidebar-container" class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg overflow-y-auto z-40 sidebar-container md:relative md:flex-shrink-0 md:transform-none">
+            <div class="p-4 flex items-center justify-between">
+                <h2 class="text-xl font-bold text-blue-800">VMOU EG-01 Guide</h2>
+                 <button id="close-button" class="md:hidden text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <p class="text-sm text-gray-500 p-4">Poetry & Drama</p>
+            <ul class="space-y-1 p-2">
+                <li><a href="#" onclick="showContent('introduction'); return false;" class="sidebar-link active block py-2 px-4 rounded-md">Introduction</a></li>
+                <li><a href="#" onclick="showContent('basics'); return false;" class="sidebar-link block py-2 px-4 rounded-md">English Literature Basics</a></li>
+                <li>
+                    <a href="#" onclick="toggleSubmenu('study-material-submenu'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Study Material</a>
+                    <ul id="study-material-submenu" class="submenu mt-1 space-y-1">
+                        <li><a href="#" onclick="showContent('poem_sonnet116'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Sonnet 116</a></li>
+                        <li><a href="#" onclick="showContent('poem_fallingstar'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Go and Catch a Falling Star</a></li>
+                        <li><a href="#" onclick="showContent('poem_blindness'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">On His Blindness</a></li>
+                        <li><a href="#" onclick="showContent('poem_absalom'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">From Absalom & Achitophel</a></li>
+                        <li><a href="#" onclick="showContent('poem_arbuthnot'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">From An Epistle to Dr. Arbuthnot</a></li>
+                        <li><a href="#" onclick="showContent('poem_elegy'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Elegy Written in a...</a></li>
+                        <li><a href="#" onclick="showContent('poem_tyger'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">The Tyger</a></li>
+                        <li><a href="#" onclick="showContent('poem_world'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">The World is Too Much...</a></li>
+                        <li><a href="#" onclick="showContent('poem_westwind'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Ode to the West Wind</a></li>
+                        <li><a href="#" onclick="showContent('poem_urn'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Ode on a Grecian Urn</a></li>
+                        <li><a href="#" onclick="showContent('poem_ulysses'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Ulysses</a></li>
+                        <li><a href="#" onclick="showContent('poem_duchess'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">My Last Duchess</a></li>
+                        <li><a href="#" onclick="showContent('poem_dover'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Dover Beach</a></li>
+                        <li><a href="#" onclick="showContent('poem_secondcoming'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">The Second Coming</a></li>
+                        <li><a href="#" onclick="showContent('poem_prufrock'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">The Love Song of J. A. Prufrock</a></li>
+                        <hr class="my-2">
+                        <li><a href="#" onclick="showContent('drama_faustus'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Doctor Faustus</a></li>
+                        <li><a href="#" onclick="showContent('drama_asyoulikeit'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">As You Like It</a></li>
+                        <li><a href="#" onclick="showContent('drama_arms'); return false;" class="sidebar-link block py-2 px-4 rounded-md text-sm">Arms and the Man</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" onclick="showContent('pyq'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Past Year Questions</a></li>
+                <li><a href="#" onclick="showContent('model_answers'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Model Answers</a></li>
+                <li><a href="#" onclick="showContent('revision'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Quick Revision Section</a></li>
+                <li><a href="#" onclick="showContent('crash_course'); return false;" class="sidebar-link block py-2 px-4 rounded-md">2-Day Crash Course</a></li>
+                <li><a href="#" onclick="showContent('exam_tips'); return false;" class="sidebar-link block py-2 px-4 rounded-md">Exam Day Tips</a></li>
+            </ul>
+        </div>
+        <div id="backdrop" class="fixed inset-0 bg-black opacity-50 z-30 hidden md:hidden"></div>
+
+        <!-- Main Content -->
+        <main id="main-content" class="flex-1 p-4 sm:p-6 lg:p-12 overflow-y-auto">
+            <!-- Content will be loaded here by JavaScript -->
+        </main>
+    </div>
+
+    <script>
+        const content = {
+            introduction: `
+                <div class="content-section">
+                <h1>Welcome! Your Guide to Scoring 70%+</h1>
+                <p>Hello! Welcome to your personal study guide for the VMOU BA English paper on Poetry & Drama (EG-01). This material is specially made for you, keeping in mind that you are from a Hindi medium background and need to learn everything from the beginning. Don't worry, we will cover everything you need to score more than 70% in your exam. Just follow this guide step-by-step.</p>
+                <p class="hindi-text">नमस्ते! पोएट्री और ड्रामा (EG-01) पर आपके VMOU BA अंग्रेजी पेपर के लिए आपकी व्यक्तिगत अध्ययन मार्गदर्शिका में आपका स्वागत है। यह सामग्री विशेष रूप से आपके लिए बनाई गई है, यह ध्यान में रखते हुए कि आप हिंदी माध्यम की पृष्ठभूमि से हैं और आपको शुरू से सब कुछ सीखने की जरूरत है। चिंता न करें, हम वह सब कुछ कवर करेंगे जो आपको अपनी परीक्षा में 70% से अधिक अंक प्राप्त करने के लिए चाहिए। बस इस गाइड का चरण-दर-चरण पालन करें।</p>
+                
+                <h2>VMOU Exam Paper Pattern</h2>
+                <p>The exam paper is usually divided into three sections: Section A, Section B, and Section C.</p>
+                <p class="hindi-text">परीक्षा पत्र आमतौर पर तीन खंडों में विभाजित होता है: खंड ए, खंड बी और खंड सी।</p>
+                <ul>
+                    <li><strong>Section A (Very Short Answers):</strong> This section has 8 questions, and you have to answer all of them. Each question is for 2 marks. Your answer should be around 30 words. Total marks: 16.</li>
+                    <li class="hindi-text"><strong>खंड ए (अति लघु उत्तरीय प्रश्न):</strong> इस खंड में 8 प्रश्न होते हैं, और आपको उन सभी का उत्तर देना होता है। प्रत्येक प्रश्न 2 अंक का होता है। आपका उत्तर लगभग 30 शब्दों का होना चाहिए। कुल अंक: 16।</li>
+                    <li><strong>Section B (Short Answers):</strong> This section has 8 questions, but you have to answer only 4. Each question is for 8 marks. Your answer should be around 200 words. Total marks: 32.</li>
+                    <li class="hindi-text"><strong>खंड बी (लघु उत्तरीय प्रश्न):</strong> इस खंड में 8 प्रश्न होते हैं, लेकिन आपको केवल 4 का उत्तर देना होता है। प्रत्येक प्रश्न 8 अंक का होता है। आपका उत्तर लगभग 200 शब्दों का होना चाहिए। कुल अंक: 32।</li>
+                    <li><strong>Section C (Long Answers):</strong> This section has 4 questions, but you have to answer only 2. Each question is for 16 marks. Your answer should be around 500 words. Total marks: 32.</li>
+                    <li class="hindi-text"><strong>खंड सी (दीर्घ उत्तरीय प्रश्न):</strong> इस खंड में 4 प्रश्न होते हैं, लेकिन आपको केवल 2 का उत्तर देना होता है। प्रत्येक प्रश्न 16 अंक का होता है। आपका उत्तर लगभग 500 शब्दों का होना चाहिए। कुल अंक: 32।</li>
+                </ul>
+
+                <h2>Time Management Tips (3 Hours Exam)</h2>
+                <div class="exam-tip">
+                    <p>Total Time: 180 Minutes. Plan your time wisely.</p>
+                    <p class="hindi-text">कुल समय: 180 मिनट। अपने समय की योजना बुद्धिमानी से बनाएं।</p>
+                    <ul>
+                        <li><strong>Section A (16 Marks):</strong> Give around 25-30 minutes. (Approx. 3-4 minutes per question).</li>
+                        <li class="hindi-text"><strong>खंड ए (16 अंक):</strong> लगभग 25-30 मिनट दें। (प्रति प्रश्न लगभग 3-4 मिनट)।</li>
+                        <li><strong>Section B (32 Marks):</strong> Give around 60-70 minutes. (Approx. 15-17 minutes per question).</li>
+                        <li class="hindi-text"><strong>खंड बी (32 अंक):</strong> लगभग 60-70 मिनट दें। (प्रति प्रश्न लगभग 15-17 मिनट)।</li>
+                        <li><strong>Section C (32 Marks):</strong> Give around 70-80 minutes. (Approx. 35-40 minutes per question).</li>
+                        <li class="hindi-text"><strong>खंड सी (32 अंक):</strong> लगभग 70-80 मिनट दें। (प्रति प्रश्न लगभग 35-40 मिनट)।</li>
+                        <li><strong>Revision:</strong> Keep the last 10-15 minutes for revision. Check for spelling and grammar mistakes.</li>
+                        <li class="hindi-text"><strong>रिवीजन:</strong> अंतिम 10-15 मिनट रिवीजन के लिए रखें। वर्तनी और व्याकरण की गलतियों की जाँच करें।</li>
+                    </ul>
+                </div>
+                </div>
+            `,
+            basics: `
+                <div class="content-section">
+                <h1>Quick English Literature Basics</h1>
+                <p>These are some important terms you must know. They will help you understand poems and dramas better and write good answers.</p>
+                <p class="hindi-text">ये कुछ महत्वपूर्ण शब्द हैं जिन्हें आपको जानना चाहिए। ये आपको कविताओं और नाटकों को बेहतर ढंग से समझने और अच्छे उत्तर लिखने में मदद करेंगे।</p>
+                
+                <h2>Literary Terms (साहित्यिक शब्द)</h2>
+                <ul class="space-y-4">
+                    <li>
+                        <strong>Sonnet:</strong> A poem of 14 lines with a fixed rhyme scheme. Shakespearean sonnets are very famous.
+                        <br><span class="hindi-text"><strong>सॉनेट:</strong> 14 पंक्तियों की एक कविता जिसमें एक निश्चित तुकबंदी योजना होती है। शेक्सपियर के सॉनेट बहुत प्रसिद्ध हैं।</span>
+                    </li>
+                    <li>
+                        <strong>Ode:</strong> A long lyric poem that is serious in subject and has an elevated style. It is usually addressed to a person or thing.
+                        <br><span class="hindi-text"><strong>ओड:</strong> एक लंबी गीतात्मक कविता जो विषय में गंभीर होती है और जिसकी शैली उच्च होती है। यह आमतौर पर किसी व्यक्ति या वस्तु को संबोधित होती है।</span>
+                    </li>
+                    <li>
+                        <strong>Blank Verse:</strong> Poetry written in unrhymed iambic pentameter. It is often used in plays, like those of Shakespeare.
+                        <br><span class="hindi-text"><strong>ब्लैंक वर्स:</strong> अतुकांत आयंबिक पेंटामीटर में लिखी गई कविता। इसका उपयोग अक्सर नाटकों में किया जाता है, जैसे शेक्सपियर के नाटक।</span>
+                    </li>
+                    <li>
+                        <strong>Soliloquy:</strong> A speech in a play where a character speaks their thoughts aloud, alone on the stage. It reveals their inner feelings.
+                        <br><span class="hindi-text"><strong>सोलीलोक़ी (स्वगत भाषण):</strong> एक नाटक में एक भाषण जहां एक पात्र मंच पर अकेले अपने विचारों को जोर से बोलता है। यह उनकी आंतरिक भावनाओं को प्रकट करता है।</span>
+                    </li>
+                    <li>
+                        <strong>Dramatic Irony:</strong> When the audience knows something that the characters in the play do not know. This creates tension.
+                        <br><span class="hindi-text"><strong>ड्रामेटिक आयरनी (नाटकीय विडंबना):</strong> जब दर्शक कुछ ऐसा जानते हैं जो नाटक के पात्र नहीं जानते। यह तनाव पैदा करता है।</span>
+                    </li>
+                    <li>
+                        <strong>Catharsis:</strong> The process of releasing strong emotions like pity and fear, especially through art or drama. It gives a feeling of relief.
+                        <br><span class="hindi-text"><strong>कैथार्सिस (भाव-विरेचन):</strong> दया और भय जैसी मजबूत भावनाओं को मुक्त करने की प्रक्रिया, विशेष रूप से कला या नाटक के माध्यम से। यह राहत की भावना देता है।</span>
+                    </li>
+                    <li>
+                        <strong>Metaphor:</strong> A figure of speech in which a word or phrase is applied to an object or action to which it is not literally applicable. (e.g., 'Life is a journey').
+                        <br><span class="hindi-text"><strong>मेटाफर (रूपक):</strong> एक अलंकार जिसमें किसी शब्द या वाक्यांश को किसी ऐसी वस्तु या क्रिया पर लागू किया जाता है जिस पर वह शाब्दिक रूप से लागू नहीं होता है। (जैसे, 'जीवन एक यात्रा है')।</span>
+                    </li>
+                     <li>
+                        <strong>Dramatic Monologue:</strong> A poem in which a single speaker (not the poet) addresses a silent listener. It reveals the speaker's character.
+                        <br><span class="hindi-text"><strong>ड्रामेटिक मोनोलॉग (नाटकीय एकालाप):</strong> एक कविता जिसमें एक अकेला वक्ता (कवि नहीं) एक मूक श्रोता को संबोधित करता है। यह वक्ता के चरित्र को प्रकट करता है।</span>
+                    </li>
+                    <li>
+                        <strong>Elegy:</strong> A sad poem, usually written to express sorrow for someone who is dead.
+                        <br><span class="hindi-text"><strong>एलेजी (शोकगीत):</strong> एक दुखद कविता, जो आमतौर पर किसी मृत व्यक्ति के लिए दुःख व्यक्त करने के लिए लिखी जाती है।</span>
+                    </li>
+                </ul>
+                </div>
+            `,
+            poem_sonnet116: `
+                <div class="content-section">
+                <h1>"Let me not to the Marriage of True Minds" (Sonnet 116) - William Shakespeare</h1>
+                
+                <h2>English Summary (Exam Style)</h2>
+                <p>Shakespeare's Sonnet 116 is a powerful celebration of true, constant, and unchanging love. The poet defines true love by what it is not: it does not change when circumstances change, nor does it bend when faced with challenges. He compares true love to a fixed star (the North Star) that guides wandering ships. It is an "ever-fixed mark" that is not affected by storms. Love is not a fool of Time; physical beauty may fade with age, but true love remains constant until the end of life (the "edge of doom"). In the final couplet, the poet confidently states that if his definition of love is wrong, then he has never written anything, and no man has ever truly loved.</p>
+                
+                <h2>Hindi Explanation (Detailed)</h2>
+                <p class="hindi-text">शेक्सपियर का सॉनेट 116 सच्चे, स्थिर और अपरिवर्तनीय प्रेम का एक शक्तिशाली उत्सव है। कवि सच्चे प्रेम को इस बात से परिभाषित करता है कि वह क्या नहीं है: यह तब नहीं बदलता जब परिस्थितियाँ बदलती हैं, और न ही यह चुनौतियों का सामना करने पर झुकता है। वह सच्चे प्रेम की तुलना एक स्थिर तारे (ध्रुव तारे) से करते हैं जो भटकते जहाजों का मार्गदर्शन करता है। यह एक "हमेशा-निश्चित चिह्न" है जो तूफानों से प्रभावित नहीं होता है। प्रेम समय का मूर्ख नहीं है; शारीरिक सुंदरता उम्र के साथ फीकी पड़ सकती है, लेकिन सच्चा प्यार जीवन के अंत तक (कयामत के किनारे तक) स्थिर रहता है। अंतिम दोहे में, कवि आत्मविश्वास से कहता है कि यदि प्रेम की उसकी परिभाषा गलत है, तो उसने कभी कुछ नहीं लिखा है, और किसी भी व्यक्ति ने कभी सच्चा प्यार नहीं किया है।</p>
+                
+                <h3>Simple Hindi Summary (2-3 lines)</h3>
+                <p class="hindi-text">यह कविता सच्चे प्यार के बारे में है। कवि कहता है कि सच्चा प्यार कभी नहीं बदलता, चाहे कुछ भी हो जाए। यह एक ध्रुव तारे की तरह है जो हमेशा रास्ता दिखाता है और मौत तक बना रहता है।</p>
+                
+                <h2>Themes</h2>
+                <ul>
+                    <li><strong>The Nature of True Love:</strong> The poem defines true love as constant, spiritual, and eternal. <span class="hindi-text">(सच्चे प्रेम की प्रकृति: कविता सच्चे प्रेम को स्थिर, आध्यात्मिक और शाश्वत के रूप में परिभाषित करती है।)</span></li>
+                    <li><strong>Love vs. Time:</strong> True love is presented as something that can conquer time. While physical beauty fades, love does not. <span class="hindi-text">(प्रेम बनाम समय: सच्चे प्रेम को कुछ ऐसा प्रस्तुत किया गया है जो समय पर विजय प्राप्त कर सकता है। जबकि शारीरिक सुंदरता फीकी पड़ जाती है, प्रेम नहीं।)</span></li>
+                    <li><strong>Permanence and Constancy:</strong> The central idea is that love is an "ever-fixed mark" that is permanent and never changes. <span class="hindi-text">(स्थायित्व और स्थिरता: केंद्रीय विचार यह है कि प्रेम एक "हमेशा-निश्चित चिह्न" है जो स्थायी है और कभी नहीं बदलता है।)</span></li>
+                </ul>
+                
+                <h2>Literary Devices</h2>
+                <ul>
+                    <li><strong>Metaphor:</strong> Love is compared to a star ("the star to every wand'ring bark") and a lighthouse ("an ever-fixed mark"). <span class="hindi-text">(रूपक: प्रेम की तुलना एक तारे और एक प्रकाशस्तंभ से की गई है।)</span></li>
+                    <li><strong>Personification:</strong> Time is personified as a character with a "bending sickle," but love is not its "fool." <span class="hindi-text">(मानवीकरण: समय को एक पात्र के रूप में चित्रित किया गया है जिसके पास "झुकने वाली दरांती" है, लेकिन प्रेम उसका "मूर्ख" नहीं है।)</span></li>
+                </ul>
+                
+                <h2>Critical Appreciation Points</h2>
+                <ul>
+                    <li>It is a classic example of a Shakespearean sonnet with three quatrains and a concluding couplet.</li>
+                    <li>The language is simple but powerful, using strong metaphors to define love.</li>
+                    <li>The poem makes a universal statement about the ideal of love, which is why it is still popular today.</li>
+                    <li>The final couplet acts as a proof, adding great force to the poet's argument.</li>
+                </ul>
+                </div>
+            `,
+            poem_fallingstar: `
+                <div class="content-section">
+                <h1>"Go and Catch a Falling Star" - John Donne</h1>
+
+                <h2>English Summary (Exam Style)</h2>
+                <p>This poem is a cynical and witty commentary on the impossibility of finding a woman who is both beautiful and faithful. The poet begins by listing a series of impossible tasks, such as catching a falling star, getting a child from a mandrake root, or finding out where past years have gone. He says that finding a true and fair woman is just as impossible as these tasks. The speaker claims that even if one were to travel the entire world, they would see many strange sights but would never find a woman who is both beautiful and faithful. He says that if you did find one, you should let him know, but he wouldn't go to meet her. By the time he reached her, she would have already been unfaithful to two or three other men.</p>
+
+                <h2>Hindi Explanation (Detailed)</h2>
+                <p class="hindi-text">यह कविता एक सुंदर और वफादार महिला को खोजने की असंभवता पर एक सनकी और मजाकिया टिप्पणी है। कवि असंभव कार्यों की एक श्रृंखला सूचीबद्ध करके शुरू करता है, जैसे टूटते तारे को पकड़ना, मैंड्रेक जड़ से बच्चा पैदा करना, या यह पता लगाना कि पिछले साल कहाँ चले गए। वह कहता है कि एक सच्ची और सुंदर महिला को खोजना इन कार्यों जितना ही असंभव है। वक्ता का दावा है कि यदि कोई पूरी दुनिया की यात्रा भी करे, तो उसे कई अजीबोगरीब नजारे देखने को मिलेंगे, लेकिन उसे कभी भी ऐसी महिला नहीं मिलेगी जो सुंदर और वफादार दोनों हो। वह कहता है कि यदि तुम्हें कोई ऐसी मिल भी जाए, तो उसे बताना, लेकिन वह उससे मिलने नहीं जाएगा। जब तक वह उसके पास पहुंचेगा, तब तक वह दो या तीन अन्य पुरुषों के साथ बेवफाई कर चुकी होगी।</p>
+                
+                <h3>Simple Hindi Summary (2-3 lines)</h3>
+                <p class="hindi-text">कवि कहता है कि दुनिया में सुंदर और वफादार औरत को ढूंढना नामुमकिन है। यह काम टूटते तारे को पकड़ने जैसा ही मुश्किल है। अगर कोई ऐसी औरत मिल भी जाए, तो वह पल भर में बेवफा हो जाएगी।</p>
+
+                <h2>Themes</h2>
+                <ul>
+                    <li><strong>Female Inconstancy:</strong> The central theme is the idea that women are unfaithful and cannot be trusted. <span class="hindi-text">(नारी की अस्थिरता: केंद्रीय विषय यह विचार है कि महिलाएं बेवफा होती हैं और उन पर भरोसा नहीं किया जा सकता है।)</span></li>
+                    <li><strong>Cynicism and Misogyny:</strong> The poem reflects a cynical and somewhat anti-woman (misogynistic) attitude, which was common in Donne's time. <span class="hindi-text">(निराशावाद और स्त्री-द्वेष: कविता एक सनकी और कुछ हद तक महिला-विरोधी (स्त्री-द्वेषी) दृष्टिकोण को दर्शाती है, जो डोने के समय में आम था।)</span></li>
+                    <li><strong>Impossibility:</strong> The poet uses hyperbole (exaggeration) to emphasize the impossibility of finding an ideal woman. <span class="hindi-text">(असंभवता: कवि एक आदर्श महिला को खोजने की असंभवता पर जोर देने के लिए अतिशयोक्ति का उपयोग करता है।)</span></li>
+                </ul>
+
+                <h2>Literary Devices</h2>
+                <ul>
+                    <li><strong>Hyperbole (Exaggeration):</strong> Listing impossible tasks like catching a falling star is a form of exaggeration. <span class="hindi-text">(अतिशयोक्ति: टूटते तारे को पकड़ने जैसे असंभव कार्यों को सूचीबद्ध करना अतिशयोक्ति का एक रूप है।)</span></li>
+                    <li><strong>Allusion:</strong> The mention of the "mandrake root" is an allusion to old myths and superstitions. <span class="hindi-text">(संकेत: "मैंड्रेक जड़" का उल्लेख पुरानी मिथकों और अंधविश्वासों का संकेत है।)</span></li>
+                </ul>
+
+                <h2>Critical Appreciation Points</h2>
+                <ul>
+                    <li>The poem has a conversational and song-like quality.</li>
+                    <li>It is a typical example of metaphysical poetry, with its use of wit and unusual comparisons.</li>
+                    <li>The tone is light and humorous, even though the subject is cynical.</li>
+                    <li>The argument is built logically, moving from general impossibilities to the specific impossibility of finding a faithful woman.</li>
+                </ul>
+                </div>
+            `,
+            poem_blindness: `
+                <div class="content-section">
+                <h1>"On His Blindness" - John Milton</h1>
+
+                <h2>English Summary (Exam Style)</h2>
+                <p>This sonnet is an autobiographical poem where John Milton reflects on his loss of eyesight in the middle of his life. He feels sad and questions God, asking why God would take away his sight when he wants to use his talent of writing to serve Him. Milton feels useless. However, a voice of "Patience" inside him replies. Patience tells him that God does not need man's work or gifts. God is like a king with thousands of servants who travel over land and ocean. Those who truly serve God are the ones who patiently bear their burdens and accept His will. Patience concludes that "They also serve who only stand and wait," meaning that even those who cannot be active can serve God by patiently waiting for His commands.</p>
+
+                <h2>Hindi Explanation (Detailed)</h2>
+                <p class="hindi-text">यह सॉनेट एक आत्मकथात्मक कविता है जिसमें जॉन मिल्टन अपने जीवन के मध्य में अपनी आंखों की रोशनी खोने पर विचार करते हैं। वह दुखी महसूस करते हैं और भगवान से सवाल करते हैं, पूछते हैं कि जब वह उनकी सेवा के लिए अपनी लेखन प्रतिभा का उपयोग करना चाहते हैं तो भगवान उनकी दृष्टि क्यों छीन लेंगे। मिल्टन खुद को बेकार महसूस करते हैं। हालांकि, उनके अंदर से "धैर्य" की एक आवाज जवाब देती है। धैर्य उन्हें बताता है कि भगवान को मनुष्य के काम या उपहार की आवश्यकता नहीं है। भगवान एक राजा की तरह हैं जिसके हजारों सेवक हैं जो जमीन और महासागर में यात्रा करते हैं। जो लोग वास्तव में भगवान की सेवा करते हैं, वे वे हैं जो धैर्यपूर्वक अपने बोझ को सहन करते हैं और उनकी इच्छा को स्वीकार करते हैं। धैर्य यह कहकर समाप्त होता है कि "वे भी सेवा करते हैं जो केवल खड़े रहते हैं और प्रतीक्षा करते हैं," जिसका अर्थ है कि जो लोग सक्रिय नहीं हो सकते वे भी भगवान के आदेशों की धैर्यपूर्वक प्रतीक्षा करके उनकी सेवा कर सकते हैं।</p>
+
+                <h3>Simple Hindi Summary (2-3 lines)</h3>
+                <p class="hindi-text">कवि अंधा होने पर दुखी है और सोचता है कि अब वह भगवान की सेवा कैसे करेगा। तब उसका धैर्य उसे समझाता है कि भगवान की सच्ची सेवा सिर्फ काम करके नहीं, बल्कि मुश्किलों को चुपचाप सहकर और भगवान की इच्छा का इंतजार करके भी की जा सकती है।</p>
+
+                <h2>Themes</h2>
+                <ul>
+                    <li><strong>Faith in God:</strong> The poem is a journey from doubt and complaint to complete faith and submission to God's will. <span class="hindi-text">(ईश्वर में विश्वास: यह कविता संदेह और शिकायत से पूर्ण विश्वास और ईश्वर की इच्छा के प्रति समर्पण तक की यात्रा है।)</span></li>
+                    <li><strong>Service to God:</strong> Milton redefines the idea of service. It is not just about doing great work, but also about patient suffering. <span class="hindi-text">(ईश्वर की सेवा: मिल्टन सेवा के विचार को फिर से परिभाषित करते हैं। यह केवल महान कार्य करने के बारे में नहीं है, बल्कि धैर्यपूर्वक पीड़ा सहने के बारे में भी है।)</span></li>
+                    <li><strong>Patience and Acceptance:</strong> The central message is the importance of having patience and accepting one's fate without complaint. <span class="hindi-text">(धैर्य और स्वीकृति: केंद्रीय संदेश धैर्य रखने और अपनी नियति को बिना किसी शिकायत के स्वीकार करने का महत्व है।)</span></li>
+                </ul>
+
+                <h2>Literary Devices</h2>
+                <ul>
+                    <li><strong>Personification:</strong> Patience is personified as a character who speaks to the poet and gives him advice. <span class="hindi-text">(मानवीकरण: धैर्य को एक ऐसे पात्र के रूप में चित्रित किया गया है जो कवि से बात करता है और उसे सलाह देता है।)</span></li>
+                    <li><strong>Metaphor:</strong> Milton's life is compared to "light" which is "spent," and his poetic talent is a "talent" (referring to the biblical parable). <span class="hindi-text">(रूपक: मिल्टन के जीवन की तुलना "प्रकाश" से की गई है जो "खर्च" हो गया है, और उनकी काव्य प्रतिभा एक "प्रतिभा" है।)</span></li>
+                </ul>
+
+                <h2>Critical Appreciation Points</h2>
+                <ul>
+                    <li>It is a Petrarchan sonnet, with an octave (first 8 lines) that raises a problem and a sestet (last 6 lines) that resolves it.</li>
+                    <li>The poem is deeply personal and emotional, reflecting Milton's own spiritual crisis.</li>
+                    <li>The language is grand and majestic, typical of Milton's style.</li>
+                    <li>The concluding line, "They also serve who only stand and wait," is one of the most famous lines in English literature.</li>
+                </ul>
+                </div>
+            `,
+            drama_faustus: `
+                <div class="content-section">
+                <h1>Doctor Faustus - Christopher Marlowe</h1>
+
+                <h2>English Summary (Exam Style)</h2>
+                <p>Doctor Faustus is a brilliant scholar from Wittenberg, Germany, who feels that he has learned everything possible from traditional subjects like logic, medicine, and law. Thirsty for more knowledge and power, he turns to black magic. He summons a devil named Mephistophilis and makes a deal with him: Faustus will sell his soul to Lucifer (the devil) in exchange for 24 years of absolute power and knowledge, with Mephistophilis as his servant. Despite warnings from a Good Angel and his own conscience, Faustus signs the contract in his own blood.</p>
+                <p>For 24 years, Faustus uses his powers for petty tricks and worldly pleasures, like playing pranks on the Pope and summoning the spirit of Helen of Troy. He wastes his great power instead of doing something meaningful. As his time runs out, he becomes terrified of eternal damnation. In his final hour, he gives a powerful soliloquy expressing his regret and terror, but it is too late. He is dragged down to Hell by devils, serving as a tragic warning against excessive pride and ambition.</p>
+                
+                <h2>Hindi Explanation (Detailed)</h2>
+                <p class="hindi-text">डॉक्टर फॉस्टस, विटनबर्ग, जर्मनी का एक प्रतिभाशाली विद्वान है, जिसे लगता है कि उसने तर्क, चिकित्सा और कानून जैसे पारंपरिक विषयों से सब कुछ सीख लिया है। अधिक ज्ञान और शक्ति के प्यासे, वह काले जादू की ओर मुड़ता है। वह मेफिस्टोफिलिस नामक एक शैतान को बुलाता है और उसके साथ एक सौदा करता है: फॉस्टस अपनी आत्मा को लूसिफर (शैतान) को 24 साल की पूर्ण शक्ति और ज्ञान के बदले में बेच देगा, जिसमें मेफिस्टोफिलिस उसका सेवक होगा। एक अच्छे दूत और अपनी अंतरात्मा की चेतावनियों के बावजूद, फॉस्टस अपने ही खून से अनुबंध पर हस्ताक्षर करता है।</p>
+                <p class="hindi-text">24 वर्षों तक, फॉस्टस अपनी शक्तियों का उपयोग छोटे-मोटे करतबों और सांसारिक सुखों के लिए करता है, जैसे पोप पर मज़ाक करना और ट्रॉय की हेलेन की आत्मा को बुलाना। वह कुछ सार्थक करने के बजाय अपनी महान शक्ति को बर्बाद कर देता है। जैसे ही उसका समय समाप्त होता है, वह शाश्वत नरक की सजा से भयभीत हो जाता है। अपने अंतिम घंटे में, वह अपने पश्चाताप और आतंक को व्यक्त करते हुए एक शक्तिशाली स्वगत भाषण देता है, लेकिन बहुत देर हो चुकी होती है। उसे शैतानों द्वारा नरक में घसीट लिया जाता है, जो अत्यधिक अभिमान और महत्वाकांक्षा के खिलाफ एक दुखद चेतावनी के रूप में काम करता है।</p>
+
+                <h3>Simple Hindi Summary (2-3 lines)</h3>
+                <p class="hindi-text">डॉक्टर फॉस्टस एक बहुत ज्ञानी आदमी था, लेकिन उसे और शक्ति चाहिए थी। उसने 24 साल की जादुई शक्ति के लिए अपनी आत्मा शैतान को बेच दी। उसने अपनी शक्ति का गलत इस्तेमाल किया और अंत में, उसे पछतावा हुआ पर तब तक बहुत देर हो चुकी थी और उसे नरक ले जाया गया।</p>
+                
+                <h2>Themes</h2>
+                <ul>
+                    <li><strong>Sin, Redemption, and Damnation:</strong> The play explores the Christian concepts of sin (Faustus's deal), the possibility of redemption (which he rejects), and final damnation. <span class="hindi-text">(पाप, मोक्ष और नरक: नाटक पाप (फॉस्टस का सौदा), मोक्ष की संभावना (जिसे वह अस्वीकार करता है), और अंतिम नरक की सजा की ईसाई अवधारणाओं की पड़ताल करता है।)</span></li>
+                    <li><strong>Conflict between Medieval and Renaissance Values:</strong> Faustus represents the Renaissance man's thirst for knowledge and power, which conflicts with the medieval world's focus on God and religion. <span class="hindi-text">(मध्यकालीन और पुनर्जागरण मूल्यों के बीच संघर्ष: फॉस्टस ज्ञान और शक्ति के लिए पुनर्जागरण के व्यक्ति की प्यास का प्रतिनिधित्व करता है, जो मध्ययुगीन दुनिया के ईश्वर और धर्म पर ध्यान केंद्रित करने से टकराता है।)</span></li>
+                    <li><strong>Power and Corruption:</strong> The play shows how absolute power can corrupt a person, leading them to waste it on foolish things. <span class="hindi-text">(शक्ति और भ्रष्टाचार: नाटक दिखाता है कि कैसे पूर्ण शक्ति एक व्यक्ति को भ्रष्ट कर सकती है, जिससे वह इसे मूर्खतापूर्ण चीजों पर बर्बाद कर देता है।)</span></li>
+                </ul>
+
+                <h2>Literary Devices</h2>
+                <ul>
+                    <li><strong>Soliloquy:</strong> Faustus's final speech is a famous soliloquy where he reveals his terror and despair. <span class="hindi-text">(स्वगत भाषण: फॉस्टस का अंतिम भाषण एक प्रसिद्ध स्वगत भाषण है जिसमें वह अपने आतंक और निराशा को प्रकट करता है।)</span></li>
+                    <li><strong>Allegory:</strong> The Good and Evil Angels are allegorical figures, representing the two sides of Faustus's conscience. <span class="hindi-text">(रूपक कथा: अच्छे और बुरे दूत रूपक पात्र हैं, जो फॉस्टस की अंतरात्मा के दो पक्षों का प्रतिनिधित्व करते हैं।)</span></li>
+                </ul>
+
+                <h2>Critical Appreciation Points</h2>
+                <ul>
+                    <li>It is considered one of the greatest tragedies of the Elizabethan era.</li>
+                    <li>The character of Faustus is complex - he is both a hero for his ambition and a fool for his choices.</li>
+                    <li>Marlowe's use of blank verse is powerful and poetic, often called "Marlowe's mighty line."</li>
+                    <li>The play serves as a moral lesson (a morality play) for the audience about the dangers of pride.</li>
+                </ul>
+                </div>
+            `,
+            drama_asyoulikeit: `
+                <div class="content-section">
+                <h1>As You Like It - William Shakespeare</h1>
+                
+                <h2>English Summary (Exam Style)</h2>
+                <p><em>As You Like It</em> is a romantic comedy that begins in a court ruled by the cruel Duke Frederick, who has banished his older brother, Duke Senior. Rosalind, Duke Senior's daughter, is banished next. She decides to flee to the Forest of Arden, where her father lives in exile. For safety, she disguises herself as a young man named Ganymede. Her cousin Celia, Duke Frederick's daughter, goes with her, disguised as a poor girl named Aliena. They are accompanied by the court jester, Touchstone. In the forest, they meet a variety of interesting characters, including the melancholy Jaques.</p>
+                <p>Meanwhile, Orlando, a young man who has fallen in love with Rosalind, also escapes to the Forest of Arden to avoid his cruel brother, Oliver. In the forest, Orlando writes love poems to Rosalind and hangs them on trees. Rosalind (as Ganymede) meets Orlando and playfully offers to cure him of his love by pretending to be Rosalind. The play is filled with comical situations, witty conversations, and multiple love plots. In the end, identities are revealed, the evil characters repent, and the play concludes with four happy marriages. The rightful Duke is restored to his position, and harmony is established.</p>
+                
+                <h2>Hindi Explanation (Detailed)</h2>
+                <p class="hindi-text"><em>As You Like It</em> एक रोमांटिक कॉमेडी है जो क्रूर ड्यूक फ्रेडरिक द्वारा शासित एक दरबार में शुरू होती है, जिसने अपने बड़े भाई, ड्यूक सीनियर को निर्वासित कर दिया है। ड्यूक सीनियर की बेटी रोजालिंड को अगला निर्वासित किया जाता है। वह आर्डेन के जंगल में भागने का फैसला करती है, जहां उसके पिता निर्वासन में रहते हैं। सुरक्षा के लिए, वह गैनीमेड नामक एक युवक का वेश धारण करती है। उसकी चचेरी बहन सीलिया, ड्यूक फ्रेडरिक की बेटी, उसके साथ जाती है, जो अलीना नामक एक गरीब लड़की के वेश में है। उनके साथ दरबारी विदूषक, टचस्टोन भी है। जंगल में, वे कई दिलचस्प पात्रों से मिलते हैं, जिसमें उदास जैक्स भी शामिल है।</p>
+                <p class="hindi-text">इस बीच, ऑरलैंडो, एक युवक जो रोजालिंड से प्यार करने लगा है, वह भी अपने क्रूर भाई, ओलिवर से बचने के लिए आर्डेन के जंगल में भाग जाता है। जंगल में, ऑरलैंडो रोजालिंड के लिए प्रेम कविताएँ लिखता है और उन्हें पेड़ों पर लटका देता है। रोजालिंड (गैनीमेड के रूप में) ऑरलैंडो से मिलती है और रोजालिंड होने का नाटक करके उसे उसके प्यार से ठीक करने की पेशकश करती है। नाटक हास्य स्थितियों, मजाकिया बातचीत और कई प्रेम कथाओं से भरा है। अंत में, पहचान उजागर होती है, बुरे पात्र पश्चाताप करते हैं, और नाटक चार सुखद विवाहों के साथ समाप्त होता है। सही ड्यूक को उसके पद पर बहाल कर दिया जाता है, और सद्भाव स्थापित होता है।</p>
+
+                <h3>Simple Hindi Summary (2-3 lines)</h3>
+                <p class="hindi-text">यह एक रोमांटिक कॉमेडी है जिसमें रोजालिंड नाम की लड़की लड़के का भेष बदलकर आर्डेन के जंगल में चली जाती है। वहां वह अपने प्रेमी ऑरलैंडो से मिलती है और उसके साथ प्यार का नाटक करती है। अंत में, सब कुछ ठीक हो जाता है, सबकी सच्चाई सामने आती है और चार जोड़ों की शादी हो जाती है।</p>
+
+                <h2>Themes</h2>
+                <ul>
+                    <li><strong>Love in its Various Forms:</strong> The play explores different types of love, from romantic love (Rosalind and Orlando) to lustful love and friendship. <span class="hindi-text">(विभिन्न रूपों में प्रेम: नाटक विभिन्न प्रकार के प्रेम की पड़ताल करता है, रोमांटिक प्रेम (रोजालिंड और ऑरलैंडो) से लेकर वासनापूर्ण प्रेम और दोस्ती तक।)</span></li>
+                    <li><strong>Court vs. Country Life:</strong> The corrupt, political life of the court is contrasted with the simple, natural, and free life in the Forest of Arden. <span class="hindi-text">(दरबार बनाम ग्रामीण जीवन: दरबार के भ्रष्ट, राजनीतिक जीवन की तुलना आर्डेन के जंगल के सरल, प्राकृतिक और स्वतंत्र जीवन से की जाती है।)</span></li>
+                    <li><strong>Disguise and Identity:</strong> Rosalind's disguise as Ganymede allows her to control her own love story and explore gender roles, creating much of the play's humor. <span class="hindi-text">(भेष और पहचान: गैनीमेड के रूप में रोजालिंड का भेष उसे अपनी प्रेम कहानी को नियंत्रित करने और लिंग भूमिकाओं का पता लगाने की अनुमति देता है, जिससे नाटक का अधिकांश हास्य पैदा होता है।)</span></li>
+                </ul>
+
+                <h2>Literary Devices</h2>
+                <ul>
+                    <li><strong>Pastoral Comedy:</strong> The play is a pastoral, meaning it idealizes the simple life of shepherds in a rural setting (the Forest of Arden). <span class="hindi-text">(पेस्टोरल कॉमेडी: यह नाटक एक पेस्टोरल है, जिसका अर्थ है कि यह एक ग्रामीण परिवेश (आर्डेन का जंगल) में चरवाहों के सरल जीवन को आदर्श बनाता है।)</span></li>
+                    <li><strong>Dramatic Irony:</strong> The audience knows that Ganymede is actually Rosalind, but Orlando does not. This creates many humorous situations. <span class="hindi-text">(नाटकीय विडंबना: दर्शक जानते हैं कि गैनीमेड वास्तव में रोजालिंड है, लेकिन ऑरलैंडो नहीं जानता। यह कई हास्यपूर्ण स्थितियाँ पैदा करता है।)</span></li>
+                </ul>
+
+                <h2>Critical Appreciation Points</h2>
+                <ul>
+                    <li>Rosalind is one of Shakespeare's strongest and most intelligent female characters.</li>
+                    <li>The play is famous for its witty dialogue and wordplay.</li>
+                    <li>Jaques's speech "All the world's a stage" is one of the most famous speeches in all of literature.</li>
+                    <li>It perfectly fits the genre of romantic comedy with its focus on love, obstacles, and a happy resolution with multiple marriages.</li>
+                </ul>
+                </div>
+            `,
+            drama_arms: `
+                <div class="content-section">
+                <h1>Arms and the Man - G.B. Shaw</h1>
+
+                <h2>English Summary (Exam Style)</h2>
+                <p><em>Arms and the Man</em> is an "anti-romantic" comedy set during the Serbo-Bulgarian War of 1885. The play makes fun of the romantic, idealistic ideas about war and love. The story begins in the bedroom of Raina Petkoff, a young Bulgarian woman engaged to the dashing war hero, Major Sergius Saranoff. During a battle, a Swiss mercenary (a soldier for hire) named Captain Bluntschli climbs into her room to escape capture. Unlike the heroic Sergius, Bluntschli is a practical and professional soldier who carries chocolates in his cartridge belt instead of extra bullets, earning him the nickname "the chocolate cream soldier."</p>
+                <p>Raina, initially shocked, helps him hide. Later, when the war is over, Bluntschli returns to the Petkoff house. His practical and realistic nature contrasts sharply with the foolish and fake heroism of Sergius and the romantic fantasies of Raina. Over time, Raina and Sergius realize that their "higher love" is a sham. Sergius falls for the clever servant girl Louka, and Raina falls for the sensible and efficient Bluntschli. The play ends with Raina breaking her engagement to Sergius and getting engaged to the wealthy and practical Captain Bluntschli, showing the victory of realism over romanticism.</p>
+
+                <h2>Hindi Explanation (Detailed)</h2>
+                <p class="hindi-text"><em>आर्म्स एंड द मैन</em> 1885 के सर्बो-बल्गेरियाई युद्ध के दौरान सेट की गई एक "एंटी-रोमांटिक" कॉमेडी है। यह नाटक युद्ध और प्रेम के बारे में रोमांटिक, आदर्शवादी विचारों का मज़ाक उड़ाता है। कहानी रैना पेटकोफ के बेडरूम में शुरू होती है, जो एक युवा बल्गेरियाई महिला है जिसकी सगाई बहादुर युद्ध नायक, मेजर सर्जियस सरानॉफ से हुई है। एक लड़ाई के दौरान, कैप्टन ब्लंटशली नामक एक स्विस भाड़े का सैनिक पकड़ से बचने के लिए उसके कमरे में चढ़ जाता है। वीर सर्जियस के विपरीत, ब्लंटशली एक व्यावहारिक और पेशेवर सैनिक है जो अतिरिक्त गोलियों के बजाय अपनी कारतूस बेल्ट में चॉकलेट रखता है, जिससे उसे "चॉकलेट क्रीम सैनिक" का उपनाम मिलता है।</p>
+                <p class="hindi-text">रैना, शुरू में हैरान, उसे छिपाने में मदद करती है। बाद में, जब युद्ध समाप्त हो जाता है, तो ब्लंटशली पेटकोफ घर लौटता है। उसकी व्यावहारिक और यथार्थवादी प्रकृति सर्जियस की मूर्खतापूर्ण और नकली वीरता और रैना की रोमांटिक कल्पनाओं से तेजी से विपरीत है। समय के साथ, रैना और सर्जियस को एहसास होता है कि उनका "उच्च प्रेम" एक दिखावा है। सर्जियस चतुर नौकरानी लुका के लिए गिर जाता है, और रैना समझदार और कुशल ब्लंटशली के लिए गिर जाती है। नाटक रैना द्वारा सर्जियस से अपनी सगाई तोड़ने और धनी और व्यावहारिक कैप्टन ब्लंटशली से सगाई करने के साथ समाप्त होता है, जो रोमांटिकतावाद पर यथार्थवाद की जीत को दर्शाता है।</p>
+
+                <h3>Simple Hindi Summary (2-3 lines)</h3>
+                <p class="hindi-text">यह नाटक युद्ध और प्यार के झूठे दिखावे का मजाक उड़ाता है। रैना नाम की लड़की का मंगेतर सर्जियस एक बनावटी हीरो है। रैना की मुलाकात ब्लंटशली नाम के एक सच्चे और व्यावहारिक सैनिक से होती है और अंत में वह सर्जियस को छोड़कर ब्लंटशली से शादी कर लेती है। यह नाटक दिखाता है कि असलियत, कल्पना से बेहतर होती है।</p>
+
+                <h2>Themes</h2>
+                <ul>
+                    <li><strong>Realism vs. Romanticism:</strong> This is the central theme. Shaw contrasts the foolish romantic ideals of war and love with the practical reality. <span class="hindi-text">(यथार्थवाद बनाम रोमांटिकतावाद: यह केंद्रीय विषय है। शॉ युद्ध और प्रेम के मूर्खतापूर्ण रोमांटिक आदर्शों की तुलना व्यावहारिक वास्तविकता से करते हैं।)</span></li>
+                    <li><strong>The Falsity of Heroism:</strong> The play satirizes the traditional idea of a war hero. Sergius is brave but foolish, while the real professional, Bluntschli, is practical and avoids unnecessary risks. <span class="hindi-text">(वीरता का मिथ्यात्व: नाटक युद्ध नायक के पारंपरिक विचार पर व्यंग्य करता है। सर्जियस बहादुर लेकिन मूर्ख है, जबकि असली पेशेवर, ब्लंटशली, व्यावहारिक है और अनावश्यक जोखिमों से बचता है।)</span></li>
+                    <li><strong>Class and Social Pretence:</strong> The play makes fun of the Petkoff family's attempts to appear rich and sophisticated, and shows the intelligence of the servant class (Louka). <span class="hindi-text">(वर्ग और सामाजिक दिखावा: नाटक पेटकोफ परिवार के अमीर और परिष्कृत दिखने के प्रयासों का मज़ाक उड़ाता है, और नौकर वर्ग (लुका) की बुद्धिमत्ता को दिखाता है।)</span></li>
+                </ul>
+
+                <h2>Literary Devices</h2>
+                <ul>
+                    <li><strong>Satire:</strong> The entire play is a satire on 19th-century society's romantic ideas about war and love. <span class="hindi-text">(व्यंग्य: पूरा नाटक 19वीं सदी के समाज के युद्ध और प्रेम के बारे में रोमांटिक विचारों पर एक व्यंग्य है।)</span></li>
+                    <li><strong>Irony:</strong> There is irony in the fact that the "hero" Sergius is a fool, and the "coward" Bluntschli (who carries chocolates) is the more competent soldier. <span class="hindi-text">(विडंबना: इस तथ्य में विडंबना है कि "नायक" सर्जियस एक मूर्ख है, और "कायर" ब्लंटशली (जो चॉकलेट रखता है) अधिक सक्षम सैनिक है।)</span></li>
+                </ul>
+
+                <h2>Critical Appreciation Points</h2>
+                <ul>
+                    <li>It is a classic example of a "Comedy of Ideas," where the focus is on debating social and philosophical ideas rather than just on the plot.</li>
+                    <li>Shaw uses witty and intelligent dialogue to expose the hypocrisy of his characters and society.</li>
+                    <li>The characters are not just individuals but represent different ideas (Raina = Romanticism, Bluntschli = Realism).</li>
+                    <li>The play was revolutionary for its time because it challenged the audience's cherished beliefs about war and love.</li>
+                </ul>
+                </div>
+            `,
+            revision: `
+                <div class="content-section">
+                <h1>Quick Revision Section</h1>
+                <p>This table is for your last-minute revision. It has the most important points for each text.</p>
+                <p class="hindi-text">यह तालिका आपके अंतिम-मिनट के संशोधन के लिए है। इसमें प्रत्येक पाठ के लिए सबसे महत्वपूर्ण बिंदु हैं।</p>
+                
+                <h2>Poetry Revision Table</h2>
+                <div class="overflow-x-auto">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>English 2-line Summary</th>
+                            <th>Hindi 2-line Summary</th>
+                            <th>2 Themes</th>
+                            <th>1 Literary Device</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sonnet 116</td>
+                            <td>True love is constant and unchanging, like a fixed star. It is not affected by time or circumstances.</td>
+                            <td>सच्चा प्यार एक स्थिर तारे की तरह है जो कभी नहीं बदलता। इस पर समय या हालात का कोई असर नहीं होता।</td>
+                            <td>Nature of True Love, Love vs. Time</td>
+                            <td>Metaphor</td>
+                        </tr>
+                        <tr>
+                            <td>Go and Catch a...</td>
+                            <td>The speaker cynically claims it is impossible to find a woman who is both beautiful and faithful.</td>
+                            <td>कवि कहता है कि एक ही समय में सुंदर और वफादार महिला को ढूंढना असंभव है।</td>
+                            <td>Female Inconstancy, Cynicism</td>
+                            <td>Hyperbole</td>
+                        </tr>
+                         <tr>
+                            <td>On His Blindness</td>
+                            <td>The poet questions God after losing his sight but learns that true service is to patiently accept God's will.</td>
+                            <td>कवि अंधा होने पर ईश्वर से सवाल करता है, पर सीखता है कि सच्ची सेवा धैर्यपूर्वक ईश्वर की इच्छा को स्वीकार करना है।</td>
+                            <td>Faith in God, True Service</td>
+                            <td>Personification</td>
+                        </tr>
+                         <tr>
+                            <td>Elegy Written in a...</td>
+                            <td>The poet reflects on the lives of poor, unknown villagers buried in a churchyard, thinking about their wasted potential.</td>
+                            <td>कवि कब्रिस्तान में दफन गरीब ग्रामीणों के जीवन पर विचार करता है, और उनकी अनमोल क्षमताओं के व्यर्थ जाने के बारे में सोचता है।</td>
+                            <td>Death the Leveller, Unfulfilled Potential</td>
+                            <td>Personification</td>
+                        </tr>
+                         <tr>
+                            <td>Ode to the West Wind</td>
+                            <td>The poet asks the powerful West Wind to spread his revolutionary ideas throughout the world like it spreads seeds.</td>
+                            <td>कवि शक्तिशाली पश्चिमी हवा से कहता है कि वह उसके क्रांतिकारी विचारों को दुनिया भर में बीजों की तरह फैला दे।</td>
+                            <td>Power of Nature, Hope & Rebirth</td>
+                            <td>Apostrophe</td>
+                        </tr>
+                         <tr>
+                            <td>My Last Duchess</td>
+                            <td>A Duke shows a visitor a portrait of his former wife, revealing his cruel, possessive, and arrogant nature.</td>
+                            <td>एक ड्यूक एक मेहमान को अपनी पूर्व पत्नी की तस्वीर दिखाता है, और अपना क्रूर, अहंकारी स्वभाव प्रकट करता है।</td>
+                            <td>Power & Control, Art & Reality</td>
+                            <td>Dramatic Monologue</td>
+                        </tr>
+                        <tr>
+                            <td>Dover Beach</td>
+                            <td>The poet looks at the sea and feels a loss of religious faith in the modern world, asking his love to be true.</td>
+                            <td>कवि समुद्र को देखकर आधुनिक दुनिया में धार्मिक आस्था के नुकसान को महसूस करता है, और अपने प्रिय से सच्चा रहने के लिए कहता है।</td>
+                            <td>Loss of Faith, Alienation</td>
+                            <td>Simile</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <h2 class="mt-8">Drama Revision Table</h2>
+                <div class="overflow-x-auto">
+                <table>
+                     <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>English 2-line Summary</th>
+                            <th>Hindi 2-line Summary</th>
+                            <th>2 Themes</th>
+                            <th>1 Literary Device</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Doctor Faustus</td>
+                            <td>A brilliant scholar sells his soul to the devil for 24 years of power, wastes it, and is ultimately damned.</td>
+                            <td>एक बुद्धिमान विद्वान 24 साल की शक्ति के लिए अपनी आत्मा शैतान को बेच देता है, उसे बर्बाद करता है, और अंत में नरक जाता है।</td>
+                            <td>Sin & Damnation, Renaissance Ambition</td>
+                            <td>Soliloquy</td>
+                        </tr>
+                        <tr>
+                            <td>As You Like It</td>
+                            <td>A banished girl disguises herself as a man in a forest, leading to comical situations and multiple happy marriages.</td>
+                            <td>एक निर्वासित लड़की जंगल में एक पुरुष का वेश धारण करती है, जिससे हास्यपूर्ण स्थितियाँ और कई सुखद विवाह होते हैं।</td>
+                            <td>Love's Variety, Court vs. Country</td>
+                            <td>Dramatic Irony</td>
+                        </tr>
+                        <tr>
+                            <td>Arms and the Man</td>
+                            <td>A practical "chocolate cream soldier" wins the heart of a romantic girl, proving realism is better than fake heroism.</td>
+                            <td>एक व्यावहारिक "चॉकलेट क्रीम सैनिक" एक रोमांटिक लड़की का दिल जीतता है, यह साबित करता है कि यथार्थवाद नकली वीरता से बेहतर है।</td>
+                            <td>Realism vs. Romanticism, Satire of War</td>
+                            <td>Satire</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                </div>
+            `,
+            crash_course: `
+                <div class="content-section">
+                <h1>2-Day Crash Course Plan</h1>
+                <p>Follow this plan strictly for the last two days before your exam. It is designed to cover everything important.</p>
+                <p class="hindi-text">अपनी परीक्षा से पहले अंतिम दो दिनों के लिए इस योजना का सख्ती से पालन करें। यह सब कुछ महत्वपूर्ण कवर करने के लिए डिज़ाइन किया गया है।</p>
+                
+                <h2>Day 1: Cover all Summaries & Short Questions</h2>
+                <div class="exam-tip">
+                <ul>
+                    <li>
+                        <strong>Morning (8 AM - 11 AM):</strong>
+                        <ul>
+                            <li>Read the 'English Literature Basics' section carefully. (30 mins)</li>
+                            <li>Study the detailed summaries and Hindi explanations of the first 8 poems (from Sonnet 116 to The World is Too Much With Us). (2.5 hours)</li>
+                            <li class="hindi-text"><strong>सुबह (8 AM - 11 AM):</strong> 'अंग्रेजी साहित्य की मूल बातें' खंड को ध्यान से पढ़ें। (30 मिनट) | पहली 8 कविताओं के विस्तृत सारांश और हिंदी स्पष्टीकरण का अध्ययन करें। (2.5 घंटे)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Afternoon (1 PM - 4 PM):</strong>
+                        <ul>
+                            <li>Study the remaining 7 poems (from West Wind to Prufrock). (3 hours)</li>
+                            <li class="hindi-text"><strong>दोपहर (1 PM - 4 PM):</strong> शेष 7 कविताओं का अध्ययन करें। (3 घंटे)</li>
+                        </ul>
+                    </li>
+                     <li>
+                        <strong>Evening (6 PM - 9 PM):</strong>
+                        <ul>
+                            <li>Study the detailed summaries and themes for all 3 dramas: Doctor Faustus, As You Like It, Arms and the Man. (3 hours)</li>
+                             <li class="hindi-text"><strong>शाम (6 PM - 9 PM):</strong> सभी 3 नाटकों के विस्तृत सारांश और विषयों का अध्ययन करें। (3 घंटे)</li>
+                        </ul>
+                    </li>
+                     <li>
+                        <strong>Night (10 PM - 12 AM):</strong>
+                        <ul>
+                            <li>Go through the 'Past Year Questions' for Section A and Section B. Just read the questions and the provided model answers to understand the pattern. (2 hours)</li>
+                            <li class="hindi-text"><strong>रात (10 PM - 12 AM):</strong> खंड ए और खंड बी के लिए 'पिछले वर्ष के प्रश्न' देखें। पैटर्न को समझने के लिए बस प्रश्नों और दिए गए मॉडल उत्तरों को पढ़ें। (2 घंटे)</li>
+                        </ul>
+                    </li>
+                </ul>
+                </div>
+                
+                <h2>Day 2: Revise Long Answers & Final Revision</h2>
+                 <div class="exam-tip">
+                <ul>
+                    <li>
+                        <strong>Morning (8 AM - 11 AM):</strong>
+                        <ul>
+                            <li>Focus on Section C questions from the 'Past Year Questions' and 'Model Answers' sections. Read them 2-3 times to understand the structure (Intro - Main Points - Conclusion). (3 hours)</li>
+                            <li class="hindi-text"><strong>सुबह (8 AM - 11 AM):</strong> खंड सी के प्रश्नों पर ध्यान केंद्रित करें। संरचना को समझने के लिए उन्हें 2-3 बार पढ़ें। (3 घंटे)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Afternoon (1 PM - 4 PM):</strong>
+                        <ul>
+                             <li>Revise all the <span class="high-priority">🔥 High Priority</span> questions. Try to write the main points for 2-3 long answers on your own. (3 hours)</li>
+                            <li class="hindi-text"><strong>दोपहर (1 PM - 4 PM):</strong> सभी <span class="high-priority">🔥 उच्च प्राथमिकता</span> वाले प्रश्नों को दोहराएं। 2-3 लंबे उत्तरों के लिए मुख्य बिंदु खुद लिखने का प्रयास करें। (3 घंटे)</li>
+                        </ul>
+                    </li>
+                     <li>
+                        <strong>Evening (6 PM - 8 PM):</strong>
+                        <ul>
+                            <li>Go to the 'Quick Revision Section'. Read the revision tables 3-4 times. This is for memorizing key points. (2 hours)</li>
+                             <li class="hindi-text"><strong>शाम (6 PM - 8 PM):</strong> 'त्वरित संशोधन अनुभाग' पर जाएं। संशोधन तालिकाओं को 3-4 बार पढ़ें। यह मुख्य बिंदुओं को याद करने के लिए है। (2 घंटे)</li>
+                        </ul>
+                    </li>
+                     <li>
+                        <strong>Night (9 PM onwards):</strong>
+                        <ul>
+                            <li>Read the 'Exam Day Tips'. Relax. Don't study anything new. Get a good night's sleep.</li>
+                            <li class="hindi-text"><strong>रात (9 बजे के बाद):</strong> 'परीक्षा के दिन के टिप्स' पढ़ें। आराम करें। कुछ भी नया न पढ़ें। अच्छी नींद लें।</li>
+                        </ul>
+                    </li>
+                </ul>
+                </div>
+                </div>
+            `,
+            exam_tips: `
+                <div class="content-section">
+                <h1>Exam Day Tips</h1>
+                <p>Some final tips to help you perform your best in the exam hall.</p>
+                <p class="hindi-text">परीक्षा हॉल में अपना सर्वश्रेष्ठ प्रदर्शन करने में आपकी मदद करने के लिए कुछ अंतिम सुझाव।</p>
+                
+                <h2>Time Management in Exam Hall</h2>
+                <p>Stick to the time plan. Don't spend too much time on one question.</p>
+                <p class="hindi-text">समय योजना पर टिके रहें। एक प्रश्न पर बहुत अधिक समय न बिताएं।</p>
+                <ul>
+                    <li><strong>Section A (8 questions):</strong> 25-30 mins</li>
+                    <li><strong>Section B (4 questions):</strong> 60-70 mins</li>
+                    <li><strong>Section C (2 questions):</strong> 70-80 mins</li>
+                    <li><strong>Revision:</strong> 10-15 mins</li>
+                </ul>
+
+                <h2>How to attempt in English (when you think in Hindi)</h2>
+                <div class="exam-tip">
+                    <p>This is a common problem. Here is how to handle it:</p>
+                    <p class="hindi-text">यह एक आम समस्या है। इससे निपटने का तरीका यहां दिया गया है:</p>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li><strong>Think in Hindi, but use simple English words.</strong> First, think of the answer in Hindi. Then, translate it into simple English sentences. Don't try to make complex sentences.</li>
+                        <li class="hindi-text"><strong>हिंदी में सोचें, लेकिन सरल अंग्रेजी शब्दों का उपयोग करें।</strong> पहले, हिंदी में उत्तर सोचें। फिर, इसे सरल अंग्रेजी वाक्यों में अनुवाद करें। जटिल वाक्य बनाने की कोशिश न करें।</li>
+                        <li><strong>Use Keywords.</strong> For every poem and drama, remember 5-6 important English keywords (e.g., for Sonnet 116: true love, constant, ever-fixed mark, time, unchanging). Use these words in your answers.</li>
+                        <li class="hindi-text"><strong>कीवर्ड का प्रयोग करें।</strong> प्रत्येक कविता और नाटक के लिए, 5-6 महत्वपूर्ण अंग्रेजी कीवर्ड याद रखें। इन शब्दों का उपयोग अपने उत्तरों में करें।</li>
+                        <li><strong>Structure Your Answer.</strong> For long answers, always use an Introduction, Main Body (in points or paragraphs), and a Conclusion. This makes your answer look organized.</li>
+                        <li class="hindi-text"><strong>अपने उत्तर की संरचना करें।</strong> लंबे उत्तरों के लिए, हमेशा एक परिचय, मुख्य भाग (बिंदुओं या पैराग्राफ में), और एक निष्कर्ष का उपयोग करें। यह आपके उत्तर को व्यवस्थित दिखाता है।</li>
+                        <li><strong>Write Neat and Clean.</strong> Good handwriting and a clean answer sheet can create a good impression on the examiner.</li>
+                        <li class="hindi-text"><strong>साफ-सुथरा लिखें।</strong> अच्छी लिखावट और एक साफ उत्तर पुस्तिका परीक्षक पर अच्छा प्रभाव डाल सकती है।</li>
+                    </ol>
+                </div>
+                
+                <h2>Last 2-Hour Quick Revision Checklist</h2>
+                <ul>
+                    <li>Revise the 'Quick Revision Section' tables one last time.</li>
+                    <li>Read the simple Hindi summaries of all texts.</li>
+                    <li>Remember the names of the poets/playwrights.</li>
+                    <li>Read the main points of the <span class="high-priority">🔥 High Priority</span> long questions.</li>
+                    <li>Stay calm and confident. You have prepared well!</li>
+                    <li class="hindi-text">शांत और आत्मविश्वासी रहें। आपने अच्छी तैयारी की है!</li>
+                </ul>
+                </div>
+            `,
+            pyq: `
+                 <div class="content-section">
+                 <h1>Past Year Questions (High-Priority)</h1>
+                 <p>These are not exact past year papers, but they are the most important and frequently asked types of questions for your syllabus. Practice them well.</p>
+                 <p class="hindi-text">ये सटीक पिछले वर्ष के पेपर नहीं हैं, लेकिन ये आपके पाठ्यक्रम के लिए सबसे महत्वपूर्ण और अक्सर पूछे जाने वाले प्रकार के प्रश्न हैं। इनका अच्छे से अभ्यास करें।</p>
+                 
+                 <h2>Section A (Very Short Answers - 30 words)</h2>
+                 <ol class="list-decimal list-inside space-y-4">
+                    <li>What is the central idea of Shakespeare's Sonnet 116? <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Why does the poet in "Go and Catch a Falling Star" think it's impossible to find a faithful woman?</li>
+                    <li>What is Milton's final understanding of service to God in "On His Blindness"? <span class="high-priority">🔥 High Priority</span></li>
+                    <li>What is a dramatic monologue? Give an example from your syllabus.</li>
+                    <li>Why does the Duke in "My Last Duchess" dislike his former wife? <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Who is the "chocolate cream soldier" in <em>Arms and the Man</em>?</li>
+                    <li>Why does Rosalind disguise herself as Ganymede in <em>As You Like It</em>?</li>
+                    <li>What deal does Doctor Faustus make with the devil? <span class="high-priority">🔥 High Priority</span></li>
+                 </ol>
+                 
+                 <h2>Section B (Short Answers - 200 words)</h2>
+                 <ol class="list-decimal list-inside space-y-4">
+                    <li>Write a critical appreciation of the poem "The Tyger" by William Blake.</li>
+                    <li>Discuss the theme of loss of faith in Matthew Arnold's "Dover Beach". <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Explain the conflict between realism and romanticism in <em>Arms and the Man</em>.</li>
+                    <li>Write a short note on the Forest of Arden in <em>As You Like It</em>.</li>
+                    <li>Analyze the character of Mephistophilis in <em>Doctor Faustus</em>.</li>
+                    <li>What are the main ideas in Shelley's "Ode to the West Wind"? <span class="high-priority">🔥 High Priority</span></li>
+                 </ol>
+
+                 <h2>Section C (Long Answers - 500 words)</h2>
+                 <ol class="list-decimal list-inside space-y-4">
+                    <li>Discuss <em>Doctor Faustus</em> as a Renaissance tragedy. <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Comment on <em>As You Like It</em> as a typical Shakespearean romantic comedy. <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Critically analyze G.B. Shaw's play <em>Arms and the Man</em> as a satire on war and love. <span class="high-priority">🔥 High Priority</span></li>
+                    <li>Write a critical summary of John Keats' "Ode on a Grecian Urn," focusing on its theme of art and reality.</li>
+                 </ol>
+                 </div>
+            `,
+            model_answers: `
+                <div class="content-section">
+                <h1>Model Answers for Expected Questions</h1>
+                <p>Here are some model answers to help you understand how to write in the exam.</p>
+                <p class="hindi-text">परीक्षा में कैसे लिखना है, यह समझने में आपकी मदद करने के लिए यहां कुछ मॉडल उत्तर दिए गए हैं।</p>
+                
+                <h2>Short Answer Example (Section B)</h2>
+                <h3>Q: Discuss the theme of loss of faith in Matthew Arnold's "Dover Beach".</h3>
+                <p><strong>Answer:</strong> Matthew Arnold's "Dover Beach" is a powerful poem about the loss of religious faith in the modern world, which was influenced by science and new ideas. The poet uses the image of the sea as a metaphor for faith. He says that the "Sea of Faith" was once full and surrounded the world like a girdle. But now, he can only hear its "melancholy, long, withdrawing roar." This sound represents the declining belief in God and religion.</p>
+                <p>The world, which seems beautiful like a "land of dreams," is actually a dark and confusing place without the light of faith. It is full of struggle and pain, where people fight without any clear purpose ("as on a darkling plain... where ignorant armies clash by night"). In this sad and faithless world, the only hope for the poet is true and faithful personal love. He asks his beloved to be true to him, as their love is the only real and certain thing left.</p>
+                
+                <p class="hindi-text"><strong>हिंदी स्पष्टीकरण:</strong> मैथ्यू अर्नोल्ड की कविता "डोवर बीच" आधुनिक दुनिया में धार्मिक आस्था के नुकसान के बारे में एक शक्तिशाली कविता है। कवि आस्था के लिए समुद्र की छवि का उपयोग रूपक के रूप में करता है। वह कहता है कि "आस्था का सागर" कभी भरा हुआ था, लेकिन अब वह केवल इसकी "उदास, लंबी, घटती हुई गर्जना" सुन सकता है। यह घटते विश्वास का प्रतीक है। आस्था के बिना, दुनिया एक अंधेरी और दर्दनाक जगह है। इस विश्वासहीन दुनिया में, कवि के लिए एकमात्र आशा सच्चा व्यक्तिगत प्रेम है।</p>
+
+                <h2>Long Answer Example (Section C)</h2>
+                <h3>Q: Discuss <em>As You Like It</em> as a typical Shakespearean romantic comedy. <span class="high-priority">🔥 High Priority</span></h3>
+                <p><strong>Introduction</strong><br>
+                <em>As You Like It</em> is one of William Shakespeare's most famous plays and a perfect example of a romantic comedy. This genre has specific features like a focus on love, obstacles that lovers must overcome, a pastoral setting, witty dialogue, and a happy ending with multiple marriages. <em>As You Like It</em> contains all these elements, making it a classic of its kind.</p>
+                <p class="hindi-text"><em>(परिचय: As You Like It शेक्सपियर का एक आदर्श रोमांटिक कॉमेडी है। इसमें प्रेम, प्रेमियों के सामने आने वाली बाधाएं, एक ग्रामीण सेटिंग, और कई विवाहों के साथ एक सुखद अंत जैसी सभी विशेषताएं हैं।)</em></p>
+
+                <p><strong>Main Points</strong></p>
+                <ol class="list-decimal list-inside space-y-3">
+                    <li>
+                        <strong>Central Theme of Love:</strong> The main plot revolves around the love between Rosalind and Orlando. The play also explores other kinds of love, like the playful love of Celia and Oliver, the physical love of Touchstone and Audrey, and the unrequited love of Silvius for Phebe. This variety shows love in all its forms, which is a key feature of romantic comedy.
+                        <br><span class="hindi-text">(प्रेम का केंद्रीय विषय: नाटक का मुख्य कथानक रोजालिंड और ऑरलैंडो के बीच प्रेम के इर्द-गिर्द घूमता है, और यह अन्य प्रकार के प्रेम को भी दर्शाता है।)</span>
+                    </li>
+                    <li>
+                        <strong>Obstacles and Resolution:</strong> The lovers face many problems. Rosalind is banished by her uncle, and Orlando has to flee his cruel brother. These obstacles force them into the Forest of Arden. The resolution comes when the evil characters, Duke Frederick and Oliver, change their hearts, allowing the lovers to unite happily.
+                        <br><span class="hindi-text">(बाधाएं और समाधान: प्रेमियों को कई समस्याओं का सामना करना पड़ता है, लेकिन अंत में, बुरी पात्रों के हृदय परिवर्तन से सब कुछ ठीक हो जाता है।)</span>
+                    </li>
+                    <li>
+                        <strong>Pastoral Setting:</strong> Much of the action takes place in the Forest of Arden. This is a typical pastoral setting - an idealized, natural world that is free from the corruption of the court. The forest provides a space where characters can find freedom, fall in love, and discover their true selves.
+                        <br><span class="hindi-text">(ग्रामीण सेटिंग: नाटक का अधिकांश भाग आर्डेन के जंगल में घटित होता है, जो दरबार के भ्रष्टाचार से मुक्त एक आदर्श प्राकृतिक दुनिया है।)</span>
+                    </li>
+                    <li>
+                        <strong>A Strong Heroine and Disguise:</strong> Romantic comedies often feature a clever and strong female lead. Rosalind is intelligent, witty, and controls the plot through her disguise as Ganymede. The use of disguise creates dramatic irony and many humorous situations, which is another common element of this genre.
+                        <br><span class="hindi-text">(एक मजबूत नायिका और भेष: रोजालिंड एक चतुर नायिका है जो गैनीमेड के रूप में अपने भेष का उपयोग करके कथानक को नियंत्रित करती है, जिससे हास्य पैदा होता है।)</span>
+                    </li>
+                </ol>
+
+                <p><strong>Conclusion</strong><br>
+                In conclusion, <em>As You Like It</em> perfectly embodies the spirit of Shakespearean romantic comedy. With its focus on love overcoming all difficulties, its escape to a magical forest, its clever heroine, and its joyful conclusion with four marriages, the play celebrates love, forgiveness, and the triumph of good over evil in a light-hearted and optimistic way.
+                <br><span class="hindi-text">(निष्कर्ष: As You Like It में रोमांटिक कॉमेडी के सभी तत्व हैं: प्रेम की जीत, एक जादुई जंगल, एक चतुर नायिका, और एक सुखद अंत। यह नाटक प्रेम और क्षमा का उत्सव मनाता है।)</span></p>
+
+                </div>
+            `
+        };
+        
+        // Add placeholders for all poems
+        const poems = [
+            { id: 'poem_absalom', title: 'From Absalom and Achitophel - John Dryden' },
+            { id: 'poem_arbuthnot', title: 'From An Epistle to Dr. Arbuthnot - Alexander Pope' },
+            { id: 'poem_elegy', title: 'Elegy Written in a Country Churchyard - Thomas Gray' },
+            { id: 'poem_tyger', title: 'The Tyger - William Blake' },
+            { id: 'poem_world', title: 'The World is Too Much With Us - William Wordsworth' },
+            { id: 'poem_westwind', title: 'Ode to the West Wind - P.B. Shelley' },
+            { id: 'poem_urn', title: 'Ode on a Grecian Urn - John Keats' },
+            { id: 'poem_ulysses', title: 'Ulysses - Lord Alfred Tennyson' },
+            { id: 'poem_duchess', title: 'My Last Duchess - Robert Browning' },
+            { id: 'poem_dover', title: 'Dover Beach - Matthew Arnold' },
+            { id: 'poem_secondcoming', title: 'The Second Coming - W.B. Yeats' },
+            { id: 'poem_prufrock', title: 'The Love Song of J. Alfred Prufrock - T.S. Eliot' }
+        ];
+
+        poems.forEach(poem => {
+            content[poem.id] = `
+                <div class="content-section">
+                <h1>${poem.title}</h1>
+                <div class="p-4 my-6 bg-blue-100 border-l-4 border-blue-500 text-blue-700 rounded-md">
+                    <p class="font-bold">Content Coming Soon</p>
+                    <p>Detailed notes for this text will be added shortly. Please check back later.</p>
+                    <p class="hindi-text mt-2">इस पाठ के लिए विस्तृत नोट्स जल्द ही जोड़े जाएंगे। कृपया बाद में जांचें।</p>
+                </div>
+                </div>
+            `;
+        });
+
+
+        const mainContent = document.getElementById('main-content');
+        const sidebarContainer = document.getElementById('sidebar-container');
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const closeButton = document.getElementById('close-button');
+        const backdrop = document.getElementById('backdrop');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        function showContent(id) {
+            mainContent.innerHTML = content[id] || '<p>Content not found.</p>';
+            mainContent.scrollTop = 0; // Scroll to top
+            
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                 // Check if the link's onclick corresponds to the current id
+                if (link.getAttribute('onclick').includes(`'${id}'`)) {
+                    link.classList.add('active');
+                }
+            });
+
+            if (window.innerWidth < 768) {
+                closeSidebar();
+            }
+        }
+        
+        function toggleSubmenu(id) {
+            const submenu = document.getElementById(id);
+            if (submenu.style.display === 'block') {
+                submenu.style.display = 'none';
+            } else {
+                submenu.style.display = 'block';
+            }
+        }
+
+        function openSidebar() {
+            sidebarContainer.classList.add('open');
+            backdrop.classList.remove('hidden');
+        }
+
+        function closeSidebar() {
+            sidebarContainer.classList.remove('open');
+            backdrop.classList.add('hidden');
+        }
+
+        hamburgerButton.addEventListener('click', openSidebar);
+        closeButton.addEventListener('click', closeSidebar);
+        backdrop.addEventListener('click', closeSidebar);
+
+        // Load introduction content by default
+        window.onload = () => showContent('introduction');
+
+    </script>
+</body>
+</html>
