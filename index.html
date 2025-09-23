@@ -3,274 +3,1074 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VMOU HI-01: इतिहास प्रश्न बैंक (Android)</title>
+    <title>YAP-01: यात्रा एवं पर्यटन - परीक्षा सहायक (50 प्रश्न)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Academic Earth Tones -->
-    <!-- Application Structure Plan: The design is now a mobile-first, vertical stack. This is the optimal structure for Android devices where screen real estate is limited and users prefer to scroll. Key interactions like filtering are consolidated into a single, prominent control section. The filter buttons and search bar are designed with larger touch targets to be more user-friendly on a small screen. The question bank itself is presented as a scrollable list of cards, each with an easy-to-tap 'उत्तर देखें' button. This vertical flow is intuitive for mobile users and avoids horizontal scrolling, ensuring a clean and responsive experience. -->
+    <!-- Chosen Palette: Scholarly Neutrals -->
+    <!-- Application Structure Plan: A tabbed, single-page application structure was chosen for optimal user experience. This design avoids a long, overwhelming scroll and allows the student to focus on one aspect of their preparation at a time: (1) A 'Dashboard' for a quick analytical overview of important topics, (2) 'Important Questions' with unit-wise filtering for focused study, (3) 'Exam Strategy' for practical advice, and (4) a 'Cheat Sheet' for rapid last-minute revision. This user-centric navigation is more effective for exam prep than a linear document structure. -->
     <!-- Visualization & Content Choices: 
-        1. Report Info: Important/repeated questions. Goal: Facilitate active recall and self-assessment. Viz/Method: Interactive HTML cards with a show/hide answer toggle. Interaction: Clicking a larger, more prominent button reveals the answer. Justification: This flashcard-like system is perfect for mobile study sessions, allowing students to test themselves on the go. The larger buttons prevent accidental taps. Library/Method: Vanilla JS, HTML, Tailwind CSS.
-        2. Report Info: Syllabus topic weightage based on past papers. Goal: Help students prioritize their study time. Viz/Method: A vertical bar chart. Interaction: The chart is now constrained to a specific height to fit well on mobile screens without taking up too much vertical space. Justification: This provides a quick visual summary of high-yield topics. The responsiveness is critical to ensure it scales correctly on all Android devices. Library/Method: Chart.js with Canvas.
-        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+        - Report Info: Topic Frequency Analysis -> Goal: Inform/Compare -> Viz: Horizontal Bar Chart -> Interaction: Hover for details -> Justification: Quickly identifies high-yield topics to prioritize study -> Library: Chart.js (Canvas).
+        - Report Info: 50 Key Questions & Answers -> Goal: Organize/Inform -> Presentation: Filterable Accordion List -> Interaction: Click unit button to filter, click question to expand/collapse answer -> Justification: Manages cognitive load by hiding complexity and allowing focused study on specific syllabus units -> Method: HTML/Tailwind + Vanilla JS.
+        - Report Info: Exam Pattern & Time Management -> Goal: Inform -> Presentation: Styled Tables and Lists -> Interaction: Static display -> Justification: Clear and structured presentation for critical exam-day information -> Method: HTML/Tailwind.
+        - Report Info: Quick Revision Notes -> Goal: Inform/Organize -> Presentation: Collapsible List -> Interaction: Click to expand/collapse points -> Justification: Condenses information for rapid final review without cluttering the UI -> Method: HTML/Tailwind + Vanilla JS.
+    -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
     <style>
         body {
-            font-family: 'Noto Sans Devangari', sans-serif;
-            background-color: #F8F5F2;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background-color: #FDFBF5;
         }
-        .filter-btn {
+        .nav-btn {
             transition: all 0.3s ease;
-            min-width: 6rem; /* Ensure buttons are large enough to tap */
+            color: #4A5568;
         }
-        .filter-btn.active {
-            background-color: #A0522D !important;
-            color: #FFFFFF !important;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        .nav-btn.active, .nav-btn:hover {
+            color: #2C5282;
+            background-color: #E2E8F0;
         }
-        .answer {
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .question-card {
+            border: 1px solid #CBD5E0;
+            background-color: #FFFFFF;
+        }
+        .question-card.open {
+           box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .answer-content {
+            display: none;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease-out;
+            transition: max-height 0.5s ease-in-out;
         }
-        .answer.show {
-            max-height: 1000px; /* Adjust as needed */
+        .question-card.open .answer-content {
+            display: block;
+            max-height: 2000px;
         }
-        .card-shadow {
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 500px;
         }
-        .toggle-answer-btn {
-            min-width: 120px; /* Make toggle button a good touch target */
+        .filter-btn {
+            border: 1px solid #4A5568;
+            color: #4A5568;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background-color: #2C5282;
+            color: #FFFFFF;
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="antialiased">
 
-    <div class="container mx-auto p-4 md:p-8">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-[#8B4513]">वर्धमान महावीर खुला विश्वविद्यालय</h1>
-            <h2 class="text-xl md:text-2xl font-semibold text-gray-700 mt-2">HI-01: भारत का इतिहास (प्रारंभ से 1200 ई. तक)</h2>
-            <p class="text-lg text-gray-600 mt-1">अति-महत्वपूर्ण प्रश्न बैंक (90% अंक सुनिश्चित)</p>
+    <div class="container mx-auto p-4 md:p-6">
+        <header class="text-center mb-6 py-4 border-b-2 border-gray-200">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">YAP-01: यात्रा एवं पर्यटन - परीक्षा सहायक</h1>
+            <p class="text-md text-gray-600 mt-2">VMOU BA प्रथम वर्ष के लिए अंतिम-मिनट की तैयारी गाइड (50 प्रश्न)</p>
         </header>
 
-        <main>
-            <!-- Analysis Section -->
-            <section id="analysis" class="mb-8 bg-white p-6 rounded-lg card-shadow">
-                <h3 class="text-2xl font-bold text-[#A0522D] mb-4 text-center">परीक्षा विश्लेषण: महत्वपूर्ण अध्याय</h3>
-                <p class="text-center text-gray-600 mb-6">यह चार्ट पिछले वर्षों के प्रश्नपत्रों के विश्लेषण पर आधारित है और दिखाता है कि किस चैप्टर से सवाल सबसे ज़्यादा आते हैं। इससे आपको अपनी पढ़ाई की सही प्लानिंग करने में मदद मिलेगी।</p>
-                <div class="chart-container relative h-64 md:h-96 w-full max-w-4xl mx-auto">
-                    <canvas id="topicAnalysisChart"></canvas>
+        <nav class="flex justify-center flex-wrap gap-2 md:gap-4 mb-6 bg-gray-100 p-2 rounded-lg shadow-sm">
+            <button class="nav-btn font-semibold py-2 px-4 rounded-md active" data-target="dashboard">डैशबोर्ड</button>
+            <button class="nav-btn font-semibold py-2 px-4 rounded-md" data-target="questions">महत्वपूर्ण प्रश्न</button>
+            <button class="nav-btn font-semibold py-2 px-4 rounded-md" data-target="strategy">परीक्षा रणनीति</button>
+            <button class="nav-btn font-semibold py-2 px-4 rounded-md" data-target="cheatsheet">क्विक चीट-शीट</button>
+        </nav>
+
+        <main id="main-content">
+            <section id="dashboard" class="content-section active p-4 md:p-6 bg-white rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4 border-b pb-2">विश्लेषण डैशबोर्ड</h2>
+                <p class="mb-6 text-gray-600">यह डैशबोर्ड VMOU पाठ्यक्रम के सूचकांक पर आधारित है। इससे आपको यह समझने में मदद मिलेगी कि किन इकाइयों (Units) पर अधिक ध्यान केंद्रित करना है। नीचे दिया गया चार्ट दिखाता है कि प्रत्येक इकाई से कितने प्रश्न चुने गए हैं, जिससे आपको सबसे महत्वपूर्ण विषयों की पहचान करने में आसानी होगी।</p>
+                <div class="chart-container">
+                    <canvas id="topicFrequencyChart"></canvas>
+                </div>
+            </section>
+
+            <section id="questions" class="content-section p-4">
+                 <h2 class="text-2xl font-bold text-gray-700 mb-4 text-center">सबसे महत्वपूर्ण 50 प्रश्न और उत्तर</h2>
+                 <p class="mb-6 text-gray-600 text-center max-w-3xl mx-auto">यहाँ पाठ्यक्रम के आधार पर चुने गए 50 सबसे महत्वपूर्ण प्रश्न दिए गए हैं। आप अपनी तैयारी को केंद्रित करने के लिए इकाई के अनुसार प्रश्नों को फ़िल्टर कर सकते हैं। किसी भी प्रश्न पर क्लिक करके उसका विस्तृत उत्तर देखें।</p>
+                 <div id="filter-container" class="flex justify-center flex-wrap gap-2 mb-6"></div>
+                 <div id="questions-container" class="space-y-4"></div>
+            </section>
+
+            <section id="strategy" class="content-section p-4 md:p-6 bg-white rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4 border-b pb-2">परीक्षा पैटर्न और समय प्रबंधन</h2>
+                 <p class="mb-6 text-gray-600">परीक्षा में अच्छा प्रदर्शन करने के लिए केवल प्रश्नों की तैयारी ही काफी नहीं है, बल्कि पेपर पैटर्न को समझना और समय का सही प्रबंधन करना भी उतना ही महत्वपूर्ण है। यह अनुभाग आपको VMOU YAP-01 पेपर के संभावित प्रारूप और 3 घंटे की परीक्षा के दौरान अपने समय को प्रभावी ढंग से विभाजित करने के बारे में मार्गदर्शन करेगा।</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">संभावित प्रश्न पत्र पैटर्न (कुल अंक: 80)</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <h4 class="font-bold">खंड 'अ' (Section A) - अति लघु उत्तरीय प्रश्न</h4>
+                                <ul class="list-disc list-inside text-gray-600 mt-2">
+                                    <li>कुल प्रश्न: 8 (सभी अनिवार्य)</li>
+                                    <li>अंक प्रति प्रश्न: 2</li>
+                                    <li>कुल अंक: 16</li>
+                                    <li>शब्द सीमा: लगभग 30 शब्द प्रति उत्तर</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+                                <h4 class="font-bold">खंड 'ब' (Section B) - लघु उत्तरीय प्रश्न</h4>
+                                <ul class="list-disc list-inside text-gray-600 mt-2">
+                                    <li>कुल प्रश्न: 8 (कोई 4 करने होंगे)</li>
+                                    <li>अंक प्रति प्रश्न: 8</li>
+                                    <li>कुल अंक: 32</li>
+                                    <li>शब्द सीमा: लगभग 200 शब्द प्रति उत्तर</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                                <h4 class="font-bold">खंड 'स' (Section C) - निबंधात्मक प्रश्न</h4>
+                                <ul class="list-disc list-inside text-gray-600 mt-2">
+                                    <li>कुल प्रश्न: 4 (कोई 2 करने होंगे)</li>
+                                    <li>अंक प्रति प्रश्न: 16</li>
+                                    <li>कुल अंक: 32</li>
+                                    <li>शब्द सीमा: लगभग 500 शब्द प्रति उत्तर</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">3 घंटे की परीक्षा के लिए समय प्रबंधन युक्तियाँ</h3>
+                        <div class="space-y-4">
+                             <div class="p-4 bg-gray-100 rounded-lg">
+                                <h4 class="font-bold">कुल समय: 180 मिनट</h4>
+                                <ul class="list-decimal list-inside text-gray-600 mt-2 space-y-2">
+                                    <li><b>शुरुआती 5 मिनट:</b> प्रश्न पत्र को ध्यान से पढ़ें और उन प्रश्नों को चुनें जिन्हें आप सबसे अच्छे से कर सकते हैं।</li>
+                                    <li><b>खंड 'अ' (16 अंक):</b> लगभग 25-30 मिनट दें (प्रति प्रश्न ~3-4 मिनट)।</li>
+                                    <li><b>खंड 'ब' (32 अंक):</b> लगभग 65-70 मिनट दें (प्रति प्रश्न ~16-17 मिनट)।</li>
+                                    <li><b>खंड 'स' (32 अंक):</b> लगभग 70-75 मिनट दें (प्रति प्रश्न ~35-37 मिनट)।</li>
+                                    <li><b>अंतिम 5-10 मिनट:</b> अपने उत्तरों को फिर से पढ़ें और कोई भी सुधार करें।</li>
+                                </ul>
+                                <p class="mt-4 text-sm text-blue-700 bg-blue-100 p-2 rounded"><b>टिप:</b> सबसे पहले उस खंड से शुरुआत करें जिसमें आप सबसे अधिक आत्मविश्वासी हों। यह आपका मनोबल बढ़ाएगा।</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
             
-            <!-- Controls Section -->
-            <section id="controls" class="mb-8 bg-white p-6 rounded-lg card-shadow">
-                 <h3 class="text-2xl font-bold text-[#A0522D] mb-4 text-center">प्रश्न बैंक खोजें और फ़िल्टर करें</h3>
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                    <input type="text" id="searchInput" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#A0522D] focus:border-transparent" placeholder="प्रश्न में शब्द खोजें (जैसे - 'मौर्य', 'हड़प्पा')...">
-                </div>
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mt-4">
-                    <div class="w-full md:w-auto">
-                        <span class="font-bold mr-3 text-gray-700">अंक के अनुसार:</span>
-                        <div class="inline-flex rounded-lg shadow-sm w-full md:w-auto mt-2 md:mt-0" role="group" id="marksFilter">
-                            <button type="button" data-marks="all" class="filter-btn active bg-white text-gray-800 hover:bg-gray-100 font-medium px-4 py-2 text-sm rounded-l-lg border border-gray-200 w-1/4 md:w-auto">सभी</button>
-                            <button type="button" data-marks="2" class="filter-btn bg-white text-gray-800 hover:bg-gray-100 font-medium px-4 py-2 text-sm border-t border-b border-gray-200 w-1/4 md:w-auto">2 अंक</button>
-                            <button type="button" data-marks="5" class="filter-btn bg-white text-gray-800 hover:bg-gray-100 font-medium px-4 py-2 text-sm border-t border-b border-gray-200 w-1/4 md:w-auto">5 अंक</button>
-                            <button type="button" data-marks="10" class="filter-btn bg-white text-gray-800 hover:bg-gray-100 font-medium px-4 py-2 text-sm rounded-r-lg border border-gray-200 w-1/4 md:w-auto">10 अंक</button>
-                        </div>
-                    </div>
-                     <div class="w-full md:w-auto mt-4 md:mt-0">
-                        <span class="font-bold mr-3 text-gray-700">अध्याय के अनुसार:</span>
-                        <select id="unitFilter" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#A0522D] focus:border-[#A0522D] p-2.5 w-full">
-                            <option value="all" selected>सभी अध्याय</option>
-                            <option value="1">प्रागैतिहासिक संस्कृतियाँ</option>
-                            <option value="2">हड़प्पा सभ्यता</option>
-                            <option value="3">वैदिक काल</option>
-                            <option value="4">महाजनपद और मगध</option>
-                            <option value="5">मौर्य साम्राज्य</option>
-                            <option value="6">मौर्योत्तर काल</option>
-                            <option value="7">गुप्त साम्राज्य</option>
-                            <option value="8">हर्षवर्धन काल</option>
-                            <option value="9">दक्षिण भारत</option>
-                            <option value="10">अरब और तुर्की आक्रमण</option>
-                        </select>
-                    </div>
-                </div>
+            <section id="cheatsheet" class="content-section p-4">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4 text-center">क्विक रिविज़न चीट-शीट</h2>
+                <p class="mb-6 text-gray-600 text-center max-w-3xl mx-auto">यह परीक्षा से ठीक पहले त्वरित पुनरीक्षण के लिए एक संक्षिप्त सार है। प्रत्येक प्रश्न के मुख्य बिंदुओं को यहाँ सूचीबद्ध किया गया है ताकि आप उन्हें जल्दी से याद कर सकें।</p>
+                <div id="cheatsheet-container" class="space-y-3"></div>
             </section>
-
-            <!-- Questions Section -->
-            <section id="questions-container" class="space-y-4">
-                <!-- Questions will be dynamically inserted here -->
-            </section>
-            <div id="no-results" class="hidden text-center text-gray-500 mt-8">
-                <p class="text-xl">कोई परिणाम नहीं मिला। कृपया अपना फ़िल्टर या खोज बदलें।</p>
-            </div>
         </main>
     </div>
 
     <script>
-        const questionData = [
-            { id: 1, marks: 2, unit: "1", question: "पुरापाषाण काल के दो प्रमुख स्थलों के नाम लिखिए।", answer: "पुरापाषाण काल के दो खास जगहें हैं: 1. **भीमबेटका (मध्य प्रदेश)**, जहाँ गुफाओं में बहुत पुरानी पेंटिंग्स मिली हैं। और 2. **सोहन घाटी (पाकिस्तान)**, जहाँ शुरू के लोगों के पत्थर के औज़ार मिले हैं।" },
-            { id: 2, marks: 2, unit: "2", question: "हड़प्पा सभ्यता की लिपि की दो विशेषताएँ बताइए।", answer: "हड़प्पा की लिखावट की दो खास बातें हैं: 1. यह **चित्रों वाली लिखावट** थी, जिसमें शब्दों की जगह चित्र बने होते थे। और 2. आज तक **कोई भी इसे पढ़ नहीं पाया है**, इसलिए हमें इसके बारे में पूरी जानकारी नहीं है।" },
-            { id: 3, marks: 2, unit: "3", question: "'सभा' और 'समिति' में क्या अंतर है?", answer: "ऋग्वेद के ज़माने में **'सभा'** बड़े-बूढ़े और अमीर लोगों की एक छोटी सी सभा थी। जबकि **'समिति'** गाँव के सभी लोगों की एक बड़ी सभा थी। समिति राजा को चुनने में भी मदद करती थी।" },
-            { id: 4, marks: 2, unit: "5", question: "मेगस्थनीज कौन था? उसकी प्रसिद्ध पुस्तक का नाम क्या है?", answer: "मेगस्थनीज एक यूनानी राजदूत था जो चंद्रगुप्त मौर्य के दरबार में आया था। उसकी सबसे मशहूर किताब का नाम **'इंडिका'** है। यह किताब हमें मौर्य काल के समाज और शासन के बारे में बताती है।" },
-            { id: 5, marks: 2, unit: "7", question: "प्रयाग प्रशस्ति की रचना किसने की और यह किस शासक से संबंधित है?", answer: "प्रयाग प्रशस्ति को **हरिषेण** ने लिखा था, जो समुद्रगुप्त के दरबार में कवि थे। यह एक तरह की कविता है, जो **सम्राट समुद्रगुप्त** की जीत और उनके अच्छे कामों के बारे में बताती है।" },
-            { id: 6, marks: 2, unit: "7", question: "नालंदा विश्वविद्यालय का संस्थापक कौन था?", answer: "नालंदा विश्वविद्यालय को **गुप्त शासक कुमारगुप्त प्रथम** ने बनवाया था। यह प्राचीन भारत में पढ़ाई का एक बहुत बड़ा और मशहूर केंद्र था।" },
-            { id: 7, marks: 2, unit: "9", question: "चोल प्रशासन की सबसे महत्वपूर्ण विशेषता क्या थी?", answer: "चोलों के शासन की सबसे खास बात यह थी कि उनका **गाँव का शासन बहुत ही मज़बूत और स्वतंत्र** था। गाँव के लोग खुद ही अपने गाँव का काम संभालते थे।" },
-            { id: 8, marks: 2, unit: "10", question: "तराइन का प्रथम युद्ध कब और किसके बीच हुआ?", answer: "तराइन की पहली लड़ाई **1191 ई. में पृथ्वीराज चौहान और मुहम्मद गोरी** के बीच हुई थी। इस लड़ाई में पृथ्वीराज चौहान जीत गए थे।" },
-            { id: 9, marks: 2, unit: "4", question: "सोलह महाजनपदों में से किन्हीं चार के नाम लिखिए।", answer: "सोलह महाजनपदों में से चार खास महाजनपद थे: 1. **मगध** 2. **कोसल** 3. **वत्स** और 4. **अवन्ति**। ये उस समय के सबसे ताकतवर राज्य थे।" },
-            { id: 10, marks: 2, unit: "6", question: "कनिष्क किस वंश का शासक था और उसकी राजधानी कहाँ थी?", answer: "कनिष्क **कुषाण** वंश का सबसे बड़ा राजा था। उसकी पहली राजधानी **पुरुषपुर (आज का पेशावर)** और दूसरी राजधानी **मथुरा** थी।" },
-            
-            { id: 11, marks: 5, unit: "1", question: "मध्यपाषाण काल की प्रमुख विशेषताओं पर एक संक्षिप्त टिप्पणी लिखिए।", answer: "मध्यपाषाण काल वो समय था जो पुराने पाषाण काल और नए पाषाण काल के बीच में आता है। इसकी खास बातें ये हैं: 1. **छोटे हथियार:** इस समय लोग छोटे और अच्छे पत्थर के औज़ार बनाने लगे थे। 2. **पशुओं को पालना:** लोगों ने जानवरों को पालना शुरू कर दिया था, जिससे उन्हें खाने-पीने की चीज़ें आसानी से मिलने लगीं। 3. **एक जगह रहना:** कुछ लोग एक ही जगह पर झोपड़ियाँ बनाकर रहने लगे थे। 4. **पेंटिंग्स बनाना:** इस काल की गुफाओं में लोगों की जिंदगी से जुड़ी हुई पेंटिंग्स मिली हैं। इस तरह, यह समय इंसान के विकास के लिए बहुत ज़रूरी था।" },
-            { id: 12, marks: 5, unit: "2", question: "हड़प्पा सभ्यता के पतन के प्रमुख कारणों की विवेचना कीजिए।", answer: "हड़प्पा सभ्यता एक कारण से खत्म नहीं हुई, बल्कि कई वजहों से ऐसा हुआ। खास वजहें ये हैं: 1. **मौसम का बदलना:** बारिश कम हो गई और सरस्वती नदी सूख गई, जिससे खेती को बहुत नुक्सान हुआ। 2. **बाढ़:** कुछ शहरों में बाढ़ आने के सबूत मिले हैं, जिससे शहर तबाह हो गए। 3. **बाहरी हमला:** कुछ लोगों का मानना है कि आर्यों के हमले से भी यह सभ्यता खत्म हो गई, पर इसका कोई पक्का सबूत नहीं है। 4. **व्यापार का कम होना:** मेसोपोटामिया जैसे देशों से व्यापार कम हो गया, जिससे इनकी अर्थव्यवस्था कमज़ोर हो गई। इन सभी कारणों ने मिलकर इस महान सभ्यता को खत्म कर दिया।" },
-            { id: 13, marks: 5, unit: "3", question: "उत्तर-वैदिक काल में सामाजिक जीवन में आए परिवर्तनों को स्पष्ट कीजिए।", answer: "उत्तर-वैदिक काल (1000-600 ईसा पूर्व) में समाज में बहुत से बदलाव आए: 1. **जाति व्यवस्था का मज़बूत होना:** लोगों की जातियाँ अब जन्म से तय होने लगी थीं और यह बहुत पक्की हो गई थी। 2. **औरतों की हालत खराब होना:** औरतों को सभाओं में जाने से रोक दिया गया और उनकी आजादी कम हो गई। 3. **गोत्र का चलन:** एक ही गोत्र में शादी करना गलत माना जाने लगा। 4. **आश्रम व्यवस्था:** लोगों की जिंदगी को चार हिस्सों (ब्रह्मचर्य, गृहस्थ, वानप्रस्थ, संन्यास) में बाँट दिया गया, हालाँकि यह पूरी तरह से लागू नहीं हुई थी।" },
-            { id: 14, marks: 5, unit: "5", question: "अशोक के 'धम्म' से आप क्या समझते हैं?", answer: "अशोक का **'धम्म'** कोई धर्म नहीं था, बल्कि यह एक अच्छा रास्ता था जिसमें सभी धर्मों की अच्छी बातें थीं। इसका मकसद लोगों को एक अच्छा इंसान बनाना था। धम्म की खास बातें थीं: 1. **सभी को अपनाना:** सभी धर्मों का सम्मान करना। 2. **किसी को दुख न देना:** इंसानों और जानवरों पर दया करना। 3. **अच्छे काम करना:** बड़ों की इज्जत करना, गरीबों की मदद करना और सच बोलना। 4. **लोगों की भलाई:** सड़कें और कुएं बनवाना। अशोक ने धम्म को फैलाने के लिए खास लोग भी रखे थे।" },
-            { id: 15, marks: 5, unit: "7", question: "गुप्तकालीन विज्ञान और प्रौद्योगिकी पर प्रकाश डालिए।", answer: "गुप्त काल में विज्ञान और तकनीक बहुत आगे बढ़ गए थे, इसीलिए इसे 'स्वर्ण युग' भी कहते हैं। इस समय की खास बातें ये हैं: 1. **गणित:** आर्यभट्ट ने 'शून्य' और दशमलव प्रणाली का अविष्कार किया। उन्होंने 'पाई' (π) का मान भी बताया। 2. **ज्योतिष विज्ञान:** आर्यभट्ट ने बताया कि पृथ्वी अपनी धुरी पर घूमती है। वराहमिहिर ने भी इस विषय पर बहुत कुछ लिखा। 3. **डॉक्टरी:** इस समय आयुर्वेद में काफी तरक्की हुई। 4. **धातु विज्ञान:** दिल्ली में एक लोहे का पिलर है, जिस पर आज तक जंग नहीं लगा है। यह दिखाता है कि ये लोग धातु का काम कितना अच्छा जानते थे।" },
-            { id: 16, marks: 5, unit: "9", question: "पल्लवों की वास्तुकला के विकास में योगदान का मूल्यांकन कीजिए।", answer: "पल्लव राजाओं ने दक्षिण भारत में मंदिर बनाने का एक नया तरीका शुरू किया। उन्होंने मंदिर बनाने के लिए चट्टानों को काटकर गुफाओं और मंदिरों का निर्माण किया। फिर उन्होंने रथ जैसे मंदिर बनाए, जैसे महाबलीपुरम के रथ। बाद में उन्होंने पत्थरों और ईंटों से बड़े-बड़े मंदिर बनाना शुरू किया, जैसे कांची का कैलाशनाथ मंदिर। पल्लवों के इस काम से चोल और दूसरे राजाओं को भी मंदिर बनाने की प्रेरणा मिली।" },
-            
-            { id: 17, marks: 10, unit: "2", question: "सिंधु घाटी सभ्यता के शहरों के बनावट और लोगों की सामाजिक-आर्थिक जिंदगी की खास बातें बताइए।", answer: "**भूमिका:**\nसिंधु घाटी सभ्यता दुनिया की सबसे पुरानी सभ्यताओं में से एक है। इसकी सबसे खास बात इसके शहरों की बनावट और लोगों का रहने-सहने का तरीका था, जो बहुत ही तरक्की वाला था।\n\n**शहर की बनावट:**\n1.  **ग्रिड सिस्टम:** शहर को एक प्लान के हिसाब से बनाया गया था। सड़कें एक-दूसरे को 90 डिग्री के कोण पर काटती थीं, जिससे शहर चौकोर हिस्सों में बँटा हुआ लगता था।\n2.  **ऊपर और नीचे का हिस्सा:** शहर को दो हिस्सों में बाँटा गया था - एक ऊँचा हिस्सा जहाँ शायद राजा और बड़े लोग रहते थे, और एक निचला हिस्सा जहाँ आम लोग रहते थे।\n3.  **पानी की अच्छी निकासी:** हर घर में नहाने और टॉयलेट की जगह थी। इन जगहों का पानी नालियों से होकर मुख्य नाली में जाता था। ये नालियाँ ढकी हुई थीं, जो सफाई के प्रति उनकी सोच को दिखाता है। मोहनजोदड़ो का बड़ा सा तालाब भी बहुत मशहूर है।\n4.  **पक्की ईंटें:** घर बनाने के लिए एक ही तरह की पक्की ईंटों का इस्तेमाल होता था।\n\n**सामाजिक और आर्थिक जीवन:**\n1.  **समाज:** समाज में शायद माँ का ही ज्यादा मान होता था। समाज में अलग-अलग काम करने वाले लोग थे, जैसे व्यापारी, मजदूर और कारीगर। ये लोग शांति से रहते थे और लड़ाई-झगड़े के सबूत कम मिलते हैं।\n2.  **खेती:** वे गेंहू, जौ, कपास और मटर जैसी फसलें उगाते थे। इसी से उनका जीवन चलता था।\n3.  **पशुपालन:** वे गाय, भैंस, भेड़ और सूअर जैसे जानवर पालते थे।\n4.  **व्यापार:** वे अपना सामान देश के अंदर और बाहर दोनों जगह बेचते थे। मेसोपोटामिया (सुमेर) के साथ भी उनका व्यापार होता था।\n5.  **कला और कारीगरी:** वे बहुत अच्छी तरह से मोहरें और मिट्टी के बर्तन बनाते थे। मोहनजोदड़ो से मिली 'नाचने वाली लड़की' की मूर्ति इस बात का सबूत है।\n\n**निष्कर्ष:**\nयह साफ़ है कि सिंधु घाटी सभ्यता की शहर की बनावट और लोगों का जीवन बहुत ही विकसित था। उनकी इंजीनियरिंग और साफ-सफाई की समझ बहुत कमाल की थी और आज भी हमें उनसे सीखने को मिलता है।" },
-            { id: 18, marks: 10, unit: "5", question: "चंद्रगुप्त मौर्य की उपलब्धियों का मूल्यांकन कीजिए तथा उसके प्रशासन की मुख्य विशेषताओं पर प्रकाश डालिए।", answer: "**भूमिका:**\nचंद्रगुप्त मौर्य भारत के पहले महान राजा थे, जिन्होंने एक छोटे से राज्य को एक बहुत बड़े साम्राज्य में बदल दिया। उन्होंने न सिर्फ़ भारत को एक किया, बल्कि एक बहुत अच्छा शासन भी चलाया, जिसके बारे में हमें चाणक्य की 'अर्थशास्त्र' और मेगस्थनीज की 'इंडिका' में पता चलता है।\n\n**चंद्रगुप्त मौर्य की खास उपलब्धियाँ:**\n1.  **नंद वंश का अंत:** उन्होंने अपने गुरु चाणक्य की मदद से नंद वंश के क्रूर राजा घनानंद को हराया और 322 ईसा पूर्व में मौर्य साम्राज्य की शुरुआत की।\n2.  **भारत को एक किया:** उन्होंने भारत के कई हिस्सों को जीतकर एक बड़ा साम्राज्य बनाया। यह पहली बार था जब भारत इतना बड़ा और एक था।\n3.  **यूनानियों को हराया:** उन्होंने सिकंदर के सेनापति सेल्यूकस निकेटर को हराया और कुछ जमीन भी जीत ली। उन्होंने सेल्यूकस की बेटी से शादी भी की।\n\n**मौर्य शासन की खास बातें:**\n1.  **राजा सबसे ऊपर:** शासन की पूरी ताकत राजा के हाथ में थी, लेकिन वह लोगों की बात सुनता था। उसकी मदद के लिए मंत्रियों की एक टीम भी होती थी।\n2.  **राज्यों का बँटवारा:** साम्राज्य को कई छोटे-छोटे राज्यों में बाँटा गया था, जहाँ राजा के बेटे या दूसरे बड़े लोग राज करते थे।\n3.  **अच्छे अफसर:** शासन चलाने के लिए कई तरह के अफसर थे, जो अलग-अलग काम संभालते थे।\n4.  **शहर का काम:** मेगस्थनीज के अनुसार, शहर का काम 30 लोगों की एक समिति चलाती थी, जिसमें 6 छोटी कमेटियाँ थीं। हर कमेटी का अपना काम था, जैसे सफाई, विदेशियों की देखरेख आदि।\n5.  **बड़ी सेना:** मौर्यों के पास एक बहुत बड़ी और ताकतवर सेना थी, जिसमें पैदल सैनिक, घोड़े, हाथी और रथ थे।\n6.  **जासूसों का जाल:** राजा को सब कुछ पता रहे, इसके लिए एक मज़बूत जासूसी प्रणाली भी थी।\n\n**निष्कर्ष:**\nचंद्रगुप्त मौर्य एक महान योद्धा ही नहीं, बल्कि एक बहुत अच्छे शासक भी थे। उनके बनाए नियम और व्यवस्थाएं इतनी मज़बूत थीं कि अशोक जैसे बाद के राजाओं ने भी उन्हीं को अपनाया। वह सचमुच भारत के सबसे महान राजाओं में से एक थे।" },
-            { id: 19, marks: 10, unit: "7", question: "गुप्त काल को 'भारतीय इतिहास का स्वर्ण युग' क्यों कहा जाता है? आलोचनात्मक परीक्षण कीजिए।", answer: "**भूमिका:**\nगुप्त काल (लगभग 319 ईसा पूर्व से 550 ईसा पूर्व) को कई इतिहासकार 'भारत का स्वर्ण युग' कहते हैं, क्योंकि इस समय कला, साहित्य, विज्ञान और संस्कृति में बहुत तरक्की हुई थी। यह समय शांति और अमीरी का भी था।\n\n**स्वर्ण युग क्यों कहते हैं?**\n1.  **साहित्य का विकास:** संस्कृत भाषा में बहुत सी किताबें लिखी गईं। कालिदास ने 'अभिज्ञानशाकुंतलम्' और 'मेघदूत' जैसी मशहूर किताबें लिखीं। पुराने धर्मग्रंथों को भी इसी समय अंतिम रूप दिया गया।\n2.  **विज्ञान में तरक्की:** आर्यभट्ट ने 'शून्य' और दशमलव का अविष्कार किया। उन्होंने यह भी बताया कि पृथ्वी सूरज के चारों ओर घूमती है। लोहे का एक खंभा (महरौली) आज भी दिखाता है कि ये लोग धातु का काम कितना अच्छा जानते थे।\n3.  **कला और मंदिर बनाना:** इस समय मंदिर बनाने की कला शुरू हुई। सारनाथ की बुद्ध मूर्ति और अजंता की गुफाओं की पेंटिंग्स इस समय की खास कला हैं।\n4.  **राजनीतिक शांति:** समुद्रगुप्त और चंद्रगुप्त द्वितीय जैसे बड़े राजाओं ने देश को शांति और एक अच्छा शासन दिया।\n5.  **आर्थिक अमीरी:** देश के अंदर और बाहर व्यापार बहुत अच्छा था, जिससे देश में बहुत पैसा आया।\n\n**कुछ कमियाँ भी थीं:**\n1.  **ज़मींदारी प्रथा:** इस समय ज़मींदारी प्रथा शुरू हुई, जिससे राजा की ताकत कम होने लगी।\n2.  **समाज में असमानता:** जाति-पाति बहुत पक्की हो गई थी और छुआछूत जैसी बुरी बातें बढ़ गई थीं। औरतों की हालत भी खराब हो गई थी।\n3.  **सिर्फ बड़े लोगों के लिए:** यह 'स्वर्ण युग' ज़्यादातर बड़े शहरों के अमीर लोगों तक ही सीमित था। आम लोगों पर इसका बहुत कम असर हुआ।\n\n**निष्कर्ष:**\nभले ही गुप्त काल में कुछ कमियाँ थीं, लेकिन कला, विज्ञान और साहित्य में हुई तरक्की इतनी ज़्यादा थी कि इसे 'स्वर्ण युग' कहना सही है। यह ऐसा समय था जब भारतीय सभ्यता ने अपनी creativity की सबसे ऊँची चोटी को छुआ।" },
-            { id: 20, marks: 10, unit: "9", question: "चोल प्रशासन, विशेषकर उनके स्थानीय स्वशासन की प्रमुख विशेषताओं का वर्णन कीजिए।", answer: "**भूमिका:**\nचोल राजा (लगभग 9वीं से 13वीं सदी) सिर्फ अपनी लड़ाईयों और बड़े मंदिरों के लिए ही नहीं, बल्कि अपने बेहतरीन शासन के लिए भी जाने जाते हैं। उनके शासन की सबसे अच्छी बात उनका गाँव का अपना शासन था।\n\n**चोलों का शासन:**\n1.  **राजा का शासन:** राजा ही पूरे शासन को चलाता था। उसकी मदद के लिए मंत्रियों की एक टीम थी।\n2.  **राज्यों का बँटवारा:** पूरे राज्य को छोटे राज्यों, फिर जिलों और फिर गाँवों में बाँटा गया था।\n\n**गाँव का अपना शासन (स्थानीय स्वशासन):**\nचोलों के गाँव के शासन के बारे में हमें कुछ पुराने लेखों से पता चलता है। यह दो तरह की सभाओं पर चलता था:\n1.  **'उर':** यह गाँव के आम लोगों की एक सभा थी, जो गाँव की जमीन और बाकी कामों को देखती थी।\n2.  **'सभा' या 'महासभा':** यह ब्राह्मणों वाले गाँवों में होती थी। इसमें वो ही लोग आते थे जो पढ़े-लिखे और अमीर होते थे।\n\n**'सभा' कैसे काम करती थी:**\n1.  **सदस्यता:** सभा का सदस्य बनने के लिए कुछ शर्तें थीं, जैसे खुद का घर और जमीन होना, और कुछ खास पढ़ाई पूरी करना।\n2.  **कमेटियाँ:** सभा अपने काम को करने के लिए अलग-अलग कमेटियाँ बनाती थी। जैसे, एक कमेटी बगीचों को देखती थी, दूसरी पानी का इंतज़ाम, और तीसरी हर साल का काम देखती थी।\n3.  **चुनाव:** कमेटी के सदस्यों का चुनाव लॉटरी से होता था। यह एक बहुत ही साफ़-सुथरा तरीका था।\n4.  **काम:** सभा के पास बहुत ताकत थी। वे टैक्स इकट्ठा करते थे, न्याय करते थे, मंदिरों को देखते थे और तालाब भी बनवाते थे।\n5.  **पूरी आज़ादी:** इन सभाओं को अपने गाँव के मामलों में पूरी आज़ादी थी। राजा की सरकार बहुत कम ही उनके काम में दखल देती थी।\n\n**निष्कर्ष:**\nचोलों का गाँव का शासन उनकी समझदारी का सबसे अच्छा उदाहरण है। यह तरीका सिर्फ अच्छा नहीं था, बल्कि इसमें लोकतंत्र की झलक भी थी। यह दिखाता है कि प्राचीन भारत में गाँव के स्तर पर लोकतंत्र कितना मज़बूत था।" }
-        ];
-
-        let currentFilters = {
-            marks: 'all',
-            unit: 'all',
-            search: ''
-        };
-
-        const questionsContainer = document.getElementById('questions-container');
-        const marksFilterContainer = document.getElementById('marksFilter');
-        const unitFilterSelect = document.getElementById('unitFilter');
-        const searchInput = document.getElementById('searchInput');
-        const noResultsDiv = document.getElementById('no-results');
-
-        function renderQuestions() {
-            questionsContainer.innerHTML = '';
-            const filteredQuestions = questionData.filter(q => {
-                const matchesMarks = currentFilters.marks === 'all' || q.marks == currentFilters.marks;
-                const matchesUnit = currentFilters.unit === 'all' || q.unit == currentFilters.unit;
-                const matchesSearch = currentFilters.search === '' || q.question.includes(currentFilters.search) || q.answer.includes(currentFilters.search);
-                return matchesMarks && matchesUnit && matchesSearch;
-            });
-            
-            if(filteredQuestions.length === 0){
-                noResultsDiv.classList.remove('hidden');
-            } else {
-                noResultsDiv.classList.add('hidden');
+        const studyData = [
+            {
+                id: 1,
+                question: "प्राचीन काल में यात्रा के मुख्य उद्देश्य क्या थे? स्पष्ट करें।",
+                unit: "इकाई-1: युग युगीन यात्रा एवं पर्यटन",
+                years: "2023, 2021, 2018",
+                answer: {
+                    intro: "प्राचीन काल में यात्रा आज के आधुनिक पर्यटन से भिन्न थी। उस समय यात्रा का मुख्य उद्देश्य मनोरंजन नहीं, बल्कि जीवन की आवश्यकताएं और धार्मिक भावनाएं थीं।",
+                    points: [
+                        "<b>व्यापार और वाणिज्य:</b> सिल्क रूट जैसे मार्गों से व्यापारी एक स्थान से दूसरे स्थान तक व्यापार के लिए यात्रा करते थे।",
+                        "<b>तीर्थयात्रा और धर्म:</b> लोग धार्मिक स्थलों की यात्रा करते थे, जैसे कुंभ मेले या चार धाम यात्रा। यह सबसे प्रमुख कारण था।",
+                        "<b>ज्ञान की खोज:</b> नालंदा जैसे शिक्षण केंद्रों में अध्ययन के लिए छात्र और विद्वान लंबी यात्राएं करते थे।",
+                        "<b>सैन्य उद्देश्य:</b> राजा और सैनिक विजय या राज्य विस्तार के लिए यात्राएं करते थे।",
+                        "<b>खानाबदोश जीवन:</b> कई समुदाय भोजन और पानी की तलाश में एक स्थान से दूसरे स्थान पर जाते थे।"
+                    ],
+                    conclusion: "इस प्रकार, प्राचीन काल में यात्रा जीवन का एक अनिवार्य हिस्सा थी, न कि एक अवकाश गतिविधि।"
+                }
+            },
+            {
+                id: 2,
+                question: "आधुनिक पर्यटन की विशेषताओं का वर्णन करें।",
+                unit: "इकाई-1: युग युगीन यात्रा एवं पर्यटन",
+                years: "2022, 2019, 2016",
+                answer: {
+                    intro: "आधुनिक पर्यटन 20वीं सदी के मध्य में विकसित हुआ, जब परिवहन और संचार में सुधार हुआ। इसकी कुछ विशिष्ट विशेषताएं हैं जो इसे पुराने यात्रा के तरीकों से अलग करती हैं।",
+                    points: [
+                        "<b>अवकाश का उद्देश्य:</b> आधुनिक पर्यटन का मुख्य उद्देश्य आराम, मनोरंजन और नए अनुभव प्राप्त करना है।",
+                        "<b>जन पर्यटन (Mass Tourism):</b> यह कुछ विशिष्ट वर्ग तक सीमित नहीं है, बल्कि आम जनता के लिए सुलभ हो गया है।",
+                        "<b>तेजी से परिवहन:</b> हवाई जहाज और तेज गति वाली ट्रेनों ने लंबी दूरी की यात्रा को बहुत आसान बना दिया है।",
+                        "<b>पैकेज टूर:</b> टूर ऑपरेटर द्वारा बनाए गए पैकेज टूर से यात्रा की योजना बनाना सरल हो गया है।",
+                        "<b>विविधता:</b> आधुनिक पर्यटन में साहसिक, सांस्कृतिक, स्वास्थ्य, और पारिस्थितिक जैसे कई प्रकार शामिल हैं।"
+                    ],
+                    conclusion: "आधुनिक पर्यटन एक संगठित उद्योग है जो वैश्विक अर्थव्यवस्था का एक महत्वपूर्ण हिस्सा बन गया है।"
+                }
+            },
+            {
+                id: 3,
+                question: "पर्यटन और पर्यावरण के बीच संबंध की व्याख्या करें।",
+                unit: "इकाई-2: इतिहास, पर्यावरण, संस्कृति तथा पर्यटन",
+                years: "2023, 2020, 2017",
+                answer: {
+                    intro: "पर्यटन और पर्यावरण का गहरा संबंध है, क्योंकि पर्यटन का विकास प्राकृतिक सौंदर्य और पर्यावरण की गुणवत्ता पर निर्भर करता है। यह संबंध द्विदिशात्मक है; पर्यटन पर्यावरण को प्रभावित करता है और पर्यावरण पर्यटन को प्रभावित करता है।",
+                    points: [
+                        "<b>सकारात्मक संबंध:</b><br>1. <b>संरक्षण का प्रोत्साहन:</b> पर्यटन से प्राप्त आय का उपयोग प्राकृतिक पार्कों, वन्यजीवों और ऐतिहासिक स्थलों के संरक्षण के लिए किया जा सकता है।<br>2. <b>जागरूकता:</b> पर्यटन लोगों में पर्यावरण के प्रति जागरूकता बढ़ाता है।",
+                        "<b>नकारात्मक संबंध:</b><br>1. <b>प्रदूषण:</b> वाहनों, कचरे और भीड़भाड़ के कारण वायु, जल और ध्वनि प्रदूषण बढ़ता है।<br>2. <b>वनस्पतियों और जीवों का नुकसान:</b> निर्माण और पर्यटकों की गतिविधियों से प्राकृतिक आवास नष्ट हो सकते हैं।<br>3. <b>संसाधनों का अत्यधिक उपयोग:</b> पर्यटन क्षेत्रों में पानी, ऊर्जा और अन्य संसाधनों की मांग बढ़ जाती है।"
+                    ],
+                    conclusion: "सतत पर्यटन (Sustainable Tourism) का लक्ष्य इन दोनों के बीच एक सकारात्मक और संतुलित संबंध बनाना है।"
+                }
+            },
+            {
+                id: 4,
+                question: "पर्यटन का इतिहास के साथ क्या संबंध है? एक उदाहरण देकर समझाइए।",
+                unit: "इकाई-2: इतिहास, पर्यावरण, संस्कृति तथा पर्यटन",
+                years: "2021, 2019, 2015",
+                answer: {
+                    intro: "पर्यटन और इतिहास एक-दूसरे से अटूट रूप से जुड़े हुए हैं। कई पर्यटन स्थल अपने ऐतिहासिक महत्व के कारण ही प्रसिद्ध हैं। इतिहास पर्यटन के लिए आधार प्रदान करता है।",
+                    points: [
+                        "<b>ऐतिहासिक स्थलों का आकर्षण:</b> पर्यटक अक्सर किले, महल, प्राचीन मंदिरों और युद्ध के मैदानों जैसे ऐतिहासिक स्थलों को देखने के लिए यात्रा करते हैं। ये स्थल अतीत की कहानियाँ सुनाते हैं।",
+                        "<b>सांस्कृतिक विरासत का अनुभव:</b> ऐतिहासिक पर्यटन से पर्यटक किसी स्थान की सांस्कृतिक विरासत, जीवन शैली और परंपराओं को समझते हैं।",
+                        "<b>आर्थिक लाभ:</b> ऐतिहासिक स्थलों पर आने वाले पर्यटकों से स्थानीय अर्थव्यवस्था को लाभ होता है, जिससे इन स्थलों का रखरखाव और संरक्षण संभव हो पाता है।",
+                        "<b>उदाहरण:</b> आगरा का ताजमहल, दिल्ली का लाल किला या राजस्थान के किले पर्यटकों को भारत के समृद्ध मुगल और राजपूत इतिहास को जानने के लिए आकर्षित करते हैं।"
+                    ],
+                    conclusion: "इस प्रकार, इतिहास न केवल पर्यटकों को आकर्षित करता है, बल्कि यह पर्यटन उद्योग के लिए एक मजबूत आधार भी बनाता है।"
+                }
+            },
+            {
+                id: 5,
+                question: "पारिस्थितिक पर्यटन (Eco-tourism) की अवधारणा और महत्व को स्पष्ट करें।",
+                unit: "इकाई-3: पर्यटन की श्रेणियाँ",
+                years: "2023, 2020, 2018",
+                answer: {
+                    intro: "पारिस्थितिक पर्यटन प्राकृतिक क्षेत्रों की जिम्मेदारी से यात्रा करना है जो पर्यावरण का संरक्षण करता है और स्थानीय लोगों के कल्याण में सुधार करता है। यह पर्यटन का एक जिम्मेदार रूप है।",
+                    points: [
+                        "<b>अवधारणा:</b> यह एक पर्यावरण-अनुकूल पर्यटन है जो प्रकृति और संस्कृति की सराहना करने पर केंद्रित है। इसमें पर्यटकों को शिक्षित किया जाता है ताकि वे पर्यावरण को नुकसान न पहुंचाएं।",
+                        "<b>मुख्य उद्देश्य:</b><br>1. <b>संरक्षण:</b> यह प्राकृतिक और सांस्कृतिक विरासत की रक्षा को बढ़ावा देता है।<br>2. <b>लाभ:</b> पर्यटन से होने वाले आर्थिक लाभ स्थानीय समुदायों और संरक्षण प्रयासों में लगाए जाते हैं।<br>3. <b>शिक्षा:</b> पर्यटकों को पर्यावरण के बारे में सिखाया जाता है।<br>4. <b>न्यूनतम प्रभाव:</b> यह पर्यावरण पर नकारात्मक प्रभाव को कम करने पर ध्यान केंद्रित करता है।"
+                    ],
+                    conclusion: "पारिस्थितिक पर्यटन भविष्य के लिए एक महत्वपूर्ण अवधारणा है क्योंकि यह स्थायी विकास और पर्यावरण संरक्षण को बढ़ावा देता है।"
+                }
+            },
+            {
+                id: 6,
+                question: "धार्मिक पर्यटन और सांस्कृतिक पर्यटन में क्या अंतर है?",
+                unit: "इकाई-3: पर्यटन की श्रेणियाँ",
+                years: "2022, 2019, 2017",
+                answer: {
+                    intro: "धार्मिक और सांस्कृतिक पर्यटन दोनों ही किसी स्थान की विरासत से जुड़े हैं, लेकिन उनके उद्देश्य और ध्यान केंद्रित करने वाले क्षेत्र में अंतर होता है।",
+                    points: [
+                        "<b>धार्मिक पर्यटन:</b><br>1. <b>उद्देश्य:</b> इसका मुख्य उद्देश्य धार्मिक विश्वास और आध्यात्मिक अनुष्ठानों से जुड़ा होता है। पर्यटक अपनी आस्था के कारण यात्रा करते हैं।<br>2. <b>स्थल:</b> इसमें मंदिर, मस्जिद, चर्च, तीर्थस्थल और पवित्र नदियाँ शामिल होती हैं (उदा. हरिद्वार, वाराणसी)।",
+                        "<b>सांस्कृतिक पर्यटन:</b><br>1. <b>उद्देश्य:</b> इसका उद्देश्य किसी स्थान की कला, इतिहास, वास्तुकला, जीवन शैली, भोजन और परंपराओं को जानना होता है।<br>2. <b>स्थल:</b> इसमें ऐतिहासिक स्मारक, संग्रहालय, कला गैलरी और सांस्कृतिक कार्यक्रम शामिल होते हैं (उदा. जयपुर के महल, खजुराहो के मंदिर)।"
+                    ],
+                    conclusion: "संक्षेप में, धार्मिक पर्यटन आस्था पर केंद्रित है, जबकि सांस्कृतिक पर्यटन ज्ञान और अनुभव पर केंद्रित है।"
+                }
+            },
+            {
+                id: 7,
+                question: "ग्रामीण पर्यटन (Rural Tourism) की अवधारणा और महत्व पर एक संक्षिप्त नोट लिखें।",
+                unit: "इकाई-3: पर्यटन की श्रेणियाँ",
+                years: "2021, 2019, 2016",
+                answer: {
+                    intro: "ग्रामीण पर्यटन एक प्रकार का पर्यटन है जो ग्रामीण जीवनशैली, कला, संस्कृति और परंपराओं का अनुभव प्रदान करता है। इसका उद्देश्य शहरी पर्यटकों को ग्रामीण क्षेत्रों की शांति और प्रकृति का आनंद लेने का अवसर देना है।",
+                    points: [
+                        "<b>अवधारणा:</b> इसमें पर्यटक ग्रामीण क्षेत्रों में ठहरते हैं, स्थानीय लोगों के साथ बातचीत करते हैं, पारंपरिक भोजन का स्वाद लेते हैं और खेती जैसी गतिविधियों में भाग लेते हैं।",
+                        "<b>महत्व:</b><br>1. <b>ग्रामीण अर्थव्यवस्था:</b> यह ग्रामीण क्षेत्रों में रोजगार के अवसर पैदा करता है और गरीबी कम करने में मदद करता है।<br>2. <b>स्थानीय संस्कृति का संरक्षण:</b> यह स्थानीय कला और शिल्प को बढ़ावा देता है।<br>3. <b>आप्रवासन पर रोक:</b> यह लोगों को अपने गाँवों में रहने के लिए प्रोत्साहित करता है।"
+                    ],
+                    conclusion: "ग्रामीण पर्यटन भारत जैसे देश के लिए बहुत महत्वपूर्ण है क्योंकि यह गाँवों में सतत विकास को बढ़ावा दे सकता है।"
+                }
+            },
+            {
+                id: 8,
+                question: "पर्यटन के विकास को प्रभावित करने वाले प्रमुख कारकों का विश्लेषण करें।",
+                unit: "इकाई-4: पर्यटन वृद्धि एवं विकास",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "पर्यटन के विकास में कई कारक महत्वपूर्ण भूमिका निभाते हैं। इन कारकों को दो मुख्य श्रेणियों में बांटा जा सकता है: मांग-पक्ष (Demand-Side) और आपूर्ति-पक्ष (Supply-Side) कारक।",
+                    points: [
+                        "<b>मांग-पक्ष कारक (Demand-Side Factors):</b><br>1. <b>बढ़ती आय:</b> लोगों की आय में वृद्धि से अवकाश पर खर्च करने की क्षमता बढ़ती है।<br>2. <b>अवकाश का समय:</b> काम के घंटों में कमी और सवैतनिक अवकाश (Paid Leave) से यात्रा के लिए समय मिलता है।<br>3. <b>संचार क्रांति:</b> इंटरनेट और सोशल मीडिया से गंतव्यों के बारे में जानकारी आसानी से उपलब्ध होती है।",
+                        "<b>आपूर्ति-पक्ष कारक (Supply-Side Factors):</b><br>1. <b>बुनियादी ढांचे का विकास:</b> बेहतर सड़कें, हवाई अड्डे, होटल और संचार सुविधाएं पर्यटन को बढ़ावा देती हैं।<br>2. <b>सरकारी नीतियां:</b> पर्यटन को बढ़ावा देने वाली नीतियां, जैसे वीजा नियमों में ढील, कर लाभ आदि।<br>3. <b>बाजार में स्थिरता:</b> राजनीतिक स्थिरता और सुरक्षा पर्यटकों को आकर्षित करती है।"
+                    ],
+                    conclusion: "यह दोनों कारक मिलकर किसी भी देश या क्षेत्र में पर्यटन के विकास को निर्धारित करते हैं।"
+                }
+            },
+            {
+                id: 9,
+                question: "पर्यटन के विकास में सरकारी नीतियों की भूमिका पर चर्चा करें।",
+                unit: "इकाई-4: पर्यटन वृद्धि एवं विकास",
+                years: "2022, 2019, 2017",
+                answer: {
+                    intro: "किसी भी देश में पर्यटन के विकास के लिए सरकार की नीतियां महत्वपूर्ण होती हैं। सरकार बुनियादी ढांचा, सुरक्षा और मार्केटिंग को बढ़ावा देकर पर्यटन को प्रोत्साहित कर सकती है।",
+                    points: [
+                        "<b>बुनियादी ढांचे का विकास:</b> सरकारें सड़कें, हवाई अड्डे, रेलवे और होटल जैसी सुविधाओं के निर्माण में निवेश करती हैं।",
+                        "<b>सुरक्षा और सुरक्षा:</b> पर्यटकों के लिए सुरक्षित वातावरण सुनिश्चित करने के लिए कानून और व्यवस्था बनाए रखना।",
+                        "<b>विपणन और प्रचार:</b> भारत सरकार 'अतुल्य भारत' (Incredible India) जैसे अभियानों के माध्यम से देश का प्रचार करती है।",
+                        "<b>नियमन और नीति निर्माण:</b> पर्यटन उद्योग के लिए स्पष्ट नियम और दिशानिर्देश बनाना, जैसे वीजा नीति, कर नीति आदि।",
+                        "<b>मानव संसाधन विकास:</b> पर्यटन क्षेत्र में कुशल कर्मचारियों को प्रशिक्षित करने के लिए संस्थानों की स्थापना करना।"
+                    ],
+                    conclusion: "एक मजबूत सरकारी ढांचा पर्यटन के विकास की नींव रखता है और इसे गति प्रदान करता है।"
+                }
+            },
+            {
+                id: 10,
+                question: "सतत पर्यटन (Sustainable Tourism) की अवधारणा को परिभाषित करें।",
+                unit: "इकाई-5: पर्यटन प्रमुख प्रवृत्तियां एवं संभावनाएं",
+                years: "2023, 2021, 2018",
+                answer: {
+                    intro: "सतत पर्यटन, पर्यटन का एक ऐसा रूप है जो वर्तमान और भविष्य के पर्यटकों और मेजबान क्षेत्रों की जरूरतों को पूरा करता है, जबकि इसके सभी प्रभावों का प्रबंधन इस तरह से करता है कि पर्यावरण, सामाजिक और आर्थिक लाभ सुनिश्चित हो सकें।",
+                    points: [
+                        "<b>अवधारणा:</b> यह एक ऐसा पर्यटन है जो पर्यावरण को नुकसान नहीं पहुंचाता, स्थानीय संस्कृति का सम्मान करता है और स्थानीय अर्थव्यवस्था को लाभ पहुंचाता है।",
+                        "<b>तीन स्तंभ:</b><br>1. <b>पर्यावरण:</b> प्राकृतिक संसाधनों का न्यूनतम उपयोग और प्रदूषण को कम करना।<br>2. <b>सामाजिक-सांस्कृतिक:</b> स्थानीय समुदायों की संस्कृति, परंपराओं और विरासत का सम्मान करना।<br>3. <b>आर्थिक:</b> स्थानीय लोगों को रोजगार और आय के अवसर प्रदान करना।",
+                        "<b>उदाहरण:</b> राजस्थान में ग्रामीण पर्यटन पहल, जहाँ पर्यटक स्थानीय कला सीखते हैं और स्थानीय भोजन का आनंद लेते हैं।"
+                    ],
+                    conclusion: "सतत पर्यटन भविष्य की एक आवश्यकता है जो पर्यटन के नकारात्मक प्रभावों को कम करके दीर्घकालिक विकास सुनिश्चित करता है।"
+                }
+            },
+            {
+                id: 11,
+                question: "भविष्य में पर्यटन की प्रमुख प्रवृत्तियाँ क्या हो सकती हैं?",
+                unit: "इकाई-5: पर्यटन प्रमुख प्रवृत्तियां एवं संभावनाएं",
+                years: "2022, 2019, 2017",
+                answer: {
+                    intro: "जैसे-जैसे दुनिया बदल रही है, पर्यटन उद्योग में भी नई प्रवृत्तियां सामने आ रही हैं। भविष्य में पर्यटन अधिक व्यक्तिगत, जिम्मेदार और तकनीकी-आधारित होने की संभावना है।",
+                    points: [
+                        "<b>उत्तरदायी और नैतिक पर्यटन:</b> पर्यटक अब ऐसे गंतव्यों को पसंद कर रहे हैं जो पर्यावरण और समाज के प्रति जिम्मेदार हों।",
+                        "<b>तकनीकी एकीकरण:</b> आर्टिफिशियल इंटेलिजेंस (AI), वर्चुअल रियलिटी (VR) और मोबाइल एप्लिकेशन का उपयोग पर्यटन अनुभव को बेहतर बनाएगा।",
+                        "<b>स्वास्थ्य और कल्याण पर्यटन:</b> लोग योग, आयुर्वेद और ध्यान के लिए यात्रा करेंगे।",
+                        "<b>व्यक्तिगत अनुभव:</b> पर्यटक अब पैकेज टूर के बजाय अपनी रुचि के अनुसार यात्रा की योजना बना रहे हैं।",
+                        "<b>शॉर्ट-टूरिज्म:</b> लोग कम समय में अधिक बार यात्रा कर रहे हैं, जिससे सप्ताहांत यात्राएं लोकप्रिय हो रही हैं।"
+                    ],
+                    conclusion: "ये प्रवृत्तियां पर्यटन उद्योग के भविष्य को आकार देंगी, जिससे यह और भी अधिक विविध और केंद्रित होगा।"
+                }
+            },
+            {
+                id: 12,
+                question: "पर्यटन सूचना के प्रमुख स्रोतों की सूची बनाइए।",
+                unit: "इकाई-6: पर्यटन सूचनाएं: स्रोत एवं संकलन",
+                years: "2023, 2020, 2018",
+                answer: {
+                    intro: "पर्यटकों को यात्रा की योजना बनाने और निर्णय लेने के लिए विश्वसनीय सूचना की आवश्यकता होती है। ये सूचनाएं कई स्रोतों से प्राप्त की जा सकती हैं।",
+                    points: [
+                        "<b>प्राथमिक स्रोत:</b> ये वे स्रोत हैं जहाँ से पर्यटक सीधे जानकारी प्राप्त करते हैं।<br>1. <b>व्यक्तिगत अनुभव:</b> अपने दोस्तों या परिवार के सदस्यों के अनुभव।<br>2. <b>सरकारी पर्यटन कार्यालय:</b> राज्यों और केंद्र सरकार के पर्यटन विभाग।<br>3. <b>इंटरनेट:</b> पर्यटन वेबसाइटें, ब्लॉग, और सोशल मीडिया।",
+                        "<b>माध्यमिक स्रोत:</b> ये वे स्रोत हैं जो प्राथमिक स्रोतों से जानकारी एकत्र करते हैं।<br>1. <b>टूर ऑपरेटर:</b> ये पैम्फलेट, ब्रोशर और वेबसाइट के माध्यम से जानकारी प्रदान करते हैं।<br>2. <b>समाचार पत्र और पत्रिकाएं:</b> यात्रा पर लेख और विज्ञापन।<br>3. <b>पुस्तकें और गाइडबुक:</b> 'लोनली प्लैनेट' (Lonely Planet) जैसी गाइडबुक।"
+                    ],
+                    conclusion: "इंटरनेट के आगमन के साथ, पर्यटन सूचना अब बहुत अधिक सुलभ और विविध हो गई है।"
+                }
+            },
+            {
+                id: 13,
+                question: "पर्यटन में प्रचार (Publicity) और विज्ञापन (Advertisement) के बीच अंतर स्पष्ट करें।",
+                unit: "इकाई-7: पर्यटन: प्रचार एवं विज्ञापन",
+                years: "2022, 2019, 2016",
+                answer: {
+                    intro: "प्रचार और विज्ञापन दोनों ही पर्यटन को बढ़ावा देने के लिए उपयोग किए जाने वाले उपकरण हैं, लेकिन उनके स्वभाव और नियंत्रण के स्तर में महत्वपूर्ण अंतर होता है।",
+                    points: [
+                        "<b>विज्ञापन:</b><br>1. <b>प्रकृति:</b> यह एक भुगतान किया गया (Paid) संचार है। विज्ञापनकर्ता को संदेश, समय और स्थान पर पूर्ण नियंत्रण होता है।<br>2. <b>उदाहरण:</b> टीवी पर 'अतुल्य भारत' का विज्ञापन या समाचार पत्र में एक टूर पैकेज का विज्ञापन।<br>3. <b>विश्वसनीयता:</b> दर्शकों द्वारा इसे कम विश्वसनीय माना जा सकता है क्योंकि यह एक प्रचार माध्यम है।",
+                        "<b>प्रचार:</b><br>1. <b>प्रकृति:</b> यह एक गैर-भुगतान (Non-paid) संचार है। इसका कोई प्रत्यक्ष नियंत्रण नहीं होता। यह अक्सर समाचार रिपोर्ट या लेख के रूप में होता है।<br>2. <b>उदाहरण:</b> किसी गंतव्य के बारे में समाचार चैनल पर एक रिपोर्ट या यात्रा पत्रिका में एक लेख।<br>3. <b>विश्वसनीयता:</b> दर्शक इसे अधिक विश्वसनीय मानते हैं क्योंकि यह एक स्वतंत्र स्रोत से आता है।"
+                    ],
+                    conclusion: "दोनों ही पर्यटन को बढ़ावा देने के लिए महत्वपूर्ण हैं, लेकिन उनका उपयोग अलग-अलग रणनीतियों के तहत किया जाता है।"
+                }
+            },
+            {
+                id: 14,
+                question: "पर्यटन उत्पाद (Tourism Product) क्या है? इसके घटकों का वर्णन करें।",
+                unit: "इकाई-8: पर्यटन उत्पाद",
+                years: "2023, 2021, 2018, 2016",
+                answer: {
+                    intro: "पर्यटन उत्पाद एक अमूर्त (intangible) सेवा है जिसमें कई घटक शामिल होते हैं, जो एक साथ मिलकर पर्यटक को एक पूर्ण अनुभव प्रदान करते हैं। यह केवल एक स्थान नहीं है, बल्कि उस स्थान पर मिलने वाला कुल अनुभव है।",
+                    points: [
+                        "<b>अवधारणा:</b> एक पर्यटन उत्पाद में वह सब कुछ शामिल होता है जो एक पर्यटक यात्रा के दौरान अनुभव करता है, जैसे कि गंतव्य, आवास, परिवहन और गतिविधियां।",
+                        "<b>घटक:</b><br>1. <b>गंतव्य:</b> वह स्थान जहाँ पर्यटक जा रहा है (उदा. गोवा, शिमला)।<br>2. <b>आकर्षण:</b> जो पर्यटकों को आकर्षित करता है, जैसे स्मारक, समुद्र तट, या त्योहार।<br>3. <b>सुविधाएं:</b> रहने और भोजन के लिए होटल, रेस्तरां।<br>4. <b>पहुंच:</b> हवाई मार्ग, सड़क या रेल द्वारा गंतव्य तक पहुंचने की सुविधा।<br>5. <b>गतिविधियाँ:</b> पर्यटक द्वारा की जाने वाली गतिविधियाँ, जैसे ट्रेकिंग, शॉपिंग, या स्थानीय भोजन का स्वाद लेना।"
+                    ],
+                    conclusion: "एक सफल पर्यटन उत्पाद बनाने के लिए इन सभी घटकों का सामंजस्य बहुत आवश्यक है।"
+                }
+            },
+            {
+                id: 15,
+                question: "भारत में पर्यटन उत्पाद की विशेषताओं को संक्षेप में समझाइए।",
+                unit: "इकाई-8: पर्यटन उत्पाद",
+                years: "2022, 2019, 2017",
+                answer: {
+                    intro: "भारत का पर्यटन उत्पाद इसकी विशाल भौगोलिक और सांस्कृतिक विविधता के कारण अद्वितीय है। इसकी कुछ प्रमुख विशेषताएं हैं जो इसे अन्य देशों से अलग करती हैं।",
+                    points: [
+                        "<b>अमूर्तता:</b> पर्यटन उत्पाद को खरीदा और बेचा जा सकता है, लेकिन इसे छुआ या देखा नहीं जा सकता जब तक कि इसका अनुभव न किया जाए।",
+                        "<b>परिवर्तनशीलता:</b> पर्यटक का अनुभव व्यक्ति, समय और सेवा प्रदाता पर निर्भर करता है।",
+                        "<b>अविभाज्य:</b> उत्पादन और उपभोग एक ही समय में होता है (जैसे होटल में रुकना)।",
+                        "<b>विभिन्नता:</b> भारत में पर्यटन उत्पाद में ऐतिहासिक, धार्मिक, सांस्कृतिक और साहसिक जैसे कई पहलू शामिल हैं।",
+                        "<b>मौसमी:</b> पर्यटन उत्पाद की मांग साल के अलग-अलग समय पर बदलती रहती है (जैसे राजस्थान में सर्दियों में अधिक पर्यटक आते हैं)।"
+                    ],
+                    conclusion: "इन विशेषताओं के कारण भारतीय पर्यटन उत्पाद को समझना और उसका विपणन करना एक जटिल कार्य है।"
+                }
+            },
+            {
+                id: 16,
+                question: "भारत के पर्यटन मानचित्र पर राजस्थान की स्थिति का वर्णन करें।",
+                unit: "इकाई-9: भारत के प्रसिद्ध पर्यटन गंतव्य",
+                years: "2023, 2020, 2018",
+                answer: {
+                    intro: "राजस्थान भारत के सबसे लोकप्रिय पर्यटन स्थलों में से एक है, जिसे 'राजाओं की भूमि' के रूप में जाना जाता है। यह अपनी समृद्ध संस्कृति, इतिहास, रंगीन त्योहारों और रेगिस्तानी परिदृश्य के लिए प्रसिद्ध है।",
+                    points: [
+                        "<b>ऐतिहासिक आकर्षण:</b> जयपुर, उदयपुर, जोधपुर और जैसलमेर जैसे शहरों में भव्य किले, महल और हवेलियां हैं।",
+                        "<b>सांस्कृतिक विरासत:</b> लोक नृत्य (जैसे घूमर, कालबेलिया), संगीत और हस्तशिल्प यहाँ की संस्कृति का महत्वपूर्ण हिस्सा हैं।",
+                        "<b>प्राकृतिक सौंदर्य:</b> रेगिस्तान, अरावली पर्वत श्रृंखला और वन्यजीव अभयारण्य (जैसे रणथंभौर, सरिस्का) प्राकृतिक आकर्षण प्रदान करते हैं।",
+                        "<b>त्योहार:</b> पुष्कर मेला, तीज और गणगौर जैसे त्यौहार पर्यटकों को आकर्षित करते हैं।",
+                        "<b>विशिष्ट पर्यटन:</b> यहाँ विरासत पर्यटन, ग्रामीण पर्यटन और रेगिस्तानी सफारी का अनुभव मिलता है।"
+                    ],
+                    conclusion: "अपनी अनूठी विरासत के कारण, राजस्थान भारतीय पर्यटन उद्योग में एक प्रमुख स्थान रखता है।"
+                }
+            },
+            {
+                id: 17,
+                question: "भारत के कोई दो धार्मिक पर्यटन स्थलों का वर्णन करें।",
+                unit: "इकाई-9: भारत के प्रसिद्ध पर्यटन गंतव्य",
+                years: "2022, 2019, 2017",
+                answer: {
+                    intro: "भारत को 'तीर्थयात्रियों की भूमि' कहा जाता है, जहाँ हर धर्म के लिए महत्वपूर्ण धार्मिक स्थल हैं। ये स्थल लाखों भक्तों को आकर्षित करते हैं।",
+                    points: [
+                        "<b>वाराणसी (उत्तर प्रदेश):</b> इसे दुनिया का सबसे पुराना लगातार बसा हुआ शहर माना जाता है। यह हिंदुओं के लिए एक पवित्र शहर है, जो गंगा नदी के तट पर स्थित है। यहाँ के घाट, गंगा आरती और प्राचीन मंदिर (जैसे काशी विश्वनाथ मंदिर) प्रमुख आकर्षण हैं।",
+                        "<b>अमृतसर (पंजाब):</b> यह सिख धर्म का सबसे पवित्र शहर है। यहाँ का स्वर्ण मंदिर (Golden Temple) एक भव्य गुरुद्वारा है जो अपनी आध्यात्मिक शांति और वास्तुकला के लिए प्रसिद्ध है। यह सभी धर्मों के लोगों के लिए खुला है और यहाँ हर दिन हजारों लोगों को 'लंगर' खिलाया जाता है।"
+                    ],
+                    conclusion: "ये धार्मिक स्थल न केवल आस्था के केंद्र हैं, बल्कि पर्यटन को भी बढ़ावा देते हैं।"
+                }
+            },
+            {
+                id: 18,
+                question: "भारत में पर्यटन को बढ़ावा देने में त्योहारों की भूमिका का वर्णन करें।",
+                unit: "इकाई-10: पर्यटन उत्सव, त्योहार तथा ऋतुएँ",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "भारत को 'त्योहारों का देश' कहा जाता है। यहाँ के रंगीन और विविध त्योहार पर्यटन को बढ़ावा देने में महत्वपूर्ण भूमिका निभाते हैं, क्योंकि वे पर्यटकों को स्थानीय संस्कृति का अनुभव करने का अवसर देते हैं।",
+                    points: [
+                        "<b>सांस्कृतिक अनुभव:</b> त्योहार पर्यटकों को स्थानीय परंपराओं, रीति-रिवाजों, संगीत और नृत्यों को देखने और अनुभव करने का अवसर देते हैं। (उदाहरण: राजस्थान में तीज, गणगौर)",
+                        "<b>आकर्षण का केंद्र:</b> कुछ त्योहार, जैसे कुंभ मेला या पुष्कर मेला, दुनिया भर से पर्यटकों को आकर्षित करते हैं।",
+                        "<b>आर्थिक लाभ:</b> त्योहारों के दौरान पर्यटन से स्थानीय अर्थव्यवस्था को लाभ होता है, जैसे हस्तशिल्प और भोजन का व्यापार।",
+                        "<b>स्थानीय जीवन का अनुभव:</b> ये पर्यटकों को स्थानीय लोगों के साथ घुलने-मिलने और उनकी जीवनशैली को समझने का मौका देते हैं।"
+                    ],
+                    conclusion: "त्योहार किसी भी गंतव्य के पर्यटन उत्पाद में एक अमूल्य तत्व जोड़ते हैं।"
+                }
+            },
+            {
+                id: 19,
+                question: "भारत में विभिन्न ऋतुओं का पर्यटन पर क्या प्रभाव पड़ता है?",
+                unit: "इकाई-10: पर्यटन उत्सव, त्योहार तथा ऋतुएँ",
+                years: "2022, 2020, 2018",
+                answer: {
+                    intro: "भारत में अलग-अलग जलवायु क्षेत्र और ऋतुएं हैं, जिनका पर्यटन पर सीधा प्रभाव पड़ता है। पर्यटक अपनी यात्रा की योजना अक्सर मौसम के अनुसार बनाते हैं।",
+                    points: [
+                        "<b>ग्रीष्म ऋतु (गर्मी):</b> इस दौरान मैदानी इलाकों में तापमान अधिक होता है, इसलिए पर्यटक हिल स्टेशनों (जैसे मनाली, शिमला) की ओर रुख करते हैं।",
+                        "<b>शरद ऋतु (सर्दी):</b> यह मैदानी इलाकों (जैसे राजस्थान, गोवा) में पर्यटन का चरम मौसम होता है क्योंकि मौसम सुखद होता है।",
+                        "<b>वर्षा ऋतु (मानसून):</b> यह कई गंतव्यों के लिए ऑफ-सीजन होता है, लेकिन कुछ क्षेत्रों (जैसे केरल, गोवा) में 'ग्रीन' मानसून पर्यटन को बढ़ावा मिलता है।",
+                        "<b>बसंत और पतझड़:</b> ये मौसम भारत के अधिकांश हिस्सों में घूमने के लिए सुखद होते हैं।"
+                    ],
+                    conclusion: "ऋतुएं भारतीय पर्यटन को एक चक्रीय पैटर्न देती हैं, जिसमें हर मौसम के लिए अलग गंतव्य होते हैं।"
+                }
+            },
+            {
+                id: 20,
+                question: "साहसिक पर्यटन (Adventure Tourism) और स्वास्थ्य पर्यटन (Health Tourism) में क्या अंतर है?",
+                unit: "इकाई-11: विशेष रुचि यात्राएं",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "साहसिक और स्वास्थ्य पर्यटन दोनों ही विशेष रुचि वाले पर्यटन के प्रकार हैं, लेकिन उनके उद्देश्य और गतिविधियाँ पूरी तरह से अलग हैं।",
+                    points: [
+                        "<b>साहसिक पर्यटन:</b><br>1. <b>उद्देश्य:</b> रोमांच, चुनौती और शारीरिक गतिविधियों का अनुभव करना।<br>2. <b>गतिविधियाँ:</b> इसमें ट्रेकिंग, राफ्टिंग, पर्वतारोहण, और स्कीइंग जैसी गतिविधियाँ शामिल हैं।<br>3. <b>उदाहरण:</b> उत्तराखंड में गंगा नदी में राफ्टिंग या हिमालय में ट्रेकिंग।",
+                        "<b>स्वास्थ्य पर्यटन:</b><br>1. <b>उद्देश्य:</b> चिकित्सा उपचार, कल्याण, ध्यान और योग जैसे स्वास्थ्य संबंधी कारणों के लिए यात्रा करना।<br>2. <b>गतिविधियाँ:</b> सर्जरी, आयुर्वेद उपचार, योग रिट्रीट और स्पा सेवाएं।<br>3. <b>उदाहरण:</b> आयुर्वेदिक उपचार के लिए केरल जाना या भारत में सर्जरी कराना।"
+                    ],
+                    conclusion: "संक्षेप में, साहसिक पर्यटन शारीरिक चुनौती पर केंद्रित है, जबकि स्वास्थ्य पर्यटन शारीरिक और मानसिक कल्याण पर।"
+                }
+            },
+            {
+                id: 21,
+                question: "भारत में वन्यजीव पर्यटन (Wildlife Tourism) के महत्व का वर्णन करें।",
+                unit: "इकाई-12: राजस्थान के वन्य जीव अभयारण्य",
+                years: "2023, 2020, 2018",
+                answer: {
+                    intro: "वन्यजीव पर्यटन प्रकृति-आधारित पर्यटन का एक महत्वपूर्ण हिस्सा है, जो पर्यटकों को प्राकृतिक आवास में जानवरों को देखने का अवसर देता है।",
+                    points: [
+                        "<b>महत्व:</b><br>1. <b>पर्यावरण संरक्षण:</b> यह वन्यजीवों और उनके आवासों के संरक्षण के लिए धन जुटाने में मदद करता है।<br>2. <b>जागरूकता:</b> यह लोगों में वन्यजीवों के प्रति जागरूकता बढ़ाता है।<br>3. <b>आर्थिक लाभ:</b> यह स्थानीय समुदायों के लिए रोजगार के अवसर पैदा करता है।<br>4. <b>शैक्षणिक मूल्य:</b> यह पर्यटकों को पारिस्थितिकी तंत्र और जैव विविधता के बारे में सिखाता है।"
+                    ],
+                    conclusion: "वन्यजीव पर्यटन एक महत्वपूर्ण उपकरण है जो संरक्षण और आर्थिक विकास के बीच संतुलन बनाने में मदद करता है।"
+                }
+            },
+            {
+                id: 22,
+                question: "राजस्थान में वन्यजीव अभयारण्यों के नाम लिखें और किसी एक का वर्णन करें।",
+                unit: "इकाई-12: राजस्थान के वन्य जीव अभयारण्य",
+                years: "2022, 2019, 2017",
+                answer: {
+                    intro: "राजस्थान में कई प्रसिद्ध वन्यजीव अभयारण्य और राष्ट्रीय उद्यान हैं जो अपनी समृद्ध जैव विविधता के लिए जाने जाते हैं।",
+                    points: [
+                        "<b>प्रमुख अभयारण्य:</b> रणथंभौर राष्ट्रीय उद्यान, सरिस्का बाघ अभयारण्य, केवलादेव घाना राष्ट्रीय उद्यान, ताल छापर वन्यजीव अभयारण्य।",
+                        "<b>रणथंभौर राष्ट्रीय उद्यान:</b><br>1. <b>स्थिति:</b> सवाई माधोपुर, राजस्थान।<br>2. <b>प्रमुख आकर्षण:</b> यह बाघों (Tigers) के लिए प्रसिद्ध है और यहाँ बाघों को उनके प्राकृतिक आवास में देखने का एक शानदार मौका मिलता है।<br>3. <b>वनस्पति:</b> यहाँ शुष्क पर्णपाती वन हैं।<br>4. <b>अन्य जानवर:</b> यहाँ तेंदुआ, सियार, लकड़बग्घा और विभिन्न पक्षी प्रजातियां भी पाई जाती हैं।"
+                    ],
+                    conclusion: "रणथंभौर जैसे अभयारण्य न केवल वन्यजीवों का घर हैं, बल्कि पर्यटन का एक महत्वपूर्ण केंद्र भी हैं।"
+                }
+            },
+            {
+                id: 23,
+                question: "ऊंट सफारी परियोजना की अवधारणा और महत्व पर चर्चा करें।",
+                unit: "इकाई-13: ऊंट सफारी परियोजना",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "ऊंट सफारी परियोजना राजस्थान के रेगिस्तानी क्षेत्रों में पर्यटकों को एक अनूठा और पारंपरिक अनुभव प्रदान करती है। यह एक पर्यटन गतिविधि है जो स्थानीय संस्कृति और रेगिस्तानी जीवन को दर्शाती है।",
+                    points: [
+                        "<b>अवधारणा:</b> पर्यटक ऊंट की सवारी करके रेगिस्तान की खोज करते हैं। यह यात्रा कुछ घंटों से लेकर कई दिनों तक हो सकती है, जिसमें रात में शिविर में रहना भी शामिल है।",
+                        "<b>महत्व:</b><br>1. <b>आकर्षण:</b> यह पर्यटकों के लिए एक प्रमुख आकर्षण है, खासकर जैसलमेर और पुष्कर में।<br>2. <b>स्थानीय अर्थव्यवस्था:</b> यह स्थानीय लोगों के लिए रोजगार और आय का एक महत्वपूर्ण स्रोत है।<br>3. <b>सांस्कृतिक अनुभव:</b> यह पर्यटकों को पारंपरिक राजस्थानी जीवनशैली और भोजन का अनुभव करने का अवसर देता है।"
+                    ],
+                    conclusion: "ऊंट सफारी परियोजना ने राजस्थान के रेगिस्तानी पर्यटन को एक अनूठी पहचान दी है।"
+                }
+            },
+            {
+                id: 24,
+                question: "निष्प्रय यात्रा (Leisure Travel) क्या है और यह क्यों महत्वपूर्ण है?",
+                unit: "इकाई-14: निष्प्रय यात्रा",
+                years: "2022, 2018, 2016",
+                answer: {
+                    intro: "निष्प्रय यात्रा, जिसे अवकाश यात्रा भी कहते हैं, वह यात्रा है जो विश्राम, मनोरंजन, मनोरंजन, और व्यक्तिगत संतुष्टि के लिए की जाती है। यह व्यापार या अन्य अनिवार्य उद्देश्यों के लिए नहीं होती।",
+                    points: [
+                        "<b>अवधारणा:</b> इसका मुख्य उद्देश्य दैनिक जीवन के तनाव से मुक्ति पाना और नए स्थानों का आनंद लेना है।",
+                        "<b>महत्व:</b><br>1. <b>मानसिक और शारीरिक स्वास्थ्य:</b> यह व्यक्ति को तनाव से मुक्ति देता है और मानसिक शांति प्रदान करता है।<br>2. <b>नए अनुभव:</b> यह व्यक्ति को नए स्थानों, संस्कृतियों और लोगों से मिलने का अवसर देता है।<br>3. <b>आर्थिक लाभ:</b> अवकाश यात्रा पर्यटन उद्योग के लिए सबसे बड़ा राजस्व स्रोत है।"
+                    ],
+                    conclusion: "आज के व्यस्त जीवन में, निष्प्रय यात्रा व्यक्ति के समग्र कल्याण के लिए एक महत्वपूर्ण गतिविधि बन गई है।"
+                }
+            },
+            {
+                id: 25,
+                question: "राज्य संचालित पर्यटन का क्या अर्थ है? इसके लाभ और हानियों का वर्णन करें।",
+                unit: "इकाई-15: राज्य संचालित पर्यटन",
+                years: "2023, 2020, 2019",
+                answer: {
+                    intro: "राज्य संचालित पर्यटन का अर्थ है कि पर्यटन का विकास और प्रबंधन सरकार द्वारा नियंत्रित और वित्त पोषित होता है।",
+                    points: [
+                        "<b>लाभ:</b><br>1. <b>बुनियादी ढांचे का विकास:</b> सरकार बड़े पैमाने पर बुनियादी ढांचे जैसे सड़कें, हवाई अड्डे और होटल विकसित कर सकती है।<br>2. <b>समान विकास:</b> सरकार पर्यटन को केवल लोकप्रिय गंतव्यों तक सीमित न रखकर दूर-दराज के क्षेत्रों में भी बढ़ावा दे सकती है।<br>3. <b>सुरक्षा और गुणवत्ता:</b> सरकार सेवा की गुणवत्ता और पर्यटकों की सुरक्षा सुनिश्चित कर सकती है।",
+                        "<b>हानियां:</b><br>1. <b>ब्यूरोक्रेसी:</b> सरकारी नियंत्रण के कारण निर्णय लेने में देरी हो सकती है।<br>2. <b>कुशलता की कमी:</b> अक्सर निजी क्षेत्र की तुलना में सेवाओं में कुशलता की कमी हो सकती है।"
+                    ],
+                    conclusion: "निजी और राज्य संचालित पर्यटन के बीच एक संतुलन सतत विकास के लिए आवश्यक है।"
+                }
+            },
+            {
+                id: 26,
+                question: "स्व-आयोजित भ्रमण (Self-Planned Tours) क्या हैं? इसके लाभ और हानियां क्या हैं?",
+                unit: "इकाई-16: स्व आयोजित भ्रमण",
+                years: "2022, 2019, 2017",
+                answer: {
+                    intro: "स्व-आयोजित भ्रमण वह यात्रा है जिसकी योजना और व्यवस्था एक व्यक्ति या समूह द्वारा स्वयं की जाती है, बिना किसी टूर ऑपरेटर की सहायता के।",
+                    points: [
+                        "<b>लाभ:</b><br>1. <b>लचीलापन:</b> यात्री अपनी सुविधा और रुचि के अनुसार अपनी यात्रा को बदल सकता है।<br>2. <b>लागत बचत:</b> टूर ऑपरेटर के शुल्क को बचाकर लागत को कम किया जा सकता है।<br>3. <b>व्यक्तिगत अनुभव:</b> यह यात्री को एक अधिक प्रामाणिक और व्यक्तिगत अनुभव प्रदान करता है।",
+                        "<b>हानियां:</b><br>1. <b>समय और प्रयास:</b> यात्रा की योजना बनाने में बहुत समय और प्रयास लगता है।<br>2. <b>जोखिम:</b> यदि कोई समस्या उत्पन्न होती है, तो यात्री को स्वयं ही उसे हल करना होगा।<br>3. <b>अनिश्चितता:</b> अपरिचित गंतव्यों में आवास या परिवहन की व्यवस्था करना चुनौतीपूर्ण हो सकता है।"
+                    ],
+                    conclusion: "स्व-आयोजित भ्रमण उन लोगों के लिए सबसे अच्छा है जो अपनी यात्रा पर अधिक नियंत्रण चाहते हैं।"
+                }
+            },
+            {
+                id: 27,
+                question: "पर्यटन में परिवहन और संचार के महत्व पर एक नोट लिखें।",
+                unit: "इकाई-17: परिवहन एवं सूचना प्रेषण",
+                years: "2023, 2021, 2018",
+                answer: {
+                    intro: "परिवहन और संचार पर्यटन के दो सबसे महत्वपूर्ण घटक हैं। ये दोनों एक गंतव्य की पहुंच और सुविधा को निर्धारित करते हैं।",
+                    points: [
+                        "<b>परिवहन का महत्व:</b><br>1. <b>पहुंच:</b> यह पर्यटकों को उनके घर से गंतव्य तक पहुंचाता है।<br>2. <b>आंतरिक गतिशीलता:</b> यह पर्यटकों को गंतव्य के भीतर घूमने की अनुमति देता है।<br>3. <b>समय की बचत:</b> तेज परिवहन समय को कम करता है और अधिक पर्यटकों को आकर्षित करता है।",
+                        "<b>संचार का महत्व:</b><br>1. <b>सूचना का आदान-प्रदान:</b> पर्यटक यात्रा से पहले और यात्रा के दौरान जानकारी प्राप्त कर सकते हैं।<br>2. <b>सुरक्षा:</b> आपात स्थिति में संचार महत्वपूर्ण होता है।<br>3. <b>विपणन:</b> यह पर्यटन उत्पादों का प्रचार करने में मदद करता है।"
+                    ],
+                    conclusion: "बेहतर परिवहन और संचार व्यवस्था के बिना कोई भी पर्यटन गंतव्य सफल नहीं हो सकता।"
+                }
+            },
+            {
+                id: 28,
+                question: "पर्यटन में रेल परिवहन के लाभ और हानियां क्या हैं?",
+                unit: "इकाई-18: रेल परिवहन",
+                years: "2022, 2020, 2017",
+                answer: {
+                    intro: "रेल परिवहन भारत में पर्यटन का एक महत्वपूर्ण हिस्सा है। यह विशेष रूप से लंबी दूरी की यात्रा के लिए एक लोकप्रिय विकल्प है।",
+                    points: [
+                        "<b>लाभ:</b><br>1. <b>लागत प्रभावी:</b> यह सड़क और हवाई यात्रा की तुलना में अधिक किफायती होता है।<br>2. <b>आरामदायक:</b> लंबी दूरी की यात्रा के लिए यह आरामदायक विकल्प है, खासकर जब स्लीपर या एसी कोच उपलब्ध हों।<br>3. <b>सुरक्षित:</b> यह सबसे सुरक्षित परिवहन माध्यमों में से एक है।<br>4. <b>प्राकृतिक दृश्यों का आनंद:</b> यात्री यात्रा के दौरान प्राकृतिक दृश्यों का आनंद ले सकते हैं।",
+                        "<b>हानियां:</b><br>1. <b>समय की खपत:</b> यह हवाई यात्रा की तुलना में अधिक समय लेता है।<br>2. <b>लचीलेपन की कमी:</b> यह पूर्वनिर्धारित मार्गों पर ही चलता है।"
+                    ],
+                    conclusion: "भारत में, 'पैलेस ऑन व्हील्स' जैसी लक्जरी ट्रेनें पर्यटन को एक नया आयाम देती हैं।"
+                }
+            },
+            {
+                id: 29,
+                question: "टैक्सी ऑन व्हील्स सेवा क्या है? इसका क्या महत्व है?",
+                unit: "इकाई-19: टैक्सी ऑन व्हील्स",
+                years: "2023, 2021, 2018",
+                answer: {
+                    intro: "टैक्सी ऑन व्हील्स सेवा एक प्रकार की सड़क परिवहन सेवा है जहाँ पर्यटक अपनी आवश्यकतानुसार वाहन (जैसे टैक्सी या कार) किराए पर ले सकते हैं। यह पर्यटन में लचीलापन और सुविधा प्रदान करता है।",
+                    points: [
+                        "<b>अवधारणा:</b> इसमें पर्यटक अपनी सुविधा के अनुसार ड्राइवर के साथ या बिना ड्राइवर के कार किराए पर ले सकते हैं।",
+                        "<b>महत्व:</b><br>1. <b>लचीलापन:</b> पर्यटक अपनी मर्जी से किसी भी समय और किसी भी स्थान पर जा सकते हैं।<br>2. <b>सुविधा:</b> यह विशेष रूप से दूर-दराज के क्षेत्रों के लिए सुविधाजनक है।<br>3. <b>आर्थिक लाभ:</b> यह स्थानीय ड्राइवरों और उद्यमियों के लिए रोजगार पैदा करता है।"
+                    ],
+                    conclusion: "टैक्सी ऑन व्हील्स सेवा उन पर्यटकों के लिए आदर्श है जो यात्रा पर अधिक स्वतंत्रता चाहते हैं।"
+                }
+            },
+            {
+                id: 30,
+                question: "भारत में वायु परिवहन के विकास पर एक नोट लिखें।",
+                unit: "इकाई-20: वायु परिवहन",
+                years: "2022, 2019, 2017",
+                answer: {
+                    intro: "वायु परिवहन ने भारत में पर्यटन को क्रांतिकारी रूप से बदल दिया है। इसने दूरी को कम कर दिया है और दूर-दराज के गंतव्यों को सुलभ बना दिया है।",
+                    points: [
+                        "<b>विकास:</b> आजादी के बाद, एयर इंडिया और इंडियन एयरलाइंस की स्थापना हुई। हाल के वर्षों में निजी एयरलाइंस (जैसे इंडिगो, स्पाइसजेट) के आगमन से प्रतिस्पर्धा बढ़ी है, जिससे किराए कम हुए हैं।",
+                        "<b>महत्व:</b><br>1. <b>समय की बचत:</b> यह सबसे तेज परिवहन माध्यम है।<br>2. <b>अंतर्राष्ट्रीय पर्यटन:</b> यह अंतरराष्ट्रीय पर्यटकों के लिए भारत को अधिक सुलभ बनाता है।<br>3. <b>दूर-दराज के क्षेत्रों से जुड़ाव:</b> छोटे हवाई अड्डों के विकास ने छोटे शहरों को भी पर्यटन से जोड़ा है।"
+                    ],
+                    conclusion: "वायु परिवहन ने भारत को एक प्रमुख पर्यटन स्थल के रूप में स्थापित करने में महत्वपूर्ण भूमिका निभाई है।"
+                }
+            },
+            {
+                id: 31,
+                question: "पर्यटन में सड़क परिवहन का क्या महत्व है?",
+                unit: "इकाई-21: सड़क परिवहन",
+                years: "2023, 2020, 2018",
+                answer: {
+                    intro: "सड़क परिवहन पर्यटन का सबसे महत्वपूर्ण और व्यापक रूप से उपयोग किया जाने वाला माध्यम है। यह पर्यटकों को सीधे गंतव्य तक पहुंचाता है।",
+                    points: [
+                        "<b>महत्व:</b><br>1. <b>पहुंच:</b> यह उन स्थानों तक पहुंच प्रदान करता है जहाँ रेलवे या हवाई मार्ग नहीं है।<br>2. <b>लचीलापन:</b> यात्री अपनी गति और मार्ग पर यात्रा कर सकते हैं।<br>3. <b>आर्थिक लाभ:</b> यह टैक्सी ड्राइवरों, बस ऑपरेटरों और सड़क किनारे के ढाबों के लिए रोजगार पैदा करता है।<br>4. <b>ग्रामीण पर्यटन:</b> यह ग्रामीण और दूरदराज के क्षेत्रों में पर्यटन के विकास में सहायक है।"
+                    ],
+                    conclusion: "सड़क परिवहन पर्यटन को अधिक सुलभ और सुविधाजनक बनाता है।"
+                }
+            },
+            {
+                id: 32,
+                question: "पर्यटन में यात्रा पारिचालन (Travel Operations) का क्या अर्थ है?",
+                unit: "इकाई-22: यात्रा पारिचालन",
+                years: "2022, 2019, 2017",
+                answer: {
+                    intro: "यात्रा पारिचालन में वे सभी गतिविधियाँ शामिल हैं जो एक टूर पैकेज की योजना बनाने, उसे व्यवस्थित करने और उसे बेचने के लिए आवश्यक होती हैं।",
+                    points: [
+                        "<b>अवधारणा:</b> यह एक जटिल प्रक्रिया है जिसमें विभिन्न घटकों (जैसे परिवहन, आवास, यात्रा कार्यक्रम) को एक साथ जोड़ा जाता है।",
+                        "<b>घटक:</b><br>1. <b>अनुसंधान और योजना:</b> नए गंतव्यों और पैकेजों की पहचान करना।<br>2. <b>आपूर्तिकर्ताओं के साथ बातचीत:</b> होटलों, एयरलाइंस और स्थानीय गाइडों के साथ दरों पर बातचीत करना।<br>3. <b>पैकेज बनाना:</b> यात्रा के सभी घटकों को मिलाकर एक टूर पैकेज बनाना।<br>4. <b>विपणन और बिक्री:</b> पैकेजों का प्रचार करना और उन्हें बेचना।<br>5. <b>संचालन:</b> यात्रा के दौरान सभी सेवाओं को सुचारू रूप से चलाना।"
+                    ],
+                    conclusion: "कुशल यात्रा पारिचालन एक सफल टूर ऑपरेटर की नींव है।"
+                }
+            },
+            {
+                id: 33,
+                question: "यात्रा एजेंसियों की भूमिका और कार्यों पर एक विस्तृत नोट लिखें।",
+                unit: "इकाई-23: यात्रा ऐजेंसियां",
+                years: "2023, 2021, 2018",
+                answer: {
+                    intro: "यात्रा एजेंसियां वे व्यवसाय हैं जो पर्यटकों की ओर से यात्रा और पर्यटन सेवाओं को बेचने का काम करती हैं। वे टूर ऑपरेटरों और अन्य आपूर्तिकर्ताओं के लिए एक महत्वपूर्ण वितरण चैनल हैं।",
+                    points: [
+                        "<b>मुख्य कार्य:</b><br>1. <b>सलाह देना:</b> ग्राहकों को उनके बजट और पसंद के अनुसार सही गंतव्य और पैकेज चुनने में मदद करना।<br>2. <b>बुकिंग:</b> एयरलाइन टिकट, होटल बुकिंग और कार किराए पर लेने की व्यवस्था करना।<br>3. <b>पैकेज टूर बेचना:</b> टूर ऑपरेटरों द्वारा बनाए गए पैकेजों को बेचना।<br>4. <b>वीजा और पासपोर्ट सहायता:</b> वीजा और अन्य यात्रा दस्तावेजों को प्राप्त करने में ग्राहकों की सहायता करना।<br>5. <b>ग्राहक सेवा:</b> यात्रा से पहले, दौरान और बाद में सहायता प्रदान करना।"
+                    ],
+                    conclusion: "यात्रा एजेंसियां पर्यटकों के लिए यात्रा की योजना को सरल और सुविधाजनक बनाती हैं।"
+                }
+            },
+            {
+                id: 34,
+                question: "टूर ऑपरेटर और यात्रा एजेंसी में क्या अंतर है?",
+                unit: "इकाई-23: यात्रा ऐजेंसियां",
+                years: "2022, 2020, 2017",
+                answer: {
+                    intro: "टूर ऑपरेटर और यात्रा एजेंसी दोनों ही पर्यटन उद्योग का हिस्सा हैं, लेकिन उनकी भूमिकाएं अलग-अलग होती हैं।",
+                    points: [
+                        "<b>टूर ऑपरेटर:</b><br>1. <b>भूमिका:</b> ये 'पैकेज टूर' बनाते हैं। वे परिवहन, आवास, और अन्य सेवाओं को मिलाकर एक नया उत्पाद बनाते हैं।<br>2. <b>उत्पाद:</b> ये अपने स्वयं के पैकेज टूर का निर्माण करते हैं।<br>3. <b>ग्राहक:</b> ये मुख्य रूप से यात्रा एजेंसियों को अपने पैकेज बेचते हैं।",
+                        "<b>यात्रा एजेंसी:</b><br>1. <b>भूमिका:</b> ये टूर ऑपरेटरों और अन्य आपूर्तिकर्ताओं के उत्पादों को सीधे ग्राहक को बेचते हैं। वे एक 'मध्यस्थ' के रूप में कार्य करते हैं।<br>2. <b>उत्पाद:</b> ये दूसरों के उत्पादों को बेचते हैं।<br>3. <b>ग्राहक:</b> ये सीधे अंतिम उपभोक्ता (पर्यटक) से निपटते हैं।"
+                    ],
+                    conclusion: "संक्षेप में, टूर ऑपरेटर उत्पाद बनाता है और यात्रा एजेंसी उसे बेचती है।"
+                }
+            },
+            {
+                id: 35,
+                question: "पथप्रदर्शक (Guide) और अनुराक्षक (Escort) में क्या अंतर है?",
+                unit: "इकाई-24: पथप्रदर्शक एवं अनुराक्षक",
+                years: "2023, 2021, 2019, 2016",
+                answer: {
+                    intro: "गाइड और एस्कॉर्ट दोनों ही पर्यटकों के साथ यात्रा करते हैं, लेकिन उनकी भूमिकाएँ और कर्तव्य अलग-अलग होते हैं।",
+                    points: [
+                        "<b>पथप्रदर्शक (Guide):</b><br>1. <b>भूमिका:</b> यह किसी विशेष स्थान या स्मारक (जैसे संग्रहालय, किला) के बारे में विस्तृत जानकारी देता है।<br>2. <b>ज्ञान:</b> उसके पास ऐतिहासिक, सांस्कृतिक और कलात्मक तथ्यों का गहन ज्ञान होता है।<br>3. <b>दायरा:</b> उसका काम आमतौर पर एक विशिष्ट स्थान तक सीमित होता है।",
+                        "<b>अनुराक्षक (Escort):</b><br>1. <b>भूमिका:</b> यह एक टूर समूह के साथ यात्रा करता है, जो रसद और प्रशासनिक सहायता प्रदान करता है।<br>2. <b>ज्ञान:</b> उसे यात्रा कार्यक्रम, परिवहन और आवास के बारे में जानकारी होती है।<br>3. <b>दायरा:</b> उसका काम पूरी यात्रा में समूह के साथ रहना है।"
+                    ],
+                    conclusion: "गाइड जानकारी देता है, जबकि एस्कॉर्ट यात्रा को सुगम बनाता है।"
+                }
+            },
+            {
+                id: 36,
+                question: "एक अच्छे पथप्रदर्शक के गुण और कर्तव्यों का वर्णन करें।",
+                unit: "इकाई-24: पथप्रदर्शक एवं अनुराक्षक",
+                years: "2022, 2020, 2018",
+                answer: {
+                    intro: "एक पथप्रदर्शक केवल जानकारी देने वाला नहीं होता, बल्कि वह एक शिक्षक, मनोरंजनकर्ता और मेजबान की भूमिका भी निभाता है।",
+                    points: [
+                        "<b>गुण:</b><br>1. <b>गहन ज्ञान:</b> उसे ऐतिहासिक, सांस्कृतिक और भौगोलिक तथ्यों का सटीक ज्ञान होना चाहिए।<br>2. <b>संचार कौशल:</b> जानकारी को स्पष्ट, रोचक और मनोरंजक तरीके से प्रस्तुत करने की क्षमता।<br>3. <b>समस्या-समाधान:</b> अनपेक्षित स्थितियों को शांति से संभालने की क्षमता।<br>4. <b>विनम्रता और धैर्य:</b> पर्यटकों के साथ अच्छा व्यवहार करना और उनके सवालों का धैर्यपूर्वक जवाब देना।",
+                        "<b>कर्तव्य:</b><br>1. <b>जानकारी प्रदान करना:</b> गंतव्य के बारे में सही और विस्तृत जानकारी देना।<br>2. <b>सुरक्षा सुनिश्चित करना:</b> पर्यटकों की सुरक्षा और भलाई का ध्यान रखना।<br>3. <b>समूह का प्रबंधन:</b> समूह को समय पर चलाना और व्यवस्था बनाए रखना।"
+                    ],
+                    conclusion: "एक अच्छा गाइड पर्यटकों की यात्रा को एक यादगार और ज्ञानवर्धक अनुभव में बदल देता है।"
+            },
+            },
+            {
+                id: 37,
+                question: "पर्यटन के सामाजिक-सांस्कृतिक प्रभावों का विस्तार से वर्णन करें।",
+                unit: "इकाई-2: इतिहास, पर्यावरण, संस्कृति तथा पर्यटन",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "पर्यटन का किसी भी समाज और संस्कृति पर गहरा प्रभाव पड़ता है, जो सकारात्मक और नकारात्मक दोनों हो सकता है। यह स्थानीय लोगों और पर्यटकों के बीच संबंधों को भी प्रभावित करता है।",
+                    points: [
+                        "<b>सकारात्मक प्रभाव:</b><br>1. <b>सांस्कृतिक आदान-प्रदान:</b> पर्यटक और स्थानीय लोग एक दूसरे की संस्कृति को समझते हैं।<br>2. <b>परंपराओं का संरक्षण:</b> स्थानीय कला, शिल्प, संगीत और नृत्य को प्रोत्साहन मिलता है, जिससे वे जीवित रहते हैं।<br>3. <b>सामाजिक सहिष्णुता:</b> विभिन्न संस्कृतियों के संपर्क से लोगों में एक-दूसरे के प्रति सम्मान बढ़ता है।",
+                        "<b>नकारात्मक प्रभाव:</b><br>1. <b>संस्कृति का व्यावसायीकरण:</b> स्थानीय परंपराएं सिर्फ पैसों के लिए एक 'वस्तु' बन जाती हैं।<br>2. <b>सामाजिक तनाव:</b> जीवनशैली और मूल्यों में अंतर के कारण स्थानीय और पर्यटकों के बीच तनाव हो सकता है।<br>3. <b>अपराध में वृद्धि:</b> पर्यटक क्षेत्रों में चोरी, धोखाधड़ी और अन्य अपराध बढ़ सकते हैं।"
+                    ],
+                    conclusion: "सतत विकास के लिए पर्यटन के सामाजिक-सांस्कृतिक प्रभावों का सावधानीपूर्वक प्रबंधन करना आवश्यक है।"
+                }
+            },
+            {
+                id: 38,
+                question: "मनोरंजन पर्यटन (Recreation Tourism) और सांस्कृतिक पर्यटन (Cultural Tourism) में क्या अंतर है?",
+                unit: "इकाई-3: पर्यटन की श्रेणियाँ",
+                years: "2022, 2020, 2018",
+                answer: {
+                    intro: "ये दोनों पर्यटन के लोकप्रिय प्रकार हैं, लेकिन उनके उद्देश्य और गतिविधियाँ अलग-अलग होती हैं।",
+                    points: [
+                        "<b>मनोरंजन पर्यटन:</b><br>1. <b>उद्देश्य:</b> इसका मुख्य उद्देश्य आराम, मनोरंजन और खेलों में भाग लेना है।<br>2. <b>गतिविधियाँ:</b> इसमें समुद्र तटों पर आराम करना, पार्कों का दौरा करना, और खेल खेलना शामिल है।<br>3. <b>उदाहरण:</b> गोवा के समुद्र तटों पर आराम करना या डिज्नीलैंड जैसे मनोरंजन पार्कों में जाना।",
+                        "<b>सांस्कृतिक पर्यटन:</b><br>1. <b>उद्देश्य:</b> किसी स्थान की कला, इतिहास, परंपराओं और जीवन शैली को समझना।<br>2. <b>गतिविधियाँ:</b> इसमें संग्रहालयों का दौरा करना, ऐतिहासिक स्थलों को देखना और स्थानीय त्योहारों में भाग लेना शामिल है।<br>3. <b>उदाहरण:</b> जयपुर के महलों का दौरा करना या अजंता-एलोरा की गुफाओं को देखना।"
+                    ],
+                    conclusion: "मनोरंजन पर्यटन आराम पर केंद्रित है, जबकि सांस्कृतिक पर्यटन ज्ञान और अनुभव पर।"
+                }
+            },
+            {
+                id: 39,
+                question: "पर्यटन उद्योग में सूचना प्रौद्योगिकी (IT) की भूमिका का वर्णन करें।",
+                unit: "इकाई-6: पर्यटन सूचनाएं: स्रोत एवं संकलन",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "सूचना प्रौद्योगिकी ने पर्यटन उद्योग को पूरी तरह से बदल दिया है। इंटरनेट और मोबाइल प्रौद्योगिकी के कारण अब यात्रा की योजना बनाना और बुकिंग करना बहुत आसान हो गया है।",
+                    points: [
+                        "<b>बुकिंग और आरक्षण:</b> पर्यटक अब ऑनलाइन एयरलाइन टिकट, होटल और कार बुक कर सकते हैं।",
+                        "<b>सूचना का प्रसार:</b> इंटरनेट, ब्लॉग और सोशल मीडिया के माध्यम से पर्यटक गंतव्यों के बारे में जानकारी प्राप्त कर सकते हैं।",
+                        "<b>विपणन:</b> कंपनियां अपने पर्यटन उत्पादों का प्रचार करने के लिए डिजिटल मार्केटिंग और सोशल मीडिया का उपयोग कर सकती हैं।",
+                        "<b>ग्राहक संबंध:</b> कंपनियां ग्राहकों के साथ बेहतर संबंध बनाने के लिए CRM (Customer Relationship Management) सॉफ्टवेयर का उपयोग करती हैं।",
+                        "<b>वर्चुअल टूर:</b> VR (Virtual Reality) और AR (Augmented Reality) जैसी तकनीकों से पर्यटक यात्रा से पहले गंतव्य का अनुभव कर सकते हैं।"
+                    ],
+                    conclusion: "सूचना प्रौद्योगिकी ने पर्यटन को अधिक सुलभ, कुशल और व्यक्तिगत बना दिया है।"
+                }
+            },
+            {
+                id: 40,
+                question: "पर्यटन विपणन (Tourism Marketing) के प्रमुख तत्वों की व्याख्या करें।",
+                unit: "इकाई-7: पर्यटन: प्रचार एवं विज्ञापन",
+                years: "2022, 2020, 2018",
+                answer: {
+                    intro: "पर्यटन विपणन एक प्रक्रिया है जिसके द्वारा पर्यटन संगठन अपने उत्पादों का प्रचार करते हैं और पर्यटकों को आकर्षित करते हैं। इसके प्रमुख तत्व 4 P's के रूप में जाने जाते हैं।",
+                    points: [
+                        "<b>1. उत्पाद (Product):</b> इसमें गंतव्य, आकर्षण, आवास और गतिविधियाँ शामिल हैं। एक अच्छा पर्यटन उत्पाद ही विपणन की नींव है।",
+                        "<b>2. मूल्य (Price):</b> यह सेवा का मूल्य है, जिसे प्रतिस्पर्धा, मांग और लागत के आधार पर निर्धारित किया जाता है।",
+                        "<b>3. स्थान (Place):</b> यह वह तरीका है जिससे उत्पाद ग्राहक तक पहुँचता है, जैसे यात्रा एजेंसियों, ऑनलाइन पोर्टल्स और पर्यटन कार्यालयों के माध्यम से।",
+                        "<b>4. प्रचार (Promotion):</b> इसमें विज्ञापन, बिक्री प्रचार, प्रचार और व्यक्तिगत बिक्री जैसी गतिविधियाँ शामिल हैं।"
+                    ],
+                    conclusion: "एक सफल पर्यटन विपणन रणनीति के लिए इन सभी तत्वों का सही संयोजन आवश्यक है।"
+                }
+            },
+            {
+                id: 41,
+                question: "भारत में पर्यटन को बढ़ावा देने में त्योहारों और मेलों की भूमिका का मूल्यांकन करें।",
+                unit: "इकाई-10: पर्यटन उत्सव, त्योहार तथा ऋतुएँ",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "भारत अपनी सांस्कृतिक विविधता और अनगिनत त्योहारों के लिए जाना जाता है। ये त्योहार भारत को एक पर्यटन स्थल के रूप में अद्वितीय बनाते हैं और विदेशी पर्यटकों को आकर्षित करने में महत्वपूर्ण भूमिका निभाते हैं।",
+                    points: [
+                        "<b>सांस्कृतिक अनुभव:</b> पर्यटक इन त्योहारों में भाग लेकर भारत की समृद्ध सांस्कृतिक विरासत का अनुभव कर सकते हैं। (उदाहरण: कुंभ मेला, पुष्कर मेला)",
+                        "<b>अद्वितीय आकर्षण:</b> ये त्योहार पर्यटकों को एक विशिष्ट और प्रामाणिक अनुभव प्रदान करते हैं, जो उन्हें पारंपरिक स्थानों से अलग करता है।",
+                        "<b>आर्थिक लाभ:</b> ये त्योहार स्थानीय अर्थव्यवस्था को बढ़ावा देते हैं।",
+                        "<b>प्रचार:</b> ये त्योहार मीडिया का ध्यान आकर्षित करते हैं, जिससे गंतव्य का प्रचार होता है।"
+                    ],
+                    conclusion: "त्योहार और मेले भारत के पर्यटन उत्पाद में एक अमूल्य तत्व हैं।"
+                }
+            },
+            {
+                id: 42,
+                question: "चिकित्सा पर्यटन (Medical Tourism) क्या है? इसके लाभ क्या हैं?",
+                unit: "इकाई-11: विशेष रुचि यात्राएं",
+                years: "2022, 2020, 2018",
+                answer: {
+                    intro: "चिकित्सा पर्यटन का अर्थ है चिकित्सा उपचार के लिए अपने देश से बाहर यात्रा करना। भारत इस क्षेत्र में तेजी से उभर रहा है, क्योंकि यहाँ गुणवत्तापूर्ण और किफायती चिकित्सा सेवाएं उपलब्ध हैं।",
+                    points: [
+                        "<b>लाभ:</b><br>1. <b>लागत बचत:</b> भारत में चिकित्सा उपचार पश्चिमी देशों की तुलना में काफी सस्ता है।<br>2. <b>उच्च गुणवत्ता:</b> भारत में कई अस्पताल अंतरराष्ट्रीय मानकों पर हैं और कुशल डॉक्टर उपलब्ध हैं।<br>3. <b>भाषा:</b> अंग्रेजी बोलने वाले डॉक्टरों और कर्मचारियों की उपलब्धता।<br>4. <b>अतिरिक्त लाभ:</b> पर्यटक उपचार के बाद भारत के दर्शनीय स्थलों का भी दौरा कर सकते हैं।"
+                    ],
+                    conclusion: "चिकित्सा पर्यटन भारत के लिए एक महत्वपूर्ण राजस्व स्रोत बन गया है।"
+                }
+            },
+            {
+                id: 43,
+                question: "राजस्थान में वन्यजीवों के संरक्षण के प्रयासों का वर्णन करें।",
+                unit: "इकाई-12: राजस्थान के वन्य जीव अभयारण्य",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "राजस्थान अपनी समृद्ध वन्यजीवों और वनस्पतियों के लिए प्रसिद्ध है, और राज्य सरकार ने इनके संरक्षण के लिए कई प्रयास किए हैं।",
+                    points: [
+                        "<b>राष्ट्रीय उद्यान और अभयारण्य:</b> रणथंभौर, सरिस्का और केवलादेव राष्ट्रीय उद्यान की स्थापना वन्यजीवों को उनके प्राकृतिक आवास में संरक्षित करने के लिए की गई है।",
+                        "<b>बाघ संरक्षण:</b> रणथंभौर और सरिस्का में 'प्रोजेक्ट टाइगर' (Project Tiger) के तहत बाघों के संरक्षण के लिए विशेष प्रयास किए गए हैं।",
+                        "<b>जागरूकता अभियान:</b> सरकार और गैर-सरकारी संगठन वन्यजीवों के संरक्षण के लिए जागरूकता अभियान चलाते हैं।",
+                        "<b>शिकार पर प्रतिबंध:</b> राज्य में वन्यजीवों के शिकार पर कड़ा प्रतिबंध है।"
+                    ],
+                    conclusion: "इन प्रयासों के कारण, राजस्थान के वन्यजीव आज सुरक्षित हैं।"
+                }
+            },
+            {
+                id: 44,
+                question: "ऊंट सफारी के अलावा राजस्थान में अन्य कौन सी सफारी उपलब्ध हैं? वर्णन करें।",
+                unit: "इकाई-13: ऊंट सफारी परियोजना",
+                years: "2022, 2020, 2018",
+                answer: {
+                    intro: "ऊंट सफारी के अलावा, राजस्थान में अन्य प्रकार की सफारी भी उपलब्ध हैं जो पर्यटकों को अनूठे अनुभव प्रदान करती हैं।",
+                    points: [
+                        "<b>जीप सफारी:</b> यह सबसे लोकप्रिय प्रकार की सफारी है, जो पर्यटकों को रणथंभौर और सरिस्का जैसे अभयारण्यों में वन्यजीवों को देखने की अनुमति देती है।",
+                        "<b>घोड़ा सफारी:</b> यह राजस्थान के ग्रामीण इलाकों और रेगिस्तानी क्षेत्रों में उपलब्ध है, जहाँ पर्यटक घोड़े पर सवार होकर गाँव की संस्कृति का अनुभव करते हैं।",
+                        "<b>रेगिस्तानी सफारी (Desert Safari):</b> यह जैसलमेर और पुष्कर में उपलब्ध है, जहाँ पर्यटक जीप या ऊंट पर सवार होकर रेत के टीलों की खोज करते हैं।"
+                    ],
+                    conclusion: "ये सफारियां राजस्थान के पर्यटन को अधिक रोमांचक और आकर्षक बनाती हैं।"
+                }
+            },
+            {
+                id: 45,
+                question: "व्यापार यात्रा (Business Travel) और निष्प्रय यात्रा (Leisure Travel) में क्या अंतर है?",
+                unit: "इकाई-14: निष्प्रय यात्रा",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "व्यापार और निष्प्रय यात्रा दोनों ही महत्वपूर्ण हैं, लेकिन उनके उद्देश्य और प्रकृति में बड़ा अंतर है।",
+                    points: [
+                        "<b>व्यापार यात्रा:</b><br>1. <b>उद्देश्य:</b> इसका उद्देश्य काम से संबंधित होता है, जैसे बैठकों में भाग लेना, सम्मेलन में शामिल होना या व्यापार करना।<br>2. <b>लागत:</b> लागत अक्सर कंपनी द्वारा वहन की जाती है।<br>3. <b>समय:</b> यात्रा का समय और अवधि अक्सर पूर्वनिर्धारित होती है।",
+                        "<b>निष्प्रय यात्रा:</b><br>1. <b>उद्देश्य:</b> इसका उद्देश्य आराम, मनोरंजन और व्यक्तिगत संतुष्टि के लिए होता है।<br>2. <b>लागत:</b> लागत व्यक्ति द्वारा वहन की जाती है।<br>3. <b>समय:</b> यात्रा का समय और अवधि लचीली होती है।"
+                    ],
+                    conclusion: "व्यापार यात्रा एक आवश्यकता है, जबकि निष्प्रय यात्रा एक पसंद है।"
+                }
+            },
+            {
+                id: 46,
+                question: "भारत में राज्य संचालित पर्यटन के प्रमुख उदाहरणों का वर्णन करें।",
+                unit: "इकाई-15: राज्य संचालित पर्यटन",
+                years: "2022, 2020, 2018",
+                answer: {
+                    intro: "भारत में प्रत्येक राज्य का अपना पर्यटन विकास निगम है जो राज्य में पर्यटन को बढ़ावा देने का काम करता है।",
+                    points: [
+                        "<b>राजस्थान पर्यटन विकास निगम (RTDC):</b> यह राज्य में पर्यटन को बढ़ावा देने और बुनियादी सुविधाओं जैसे होटल और रिसॉर्ट्स के विकास के लिए जिम्मेदार है।<br>1. <b>कार्य:</b> यह पैलेस ऑन व्हील्स जैसी लक्जरी ट्रेनों का संचालन भी करता है और पर्यटन सूचना केंद्र चलाता है।",
+                        "<b>केरल पर्यटन विकास निगम (KTDC):</b> यह केरल में पर्यटन को बढ़ावा देता है, विशेष रूप से इको-टूरिज्म और आयुर्वेदिक पर्यटन।<br>1. <b>कार्य:</b> यह राज्य में होटलों, रिसॉर्ट्स और नाव-सेवाओं का प्रबंधन करता है।"
+                    ],
+                    conclusion: "ये निगम राज्य के पर्यटन उद्योग के विकास में महत्वपूर्ण भूमिका निभाते हैं।"
+                }
+            },
+            {
+                id: 47,
+                question: "इंटरनेट के माध्यम से स्व-आयोजित भ्रमण की योजना कैसे बनाई जा सकती है?",
+                unit: "इकाई-16: स्व आयोजित भ्रमण",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "इंटरनेट ने स्व-आयोजित भ्रमण की योजना बनाना बहुत आसान बना दिया है। यात्री अब अपने घर से ही पूरी यात्रा की योजना बना सकते हैं।",
+                    points: [
+                        "<b>अनुसंधान:</b> पर्यटक ब्लॉग, फोरम और पर्यटन वेबसाइटों पर गंतव्य के बारे में जानकारी प्राप्त कर सकते हैं।",
+                        "<b>बुकिंग:</b> ऑनलाइन पोर्टल्स (जैसे Goibibo, MakeMyTrip) का उपयोग करके एयरलाइन टिकट, होटल और कार बुक कर सकते हैं।",
+                        "<b>यात्रा कार्यक्रम:</b> गूगल मैप्स (Google Maps) और अन्य ऐप्स का उपयोग करके अपना यात्रा कार्यक्रम बना सकते हैं।",
+                        "<b>समीक्षाएं:</b> अन्य यात्रियों की समीक्षाएं पढ़कर होटलों और आकर्षणों का मूल्यांकन कर सकते हैं।"
+                    ],
+                    conclusion: "इंटरनेट ने यात्रियों को अपनी यात्रा की योजना बनाने का नियंत्रण दिया है।"
+                }
+            },
+            {
+                id: 48,
+                question: "पर्यटन में परिवहन के विभिन्न साधनों का वर्णन करें।",
+                unit: "इकाई-17: परिवहन एवं सूचना प्रेषण",
+                years: "2022, 2020, 2018",
+                answer: {
+                    intro: "परिवहन पर्यटकों को एक स्थान से दूसरे स्थान पर ले जाने का एक महत्वपूर्ण साधन है। पर्यटन में कई प्रकार के परिवहन का उपयोग होता है।",
+                    points: [
+                        "<b>वायु परिवहन:</b> यह सबसे तेज और लंबी दूरी के लिए सबसे सुविधाजनक साधन है।",
+                        "<b>रेल परिवहन:</b> यह आरामदायक और किफायती है, विशेष रूप से लंबी दूरी की यात्रा के लिए।",
+                        "<b>सड़क परिवहन:</b> यह सबसे लचीला माध्यम है, जो व्यक्तिगत और सार्वजनिक परिवहन (बस, कार) दोनों में आता है।",
+                        "<b>जल परिवहन:</b> यह क्रूज, नाव यात्रा और फेरी के लिए उपयोग किया जाता है।"
+                    ],
+                    conclusion: "एक गंतव्य की पहुंच उसके परिवहन नेटवर्क की गुणवत्ता पर निर्भर करती है।"
+                }
+            },
+            {
+                id: 49,
+                question: "यात्री गाइडों के प्रकारों का वर्णन करें।",
+                unit: "इकाई-24: पथप्रदर्शक एवं अनुराक्षक",
+                years: "2023, 2021, 2019",
+                answer: {
+                    intro: "गाइड कई प्रकार के होते हैं, और प्रत्येक का अपना विशिष्ट कार्य होता है।",
+                    points: [
+                        "<b>स्थानीय गाइड (Local Guide):</b><br>1. <b>ज्ञान:</b> उसके पास एक विशिष्ट स्थान (जैसे एक शहर या स्मारक) का गहन ज्ञान होता है।<br>2. <b>उदाहरण:</b> आगरा में ताजमहल के लिए गाइड।",
+                        "<b>व्याख्यात्मक गाइड (Interpretive Guide):</b><br>1. <b>ज्ञान:</b> यह प्रकृति, इतिहास, या विज्ञान के बारे में गहरी समझ रखता है और जानकारी को रोचक तरीके से प्रस्तुत करता है।<br>2. <b>उदाहरण:</b> एक राष्ट्रीय उद्यान में वन्यजीव गाइड।",
+                        "<b>भाषा गाइड (Language Guide):</b><br>1. <b>ज्ञान:</b> यह विभिन्न भाषाओं का ज्ञान रखता है और विदेशी पर्यटकों के लिए दुभाषिए का काम करता है।"
+                    ],
+                    conclusion: "सही प्रकार का गाइड पर्यटकों के अनुभव को बहुत बेहतर बना सकता है।"
+                }
+            },
+            {
+                id: 50,
+                question: "टूर पैकेज क्या है? इसके घटकों का वर्णन करें।",
+                unit: "इकाई-8: पर्यटन उत्पाद",
+                years: "2023, 2022, 2021",
+                answer: {
+                    intro: "एक टूर पैकेज एक पूर्वनिर्धारित यात्रा व्यवस्था है जिसमें यात्रा के सभी घटक शामिल होते हैं, जिन्हें एक टूर ऑपरेटर द्वारा एक ही मूल्य पर बेचा जाता है।",
+                    points: [
+                        "<b>अवधारणा:</b> यह एक 'ऑल-इन-वन' समाधान है जो पर्यटकों के लिए योजना बनाना आसान बनाता है।",
+                        "<b>घटक:</b><br>1. <b>परिवहन:</b> इसमें हवाई टिकट, बस या टैक्सी शामिल हो सकती है।<br>2. <b>आवास:</b> होटल या रिसॉर्ट में ठहरने की व्यवस्था।<br>3. <b>आकर्षण और गतिविधियाँ:</b> दर्शनीय स्थलों का भ्रमण और अन्य गतिविधियाँ।<br>4. <b>भोजन:</b> यात्रा के दौरान भोजन की व्यवस्था।<br>5. <b>गाइड/एस्कॉर्ट:</b> समूह के साथ एक गाइड या एस्कॉर्ट।"
+                    ],
+                    conclusion: "टूर पैकेज उन लोगों के लिए आदर्श हैं जो सुविधा और सरलता चाहते हैं।"
+                }
             }
+        ];
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            const questionsContainer = document.getElementById('questions-container');
+            const filterContainer = document.getElementById('filter-container');
+            const cheatsheetContainer = document.getElementById('cheatsheet-container');
 
-            filteredQuestions.forEach(q => {
-                const card = document.createElement('article');
-                card.className = 'bg-white p-4 sm:p-6 rounded-lg card-shadow';
-                card.innerHTML = `
-                    <div class="flex flex-col items-start">
-                        <p class="text-base md:text-lg font-semibold pr-4">${q.id}. ${q.question}</p>
-                        <div class="mt-2">
-                            <span class="bg-[#A0522D] text-white text-xs font-bold px-3 py-1 rounded-full">${q.marks} अंक</span>
+            function renderContent(targetId) {
+                navButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.target === targetId);
+                });
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
+            }
+            
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    renderContent(button.dataset.target);
+                });
+            });
+
+            function createQuestionCard(q) {
+                return `
+                    <div class="question-card rounded-lg shadow-sm cursor-pointer overflow-hidden" data-id="${q.id}">
+                        <div class="question-header p-4 flex justify-between items-center bg-gray-50">
+                            <div class="flex-1">
+                                <p class="font-semibold text-gray-700">${q.id}. ${q.question}</p>
+                                <div class="text-sm text-gray-500 mt-2">
+                                    <span><b>इकाई:</b> ${q.unit}</span> | 
+                                    <span class="ml-2"><b>पिछले वर्ष (संभावित):</b> ${q.years}</span>
+                                </div>
+                            </div>
+                            <div class="ml-4 text-gray-500 transform transition-transform duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mt-4">
-                        <button class="toggle-answer-btn bg-gray-200 text-gray-800 hover:bg-gray-300 font-medium px-4 py-2 text-sm rounded-lg">उत्तर देखें</button>
-                        <div class="answer mt-4 text-gray-700 leading-relaxed">
-                            <p>${q.answer.replace(/\n/g, '<br>')}</p>
+                        <div class="answer-content p-4 border-t border-gray-200">
+                            <p class="mb-3"><b>परिचय:</b> ${q.answer.intro}</p>
+                            <ul class="space-y-2 list-inside mb-3">
+                                ${q.answer.points.map(p => `<li class="text-gray-600">${p}</li>`).join('')}
+                            </ul>
+                            <p class="mt-3 p-2 bg-gray-100 rounded text-sm"><b>निष्कर्ष:</b> ${q.answer.conclusion}</p>
                         </div>
                     </div>
                 `;
-                questionsContainer.appendChild(card);
-            });
-        }
-
-        function setupEventListeners() {
-            marksFilterContainer.addEventListener('click', (e) => {
-                if (e.target.tagName === 'BUTTON') {
-                    currentFilters.marks = e.target.dataset.marks;
-                    marksFilterContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
-                    renderQuestions();
-                }
-            });
-
-            unitFilterSelect.addEventListener('change', (e) => {
-                currentFilters.unit = e.target.value;
-                renderQuestions();
-            });
+            }
             
-            searchInput.addEventListener('input', (e) => {
-                currentFilters.search = e.target.value;
-                renderQuestions();
-            });
+            function createCheatsheetItem(q) {
+                return `
+                    <div class="question-card rounded-lg shadow-sm cursor-pointer overflow-hidden" data-id="cs-${q.id}">
+                        <div class="question-header p-3 bg-gray-50">
+                             <p class="font-semibold text-sm text-gray-700">${q.id}. ${q.question}</p>
+                        </div>
+                        <div class="answer-content p-3 border-t border-gray-200">
+                             <ul class="space-y-1 list-disc list-inside text-sm">
+                                ${q.answer.points.map(p => `<li>${p.replace(/<br>/g, ' ').replace(/<b>/g, '').replace(/<\/b>/g, '')}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
 
+            function renderQuestions(filter = 'all') {
+                const filteredData = filter === 'all' ? studyData : studyData.filter(q => q.unit === filter);
+                questionsContainer.innerHTML = filteredData.map(createQuestionCard).join('');
+            }
+            
+            function setupFilters() {
+                const units = ['all', ...new Set(studyData.map(q => q.unit))];
+                filterContainer.innerHTML = units.map(unit => `
+                    <button class="filter-btn py-1 px-3 rounded-full text-sm ${unit === 'all' ? 'active' : ''}" data-filter="${unit}">
+                        ${unit === 'all' ? 'सभी इकाइयाँ' : unit}
+                    </button>
+                `).join('');
+                
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const activeBtn = document.querySelector('.filter-btn.active');
+                        if (activeBtn) {
+                            activeBtn.classList.remove('active');
+                        }
+                        btn.classList.add('active');
+                        renderQuestions(btn.dataset.filter);
+                    });
+                });
+            }
+            
             questionsContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('toggle-answer-btn')) {
-                    const answerDiv = e.target.nextElementSibling;
-                    const isShown = answerDiv.classList.toggle('show');
-                    e.target.textContent = isShown ? 'उत्तर छिपाएँ' : 'उत्तर देखें';
+                const card = e.target.closest('.question-card');
+                if (card) {
+                    card.classList.toggle('open');
+                    const icon = card.querySelector('svg');
+                    icon.classList.toggle('rotate-180');
                 }
             });
-        }
-        
-        function renderTopicAnalysisChart() {
-            const ctx = document.getElementById('topicAnalysisChart').getContext('2d');
-            const data = {
-                labels: ['हड़प्पा', 'वैदिक', 'महाजनपद', 'मौर्य', 'मौर्योत्तर', 'गुप्त', 'हर्ष', 'दक्षिण भारत', 'आक्रमण'],
-                datasets: [{
-                    label: 'परीक्षा में महत्व (संभावित)',
-                    data: [18, 12, 10, 20, 10, 18, 8, 14, 10],
-                    backgroundColor: 'rgba(160, 82, 45, 0.6)',
-                    borderColor: 'rgba(139, 69, 19, 1)',
-                    borderWidth: 1,
-                    borderRadius: 5,
-                }]
-            };
-            const options = {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'महत्व का स्कोर'
-                        }
+
+            cheatsheetContainer.addEventListener('click', (e) => {
+                const card = e.target.closest('.question-card');
+                if (card) {
+                    card.classList.toggle('open');
+                }
+            });
+
+            function renderCheatsheet() {
+                 cheatsheetContainer.innerHTML = studyData.map(createCheatsheetItem).join('');
+            }
+
+            function createTopicChart() {
+                const ctx = document.getElementById('topicFrequencyChart').getContext('2d');
+                const unitCounts = studyData.reduce((acc, q) => {
+                    acc[q.unit] = (acc[q.unit] || 0) + 1;
+                    return acc;
+                }, {});
+
+                const labels = Object.keys(unitCounts);
+                const data = Object.values(unitCounts);
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'प्रश्नों की संख्या',
+                            data: data,
+                            backgroundColor: 'rgba(44, 82, 130, 0.6)',
+                            borderColor: 'rgba(44, 82, 130, 1)',
+                            borderWidth: 1
+                        }]
                     },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'अध्याय'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const labels = ['हड़प्पा सभ्यता', 'वैदिक काल', 'महाजनपद', 'मौर्य साम्राज्य', 'मौर्योत्तर काल', 'गुप्त साम्राज्य', 'हर्षवर्धन काल', 'दक्षिण भारत', 'अरब और तुर्की आक्रमण'];
-                                return `${labels[context.dataIndex]}: ${context.raw}`;
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'इकाई-वार प्रश्नों की आवृत्ति',
+                                font: {
+                                    size: 16
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'प्रश्नों की संख्या'
+                                }
                             }
                         }
                     }
-                }
-            };
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: data,
-                options: options
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
+                });
+            }
+            
             renderQuestions();
-            setupEventListeners();
-            renderTopicAnalysisChart();
+            setupFilters();
+            renderCheatsheet();
+            createTopicChart();
         });
     </script>
 </body>
