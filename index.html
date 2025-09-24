@@ -9,12 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Dark Midnight -->
-    <!-- Application Structure Plan: The SPA is designed as a one-page scroller with a sticky navigation bar for quick access to key study areas. The structure is thematic, mirroring the first two chapters of the syllabus: 1) Introduction to Big Data, and 2) Hadoop Fundamentals. This non-linear, task-oriented structure allows a student to jump directly to a weak area, maximizing last-minute study efficiency. The interactive elements (tabs and expandable details for questions) are chosen to break down complex information and provide immediate feedback, aiding rapid learning. A new JavaScript function ensures only one question is open at a time for better focus. -->
+    <!-- Application Structure Plan: The SPA is designed as a one-page scroller with a sticky navigation bar for quick access to key study areas. The structure is thematic, mirroring the first two chapters of the syllabus: 1) Introduction to Big Data, and 2) Hadoop Fundamentals. This non-linear, task-oriented structure allows a student to jump directly to a weak area, maximizing last-minute study efficiency. The interactive elements (expandable details for questions with a new short/long answer toggle) are chosen to break down complex information and provide immediate feedback, aiding rapid learning. A new JavaScript function ensures only one question is open at a time for better focus. -->
     <!-- Visualization & Content Choices: 
-        - 5Vs of Big Data: Report Info -> Characteristics of Big Data -> Goal: Organize -> Viz/Method: HTML/CSS list with icons -> Interaction: None -> Justification: A list with icons is the clearest way to present these key concepts for memorization.
-        - Evolution of Big Data: Report Info -> History of Big Data -> Goal: Change over time -> Viz/Method: Simple timeline diagram using HTML/CSS -> Interaction: None -> Justification: A visual timeline makes it easy to understand the progression of the field.
-        - Hadoop Components: Report Info -> Core components of Hadoop -> Goal: Organize -> Viz/Method: HTML/CSS diagram showing the relationship between HDFS and MapReduce -> Interaction: None -> Justification: A simple diagram is the best way to visualize a system's architecture for beginners.
-        - Questions & Answers: Report Info -> Key exam topics -> Goal: Review -> Viz/Method: Expandable questions using <details> tags -> Interaction: User clicks to reveal answers -> Justification: This pattern efficiently hides detailed answers, allowing for a clean, scannable page and active recall, while the new JavaScript logic keeps only one open for better focus.
+        - The 5Vs of Big Data: Report Info -> Characteristics of Big Data -> Goal: Organize -> Viz/Method: HTML/CSS list with Unicode icons -> Interaction: None -> Justification: A simple list with icons is the most effective way to present these key characteristics for easy memorization.
+        - Questions & Answers: Report Info -> Key exam topics -> Goal: Review -> Viz/Method: Expandable questions using <details> tags -> Interaction: User clicks to reveal answers. A toggle switch allows the user to change the level of detail from short to long. -> Justification: This pattern efficiently hides answers for active recall, and the new toggle feature provides both quick review and in-depth study material in a single, clean interface.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -68,28 +66,65 @@
         details[open] summary::after {
             transform: translateY(-50%) rotate(180deg);
         }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 70px;
+            height: 28px;
+            margin-left: 1rem;
+            vertical-align: middle;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #334155;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2DD4BF;
+        }
+        input:checked + .slider:before {
+            transform: translateX(42px);
+        }
+        .toggle-label {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94A3B8;
+        }
+        .toggle-label.short {
+            left: 8px;
+        }
+        .toggle-label.long {
+            right: 8px;
+            color: white;
+        }
         .icon {
             font-size: 1.5rem;
             color: #2DD4BF;
-        }
-        .timeline-container {
-            position: relative;
-            padding-left: 1.5rem;
-            border-left: 2px solid #334155;
-        }
-        .timeline-item {
-            position: relative;
-        }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -1.5rem;
-            top: 0.5rem;
-            width: 12px;
-            height: 12px;
-            background-color: #2DD4BF;
-            border-radius: 50%;
-            border: 2px solid #1A2035;
         }
     </style>
 </head>
@@ -100,13 +135,13 @@
             <h1 class="text-xl font-bold text-gray-200">BDA Study Guide</h1>
             <div class="hidden md:flex space-x-8">
                 <a href="#intro" class="nav-link text-gray-400 font-medium">Intro to Big Data</a>
-                <a href="#hadoop" class="nav-link text-gray-400 font-medium">Hadoop Basics</a>
+                <a href="#hadoop" class="nav-link text-gray-400 font-medium">Hadoop Fundamentals</a>
                 <a href="#mapreduce" class="nav-link text-gray-400 font-medium">MapReduce</a>
             </div>
             <div class="md:hidden">
                 <select id="mobile-nav" class="block w-full rounded-md border-gray-600 shadow-sm bg-gray-700 text-gray-200 focus:border-teal-500 focus:ring-teal-500">
                     <option value="#intro">Intro to Big Data</option>
-                    <option value="#hadoop">Hadoop Basics</option>
+                    <option value="#hadoop">Hadoop Fundamentals</option>
                     <option value="#mapreduce">MapReduce</option>
                 </select>
             </div>
@@ -116,7 +151,7 @@
     <main class="container mx-auto px-6 py-12">
         <div class="text-center mb-16">
             <h2 class="text-4xl font-extrabold text-gray-100 tracking-tight">Big Data Analysis</h2>
-            <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">A comprehensive set of 30 questions covering the first two chapters of your syllabus for your mid-semester exam.</p>
+            <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">A comprehensive set of 30 questions for your mid-semester exam.</p>
         </div>
 
         <section id="intro" class="mb-20 scroll-mt-24">
@@ -124,76 +159,290 @@
             <p class="text-center text-gray-400 mb-12 max-w-3xl mx-auto">This section covers the foundational concepts of Big Data, its characteristics, and why traditional methods can't handle it.</p>
             <div class="card p-8 space-y-4">
                 <details>
-                    <summary class="font-semibold text-gray-200">1. What is Big Data? Explain its three main characteristics (3Vs).</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2"><strong>Big Data</strong> refers to extremely large and complex datasets that cannot be managed or processed by traditional database systems. The three main characteristics are:</p>
-                        <ul class="list-disc list-inside space-y-1">
-                            <li><strong>Volume:</strong> The huge amount of data being generated every second.</li>
-                            <li><strong>Velocity:</strong> The high speed at which data is created, collected, and needs to be processed.</li>
-                            <li><strong>Variety:</strong> The different types of data, from structured (like a database) to unstructured (like photos, videos, or text).</li>
-                        </ul>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>1. What is Big Data? Explain its three main characteristics (3Vs).</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2"><strong>Big Data</strong> refers to extremely large and complex datasets that cannot be managed or processed by traditional database systems. The three main characteristics are:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Volume:</strong> The huge amount of data being generated every second.</li>
+                                <li><strong>Velocity:</strong> The high speed at which data is created, collected, and needs to be processed.</li>
+                                <li><strong>Variety:</strong> The different types of data, from structured (like a database) to unstructured (like photos, videos, or text).</li>
+                            </ul>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4"><strong>Big Data</strong> is a term for data that is so large and complex that traditional data processing software is unable to deal with it. The key challenge is not just the size, but the combination of its various characteristics, often referred to as the 5Vs:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Volume:</strong> This is the most obvious characteristic. It refers to the massive amount of data being generated constantly. For example, a single jet engine can generate 10 terabytes of data in just 30 minutes of flight.</li>
+                                <li><strong>Velocity:</strong> This refers to the speed at which data is created and needs to be processed. Real-time analysis of data from sources like IoT sensors or financial markets is critical for quick decision-making.</li>
+                                <li><strong>Variety:</strong> This includes the different types of data that exist. Data can be structured (like in a spreadsheet), unstructured (like an image or video), or semi-structured (like a JSON file).</li>
+                                <li><strong>Veracity:</strong> This refers to the quality and trustworthiness of the data. Because data comes from many different sources, it can be messy, noisy, and unreliable. Veracity is about making sure the data is accurate enough to be useful.</li>
+                                <li><strong>Value:</strong> This is the most important V. It refers to the potential benefit or insight that can be gained from analyzing the data. Without value, the other Vs are meaningless.</li>
+                            </ul>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">2. Why can't traditional database systems handle Big Data?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">Traditional systems (like a single SQL database) were built for a smaller amount of structured data. They cannot handle the huge volume, fast speed, and different types of data that make up Big Data. They are not designed to scale easily across many computers.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>2. Why can't traditional database systems handle Big Data?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">Traditional systems (like a single SQL database) were built for a smaller amount of structured data. They cannot handle the huge volume, fast speed, and different types of data that make up Big Data. They are not designed to scale easily across many computers.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">Traditional database systems, such as relational databases (RDBMS), were designed for a different era of data and have several key limitations when dealing with Big Data:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Scalability:</strong> Traditional databases are designed to "scale up," which means adding more power (CPU, RAM) to a single machine. This is very expensive and has a physical limit. Big Data requires "scaling out" across many low-cost machines.</li>
+                                <li><strong>Schema Rigidity:</strong> RDBMS require a fixed schema, meaning the data must fit into a predefined table structure. This is not suitable for the "Variety" of data, especially unstructured data like images and text.</li>
+                                <li><strong>Performance:</strong> Processing petabytes of data on a single machine is extremely slow. Traditional databases are not built for parallel processing across a cluster.</li>
+                                <li><strong>Cost:</strong> High-end servers and storage solutions required for traditional databases are very expensive, making them impractical for the massive storage needs of Big Data.</li>
+                                <li><strong>Fault Tolerance:</strong> If the single server of a traditional database fails, the entire system goes down. Big Data systems are designed to be fault-tolerant, where the failure of one node does not stop the entire system.</li>
+                            </ul>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">3. What is the difference between structured and unstructured data?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <ul class="list-disc list-inside space-y-1">
-                            <li><strong>Structured data</strong> has a fixed format and is organized in a clear way, like rows and columns in a spreadsheet or database.</li>
-                            <li><strong>Unstructured data</strong> has no predefined format. It includes things like social media posts, emails, videos, and images.</li>
-                        </ul>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>3. What is the difference between structured and unstructured data?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Structured data</strong> has a fixed format and is organized in a clear way, like rows and columns in a spreadsheet or database.</li>
+                                <li><strong>Unstructured data</strong> has no predefined format. It includes things like social media posts, emails, videos, and images.</li>
+                            </ul>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">The difference between these two data types is based on their organization and format. Analyzing unstructured data is much more complex and requires different tools and techniques.</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Structured Data:</strong> This is data that is highly organized with a fixed schema. It is easy to search and analyze using standard tools like SQL. Examples include data in relational databases, financial records, and sensor data from IoT devices.</li>
+                                <li><strong>Unstructured Data:</strong> This data has no predefined format or organization. It accounts for a huge portion of the world's data and is much harder to process. Examples include email bodies, social media posts, audio recordings, video files, images, and text documents.</li>
+                                <li><strong>Semi-structured Data:</strong> This is a middle ground. It does not have a formal table structure but has organizational properties that make it easier to analyze than unstructured data. Examples include JSON and XML files.</li>
+                            </ul>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">4. Explain the concept of "Veracity" in Big Data.</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2"><strong>Veracity</strong> refers to the quality and trustworthiness of the data. Because Big Data comes from many different sources, it can be messy, noisy, and unreliable. Veracity is about ensuring the data is accurate enough for analysis.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>4. Explain the concept of "Veracity" in Big Data.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2"><strong>Veracity</strong> refers to the quality and trustworthiness of the data. Because Big Data comes from many different sources, it can be messy, noisy, and unreliable. Veracity is about ensuring the data is accurate enough for analysis.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">Veracity is one of the key characteristics of Big Data and it addresses the uncertainty and inconsistency within the data. It's often the biggest challenge in Big Data analysis because bad data can lead to bad decisions. There are several factors that affect data veracity:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Inconsistency:</strong> Data from different sources may not be consistent. For example, a customer's name might be spelled differently in a sales database than in a support database.</li>
+                                <li><strong>Ambiguity:</strong> The meaning of certain data might be unclear. For instance, a search query could have multiple meanings.</li>
+                                <li><strong>Latency:</strong> Data may not be available in real-time, leading to outdated analysis.</li>
+                                <li><strong>Bias:</strong> Data can be biased, which can lead to skewed results and incorrect conclusions.</li>
+                            </ul>
+                            <p>To deal with veracity, data scientists use techniques like data cleaning, data validation, and data governance to improve data quality.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">5. What is "Data Science"?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">Data Science is an interdisciplinary field that uses scientific methods, processes, algorithms, and systems to extract knowledge and insights from data. It combines statistics, computer science, and domain knowledge to analyze data.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>5. What is "Data Science"?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">Data Science is an interdisciplinary field that uses scientific methods, processes, and algorithms to extract knowledge and insights from data. It combines statistics, computer science, and domain knowledge to analyze data.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">Data Science is a broad field that involves the entire process of working with data, from start to finish. It's often described as a lifecycle with several key steps:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Problem Definition:</strong> Understanding the business problem and what questions the data needs to answer.</li>
+                                <li><strong>Data Collection:</strong> Gathering data from various sources (databases, APIs, web scraping, etc.).</li>
+                                <li><strong>Data Cleaning & Preparation:</strong> This is often the most time-consuming step. It involves cleaning out bad data, handling missing values, and formatting the data for analysis.</li>
+                                <li><strong>Analysis & Modeling:</strong> Using statistical analysis, machine learning algorithms, and other techniques to find patterns and build predictive models.</li>
+                                <li><strong>Communication of Results:</strong> Presenting the findings in a clear and understandable way to stakeholders, often using data visualization.</li>
+                                <li><strong>Deployment:</strong> Integrating the final model into a business process or application.</li>
+                            </ul>
+                            <p>Data Science is about more than just numbers; it's about using data to tell a story and create value.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">6. Give three examples of Big Data in the real world.</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">Examples of Big Data include:</p>
-                        <ul class="list-disc list-inside space-y-1">
-                            <li>Social media platforms (billions of posts, likes, shares).</li>
-                            <li>IoT sensors in smart homes and industrial equipment (constant streams of data).</li>
-                            <li>E-commerce sites (customer clickstreams, purchase history, and product views).</li>
-                        </ul>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>6. Give three examples of Big Data in the real world.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">Examples of Big Data include:</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Social media platforms (billions of posts, likes, shares).</li>
+                                <li>IoT sensors in smart homes and industrial equipment (constant streams of data).</li>
+                                <li>E-commerce sites (customer clickstreams, purchase history, and product views).</li>
+                            </ul>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">Big Data is all around us, and it comes from a wide range of sources. Here are three detailed examples:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Social Media:</strong> Platforms like Facebook, Twitter, and Instagram generate petabytes of data every day. This includes user-generated content (text, images, videos), interactions (likes, shares, comments), and user demographics. This data is used for targeted advertising and market trend analysis.</li>
+                                <li><strong>IoT (Internet of Things):</strong> The billions of connected devices—from smartwatches to industrial sensors in factories—generate a constant stream of real-time data. This data is used for things like predictive maintenance on equipment and monitoring energy consumption in smart grids.</li>
+                                <li><strong>Healthcare:</strong> Big Data in healthcare comes from electronic health records, medical imaging, genomic data, and patient-generated data from wearable devices. Analyzing this data can help with disease prediction, personalized medicine, and improving patient outcomes.</li>
+                            </ul>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">7. What is the role of a "Data Analyst"?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">A Data Analyst's job is to collect, clean, and interpret data to answer specific questions and help with decision-making. They use tools to find patterns and trends in data and present their findings in an easy-to-understand way, often with reports and dashboards.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>7. What is the role of a "Data Analyst"?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">A Data Analyst's job is to collect, clean, and interpret data to answer specific questions and help with decision-making. They use tools to find patterns and trends in data and present their findings in an easy-to-understand way, often with reports and dashboards.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">The role of a Data Analyst is to translate raw data into valuable insights that a business can use to make better decisions. Their job involves a combination of technical and communication skills, and their day-to-day tasks typically include:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Data Collection & Cleaning:</strong> Retrieving data from various sources and cleaning it to remove errors and inconsistencies.</li>
+                                <li><strong>Statistical Analysis:</strong> Using statistical methods to analyze data and identify trends, correlations, or anomalies.</li>
+                                <li><strong>Creating Reports:</strong> Building dashboards and reports using tools like Power BI or Tableau to visualize the data in a clear and compelling way.</li>
+                                <li><strong>Communication:</strong> Presenting findings to managers and other stakeholders in a simple, non-technical language.</li>
+                                <li><strong>Problem Solving:</strong> Using data to answer specific business questions, such as "Why are sales declining in a particular region?" or "What customer segments are most profitable?"</li>
+                            </ul>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">8. How did the need for Big Data come about?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">The need for Big Data arose from the explosion of information from sources like the internet, mobile devices, social media, and sensors. The old methods could not keep up with the sheer volume and speed of this new data, so new technologies were needed to analyze it.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>8. How did the need for Big Data come about?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">The need for Big Data arose from the explosion of information from sources like the internet, mobile devices, social media, and sensors. The old methods could not keep up with the sheer volume and speed of this new data, so new technologies were needed to analyze it.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">The need for Big Data technologies was a direct response to a massive shift in how data is generated and consumed. This shift was driven by three main factors:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>The Rise of the Internet and Mobile:</strong> The widespread adoption of the internet and mobile devices led to a massive increase in web traffic, user interactions, and e-commerce transactions, generating unprecedented volumes of data.</li>
+                                <li><strong>Social Media:</strong> Platforms like YouTube and Facebook created a new paradigm where users were generating vast amounts of unstructured data, including text, videos, and images, which traditional systems couldn't analyze.</li>
+                                <li><strong>The Growth of IoT:</strong> The deployment of sensors in everything from smart cars to factory machines created a constant, high-velocity stream of data that needed to be processed in real-time.</li>
+                            </ul>
+                            <p>These trends made it clear that traditional, single-machine databases were no longer a viable solution. The solution was to develop new, distributed systems like Hadoop that could store and process data across a cluster of computers.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">9. What is the main idea behind "Distributed File Systems"?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">The main idea is to store large files not on a single machine, but by splitting them into smaller pieces and storing those pieces across many different computers in a cluster. This allows for parallel processing and is a foundation for Big Data analysis.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>9. What is the main idea behind "Distributed File Systems"?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">The main idea is to store large files not on a single machine, but by splitting them into smaller pieces and storing those pieces across many different computers in a cluster. This allows for parallel processing and is a foundation for Big Data analysis.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">A Distributed File System (DFS) is a file system that spreads data across multiple storage nodes in a network. The primary goals are to handle extremely large files and to provide high-performance data access in a distributed computing environment. The key principles are:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Data Replication:</strong> Data is automatically replicated across different nodes to ensure fault tolerance. If one node fails, the data can be retrieved from another.</li>
+                                <li><strong>Scalability:</strong> DFS can easily be scaled by adding more nodes to the cluster, increasing both storage capacity and performance.</li>
+                                <li><strong>Parallel Processing:</strong> Since the data is distributed, it can be processed in parallel by different machines, drastically reducing the time it takes to analyze large datasets.</li>
+                            </ul>
+                            <p>HDFS is a well-known example of a distributed file system designed specifically for the needs of Big Data.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">10. What is "semi-structured" data? Give an example.</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">Semi-structured data does not have a formal table structure but has some organizational properties that make it easier to analyze than unstructured data. An example is a **JSON file** or an XML document, which uses tags to organize data but does not have a fixed schema.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>10. What is "semi-structured" data? Give an example.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">Semi-structured data does not have a formal table structure but has some organizational properties that make it easier to analyze than unstructured data. An example is a **JSON file** or an XML document.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">Semi-structured data is a type of data that falls between structured and unstructured data. It does not conform to the rigid schema of a relational database, but it contains tags or other markers that organize and identify the data elements. This makes it easier to process than unstructured data because the relationships between entities are clear.</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>JSON (JavaScript Object Notation):</strong> A popular format used for data exchange. It stores data as key-value pairs, which gives it a clear structure, but it doesn't require a predefined schema.</li>
+                                <li><strong>XML (Extensible Markup Language):</strong> Uses tags to define data elements, which makes it machine-readable and easy to organize.</li>
+                            </ul>
+                            <p>Other examples include emails, which have a clear structure (sender, recipient, subject) but unstructured body content, and log files, which often have timestamps and specific codes but varying text content.</p>
+                        </div>
                     </div>
                 </details>
             </div>
@@ -204,72 +453,277 @@
             <p class="text-center text-gray-400 mb-12 max-w-3xl mx-auto">This section introduces Hadoop, the most important technology in Big Data. You'll learn about its architecture, its key components, and why it's so popular.</p>
             <div class="card p-8 space-y-4">
                 <details>
-                    <summary class="font-semibold text-gray-200">11. What is Hadoop? Explain its main purpose.</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2"><strong>Hadoop</strong> is a collection of open-source software utilities that allows for the distributed processing of very large datasets across computer clusters. Its main purpose is to solve the problem of storing and processing Big Data cheaply and efficiently by using a cluster of low-cost computers.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>11. What is Hadoop? Explain its main purpose and key features.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2"><strong>Hadoop</strong> is an open-source framework for storing and processing large datasets across a cluster of computers. Its main purpose is to solve the problem of storing and analyzing Big Data cheaply and efficiently using low-cost hardware.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4"><strong>Hadoop</strong> is a robust, open-source framework managed by the Apache Software Foundation. It is the de-facto standard for Big Data processing. Its primary purpose is to handle the challenges of Big Data by providing a framework that is:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Scalable:</strong> It can be scaled linearly by adding more machines to the cluster.</li>
+                                <li><strong>Cost-Effective:</strong> It runs on clusters of standard, low-cost computers (commodity hardware), eliminating the need for expensive, high-end servers.</li>
+                                <li><strong>Fault-Tolerant:</strong> It automatically handles the failure of individual machines or components without the entire system going down.</li>
+                                <li><strong>Flexible:</strong> It can process many types of data, including structured, semi-structured, and unstructured data.</li>
+                            </ul>
+                            <p>It consists of two main parts: HDFS for storage and MapReduce for processing.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">12. What are the two core components of Hadoop?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <ul class="list-disc list-inside space-y-1">
-                            <li><strong>HDFS (Hadoop Distributed File System):</strong> The storage layer that handles storing data across many machines.</li>
-                            <li><strong>MapReduce:</strong> The processing layer that handles the logic of analyzing the data.</li>
-                        </ul>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>12. What are the two core components of Hadoop?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>HDFS (Hadoop Distributed File System):</strong> The storage layer that handles storing data across many machines.</li>
+                                <li><strong>MapReduce:</strong> The processing layer that handles the logic of analyzing the data.</li>
+                            </ul>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">Hadoop is built on a simple yet powerful design with two main components that work together to store and process data:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>HDFS (Hadoop Distributed File System):</strong> This is the foundation of Hadoop. It's a file system designed for storing extremely large files across many machines in a cluster. It works by breaking a file into smaller blocks (typically 128MB or 256MB) and storing them on different computers. It is designed for high-throughput access rather than low-latency access.</li>
+                                <li><strong>MapReduce:</strong> This is the engine that processes the data stored in HDFS. It is a programming model and a framework for performing parallel processing. It works in two main phases: a **Map** phase, where data is processed in parallel, and a **Reduce** phase, where the results are aggregated.</li>
+                            </ul>
+                            <p>While YARN is now the central resource manager in modern Hadoop, HDFS and MapReduce are still considered the original, foundational components.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">13. Explain the basic idea of HDFS.</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">HDFS is a file system designed to store very large files across many machines in a cluster. It splits large files into smaller blocks and stores these blocks on different computers. It also makes copies of each block for fault tolerance, so if one machine fails, the data is not lost.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>13. Explain the basic idea of HDFS.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">HDFS is a file system designed to store very large files across many machines in a cluster. It splits large files into smaller blocks and stores these blocks on different computers. It also makes copies of each block for fault tolerance, so if one machine fails, the data is not lost.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">HDFS is a file system designed to handle Big Data in a distributed manner. Its basic idea revolves around the following concepts:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Block Size:</strong> Unlike traditional file systems that use small block sizes (e.g., 4KB), HDFS uses a very large block size (e.g., 128MB or 256MB) to minimize the overhead of seeking for data, making it efficient for sequential reads.</li>
+                                <li><strong>Master/Slave Architecture:</strong> HDFS works on a master/slave model. The **Namenode** is the master that manages the filesystem's metadata, and the **Datanodes** are the slaves that store the actual data blocks.</li>
+                                <li><strong>Replication:</strong> For fault tolerance, HDFS makes multiple copies of each data block and stores them on different Datanodes. The default replication factor is three, meaning each block is stored on three different machines.</li>
+                            </ul>
+                            <p>This design allows HDFS to store petabytes of data reliably and allows processing frameworks like MapReduce to run their computations close to the data.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">14. What are the two main types of nodes in an HDFS cluster?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <ul class="list-disc list-inside space-y-1">
-                            <li><strong>Namenode:</strong> This is the "master" node. It stores the metadata of the file system, like the names of files, their permissions, and where their blocks are stored. There is only one Namenode per cluster.</li>
-                            <li><strong>Datanode:</strong> These are the "worker" nodes. They are the computers that actually store the data blocks of the files. There are many Datanodes in a cluster.</li>
-                        </ul>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>14. What are the two main types of nodes in an HDFS cluster?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Namenode:</strong> This is the "master" node. It stores the metadata of the file system, like the names of files, their permissions, and where their blocks are stored.</li>
+                                <li><strong>Datanode:</strong> These are the "worker" nodes. They are the computers that actually store the data blocks of the files. There are many Datanodes in a cluster.</li>
+                            </ul>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">HDFS operates on a master/slave architecture with two main types of nodes, each with a very specific role:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Namenode (Master):</strong> The Namenode is the brain of HDFS. It stores the metadata for the entire file system, which includes the file names, directory structure, and the location of each data block. It does not store the actual data. It also manages file system operations like opening, closing, and renaming files. Because the Namenode is so critical, its failure used to be a single point of failure in older Hadoop versions.</li>
+                                <li><strong>Datanode (Slave):</strong> Datanodes are the workhorses. They are responsible for storing the actual data blocks. They periodically send "heartbeat" messages to the Namenode to confirm they are alive and to report on the blocks they are storing. They also perform block creation, replication, and deletion as instructed by the Namenode.</li>
+                            </ul>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">15. Explain the concept of "fault tolerance" in HDFS.</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">Fault tolerance means the system can continue to work even if some parts fail. HDFS achieves this by making multiple copies (usually three) of each data block and storing them on different Datanodes. If one Datanode fails, the data can be recovered from the other copies.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>15. Explain the concept of "fault tolerance" in HDFS.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">Fault tolerance means the system can continue to work even if some parts fail. HDFS achieves this by making multiple copies (usually three) of each data block and storing them on different Datanodes. If one Datanode fails, the data can be recovered from the other copies.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">Hadoop is designed to be highly fault-tolerant because it assumes that hardware will fail. HDFS achieves this fault tolerance through **data replication** and an intelligent self-healing mechanism:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Data Replication:</strong> When a file is written to HDFS, it is split into blocks. By default, each block is replicated three times and stored on three different Datanodes. The Namenode tracks the location of all these replicas.</li>
+                                <li><strong>Failure Detection:</strong> The Namenode continuously monitors the Datanodes via "heartbeat" messages. If a Datanode stops sending heartbeats, the Namenode assumes it has failed.</li>
+                                <li><strong>Self-Healing:</strong> When a Datanode fails, the Namenode automatically detects that the replication factor for the blocks on that Datanode has fallen below the desired level. It then instructs other Datanodes to make new copies of those blocks, restoring the replication factor and ensuring the data is safe.</li>
+                            </ul>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">16. What is the key role of MapReduce in Hadoop?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">MapReduce is a programming model for processing large datasets in parallel. It has two main phases: the **Map** phase and the **Reduce** phase. The Map phase breaks down the problem, and the Reduce phase combines the results to solve it.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>16. What is the key role of MapReduce in Hadoop?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">MapReduce is a programming model for processing large datasets in parallel. It has two main phases: the **Map** phase, which breaks down the problem, and the **Reduce** phase, which combines the results to solve it.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">MapReduce is the core processing framework of Hadoop. Its key role is to enable the parallel and distributed processing of massive datasets across a cluster of machines. It does this by using a simple, structured model that abstracts away the complexity of distributed computing. The framework is responsible for:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Task Scheduling:</strong> It breaks a large job into many smaller tasks (Map and Reduce tasks) and schedules them to run on different machines.</li>
+                                <li><strong>Fault Tolerance:</strong> If a task fails on one machine, MapReduce automatically restarts it on another.</li>
+                                <li><strong>Data Management:</strong> It handles the complex process of moving data between the Map and Reduce phases.</li>
+                            </ul>
+                            <p>This model allows developers to focus on the business logic of their problem without worrying about the underlying complexities of parallel processing.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">17. Explain the "Map" phase of a MapReduce job.</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">In the Map phase, the input data is divided into smaller chunks. The system then runs a "mapper" function on each chunk in parallel. The mapper processes the data and outputs a set of key-value pairs, which are intermediate results.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>17. Explain the "Map" phase of a MapReduce job.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">In the Map phase, the input data is divided into smaller chunks. The system then runs a "mapper" function on each chunk in parallel. The mapper processes the data and outputs a set of key-value pairs, which are intermediate results.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">The Map phase is the first stage of a MapReduce job. Its main purpose is to process the input data and prepare it for aggregation. The process works as follows:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Input Splitting:</strong> The input data (stored in HDFS) is divided into smaller, logical chunks called "InputSplits." Each split is processed by a single Mapper task.</li>
+                                <li><strong>Mapper Function:</strong> A user-defined function called the "Mapper" is executed on each InputSplit. Its job is to process the data and transform it into a set of intermediate **key-value pairs**.</li>
+                                <li><strong>Parallel Execution:</strong> The MapReduce framework runs many Mapper tasks simultaneously across the cluster, allowing for massive parallelization.</li>
+                            </ul>
+                            <p>For example, in a word count job, the Mapper reads a line of text, splits it into words, and for each word, outputs a key-value pair of `(word, 1)`.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">18. Explain the "Reduce" phase of a MapReduce job.</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">In the Reduce phase, all the key-value pairs from the Map phase that have the same key are grouped together. A "reducer" function is then run on each group to combine the data and produce the final output.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>18. Explain the "Reduce" phase of a MapReduce job.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">In the Reduce phase, all the key-value pairs from the Map phase that have the same key are grouped together. A "reducer" function is then run on each group to combine the data and produce the final output.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">The Reduce phase is the second stage of a MapReduce job. Its main purpose is to aggregate and summarize the intermediate data generated by the mappers. This phase is preceded by a "shuffle and sort" process. The process works as follows:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Shuffle & Sort:</strong> The framework collects the key-value pairs from all mappers, sorts them by key, and groups all values that have the same key.</li>
+                                <li><strong>Reducer Function:</strong> A user-defined function called the "Reducer" is executed for each unique key. It receives the key and a list of all its associated values. Its job is to combine these values to produce a final output.</li>
+                                <li><strong>Final Output:</strong> The Reducer outputs the final result, which is written back to HDFS.</li>
+                            </ul>
+                            <p>Continuing the word count example, the Reducer receives a key like `(Hello)` and a list of values like `[1, 1, 1]`. It then sums the values and outputs `(Hello, 3)`.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">19. What is a "JobTracker" and a "TaskTracker"?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <ul class="list-disc list-inside space-y-1">
-                            <li><strong>JobTracker:</strong> The master service that manages all MapReduce jobs in the cluster. It schedules jobs, monitors their progress, and handles failures.</li>
-                            <li><strong>TaskTracker:</strong> The worker service that runs on each Datanode. It receives tasks from the JobTracker and executes them.</li>
-                        </ul>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>19. What is the key advantage of Hadoop's architecture?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">The key advantage is its **linear scalability**. You can simply add more low-cost computers to the cluster to increase both storage and processing power. This makes it a very cost-effective way to handle huge amounts of data.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">The key advantage of Hadoop's architecture is its ability to scale horizontally in a linear and cost-effective manner. This is often referred to as a "scale-out" approach, in contrast to the "scale-up" approach of traditional systems.</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Scale-Out (Hadoop):</strong> To increase storage and processing capacity, you simply add more computers (Datanodes) to the cluster. The system is designed to handle this seamlessly, and performance increases almost linearly with the number of machines. This uses commodity hardware, which is much cheaper.</li>
+                                <li><strong>Scale-Up (Traditional):</strong> To increase capacity, you must upgrade to a more powerful, more expensive single machine. This approach has a physical limit and is not sustainable for Big Data.</li>
+                            </ul>
+                            <p>This scale-out model is what makes Hadoop a cost-effective and powerful solution for handling the massive volume of data in today's world.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">20. What is the key advantage of Hadoop's architecture?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">The key advantage is its **linear scalability**. You can simply add more low-cost computers (Datanodes) to the cluster to increase both storage and processing power. This makes it a very cost-effective way to handle huge amounts of data.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>20. Explain the role of the "JobTracker" and "TaskTracker" in Hadoop 1.x.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>JobTracker:</strong> The master service that manages all MapReduce jobs. It schedules jobs, monitors their progress, and handles failures.</li>
+                                <li><strong>TaskTracker:</strong> The worker service that runs on each Datanode. It receives tasks from the JobTracker and executes them.</li>
+                            </ul>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">In the original Hadoop 1.x architecture, the JobTracker and TaskTracker were the core components of the MapReduce framework. Their roles were:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>JobTracker (Master):</strong> This was a single service responsible for managing all aspects of a MapReduce job. Its responsibilities included receiving job submissions, scheduling the Map and Reduce tasks on TaskTrackers, monitoring their progress, and handling any failures by restarting tasks. Because there was only one JobTracker, it was a single point of failure and a major performance bottleneck in large clusters.</li>
+                                <li><strong>TaskTracker (Slave):</strong> This service ran on each Datanode. It received instructions from the JobTracker, executed the Map and Reduce tasks, and reported their progress back to the JobTracker. It also managed the resources (CPU, memory) on its local machine.</li>
+                            </ul>
+                            <p>This architecture was later replaced by YARN in Hadoop 2.x to address the scalability and single point of failure issues of the JobTracker.</p>
+                        </div>
                     </div>
                 </details>
             </div>
@@ -280,64 +734,266 @@
             <p class="text-center text-gray-400 mb-12 max-w-3xl mx-auto">This section dives deeper into the MapReduce process, covering its internal workings and key concepts for processing data.</p>
             <div class="card p-8 space-y-4">
                 <details>
-                    <summary class="font-semibold text-gray-200">21. What is the "InputFormat" in MapReduce?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">The **InputFormat** is a component that defines how the input data is split into "InputSplits." These splits are then given to the mappers for processing. For example, a `TextInputFormat` splits a file into lines of text.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>21. What is the "InputFormat" in MapReduce?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">The **InputFormat** is a component that defines how the input data is split into "InputSplits." These splits are then given to the mappers for processing. For example, a `TextInputFormat` splits a file into lines of text.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">The `InputFormat` is a crucial component that defines how data is read from the input source (like HDFS) and prepared for the Map phase. It has two main responsibilities:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Splitting:</strong> It divides the input data into logical pieces called **InputSplits**. Each InputSplit is then assigned to a single Mapper task for processing. The `InputFormat` ensures that the splits are correctly sized for efficient parallel processing.</li>
+                                <li><strong>Record Creation:</strong> It creates a **RecordReader** for each InputSplit. The RecordReader is responsible for reading the data from the split and turning it into key-value pairs that are given to the Mapper. For a `TextInputFormat`, the RecordReader reads a line of text, with the key being the byte offset and the value being the text content of the line.</li>
+                            </ul>
+                            <p>Different types of `InputFormat` exist for different data types, such as `SequenceFileInputFormat` for binary data and `KeyValueTextInputFormat` for key-value pairs.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">22. Explain the "shuffle and sort" phase in MapReduce.</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">This is the phase between the Map and Reduce steps. The system collects the output key-value pairs from all the mappers, sorts them by key, and then groups all pairs with the same key together. This grouped data is then sent to a specific reducer to be processed.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>22. Explain the "shuffle and sort" phase in MapReduce.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">This is the phase between the Map and Reduce steps. The system collects the output key-value pairs from all the mappers, sorts them by key, and then groups all pairs with the same key together. This grouped data is then sent to a specific reducer to be processed.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">The shuffle and sort phase is a critical, behind-the-scenes process that connects the Map and Reduce phases. It is what makes the Reduce phase possible. The process can be broken down into these steps:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Shuffling:</strong> After the mappers finish, their intermediate output is partitioned based on the key. This means all key-value pairs for a particular key are guaranteed to go to the same reducer. The data is then copied from the mappers' machines to the reducers' machines over the network.</li>
+                                <li><strong>Sorting:</strong> On each reducer machine, the framework sorts the data by key. This ensures that the reducer receives all the values for a given key together, in a sorted order. This is a fundamental step that enables efficient aggregation.</li>
+                            </ul>
+                            <p>This phase is often the most time-consuming part of a MapReduce job because it involves significant network transfer and disk I/O.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">23. What is a "combiner" in MapReduce?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">A combiner is an optional function that runs on the mapper machine after the Map phase. It performs a local "reduce" operation to combine the intermediate key-value pairs before they are sent over the network to the reducers. This helps reduce network traffic and speeds up the job.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>23. What is a "combiner" in MapReduce?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">A combiner is an optional function that runs on the mapper machine after the Map phase. It performs a local "reduce" operation to combine the intermediate key-value pairs before they are sent over the network to the reducers. This helps reduce network traffic and speeds up the job.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">A combiner is a performance optimization tool in MapReduce. It is an optional class that is essentially a mini-reducer that runs on the same machine as the mapper. Its main goal is to reduce the amount of data sent from the mappers to the reducers, which saves a lot of network bandwidth.</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Local Aggregation:</strong> The combiner aggregates the intermediate key-value pairs produced by a single mapper task. For example, if a mapper finds the word "the" 100 times, it will output `(the, 100)` instead of 100 separate `(the, 1)` pairs.</li>
+                                <li><strong>When to Use:</strong> A combiner can only be used if the reduce function is **commutative** and **associative**. This means the order of aggregation doesn't matter (e.g., addition and multiplication). The combiner's output can then be safely passed to the reducer without affecting the final result.</li>
+                            </ul>
+                            <p>Using a combiner is a simple but very effective way to improve the performance of a MapReduce job, especially for jobs that produce a large number of intermediate key-value pairs.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">24. What are "key-value" pairs in MapReduce?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">Key-value pairs are the fundamental data structure used by MapReduce. The mapper processes the input data and outputs key-value pairs, and the reducer receives and processes key-value pairs as its input.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>24. What are "key-value" pairs in MapReduce?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">Key-value pairs are the fundamental data structure used by MapReduce. The mapper processes the input data and outputs key-value pairs, and the reducer receives and processes key-value pairs as its input.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">Key-value pairs are the heart of the MapReduce programming model. This simple data structure is what allows a complex problem to be broken down and processed in parallel. The process works in a three-step flow:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Input to Mapper:</strong> The Mapper's input is a key-value pair, with the key often being a byte offset and the value being a line of text.</li>
+                                <li><strong>Mapper Output:</strong> The Mapper processes the input and outputs a new set of key-value pairs. The keys and values can be of any type and are defined by the programmer.</li>
+                                <li><strong>Reducer Input:</strong> The Reducer's input is a key and a list of all values that correspond to that key. The Reducer then processes this data to produce the final output.</li>
+                            </ul>
+                            <p>The power of this simple data model is that it provides a common interface for all the components of the MapReduce framework, allowing them to communicate and work together efficiently.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">25. Give a step-by-step example of a MapReduce job to count words in a file.</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">1. **Map Phase:** A mapper reads a line of text, splits it into individual words, and for each word, outputs a key-value pair like `(word, 1)`. For "Hello world", it would output `(Hello, 1)` and `(world, 1)`.<br>2. **Shuffle & Sort:** All `(word, 1)` pairs are grouped by their word. All `(Hello, 1)` pairs go to one reducer, and all `(world, 1)` pairs go to another.<br>3. **Reduce Phase:** The reducer counts all the '1's for a given word and outputs a final count, like `(Hello, 10)`.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>25. Give a step-by-step example of a MapReduce job to count words in a file.</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">1. **Map Phase:** A mapper reads a line of text, splits it into individual words, and for each word, outputs a key-value pair like `(word, 1)`. For "Hello world", it would output `(Hello, 1)` and `(world, 1)`.<br>2. **Shuffle & Sort:** All `(word, 1)` pairs are grouped by their word. All `(Hello, 1)` pairs go to one reducer, and all `(world, 1)` pairs go to another.<br>3. **Reduce Phase:** The reducer counts all the '1's for a given word and outputs a final count, like `(Hello, 10)`.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">The word count example is the classic "Hello, World!" of Big Data. It perfectly demonstrates the power of the MapReduce model:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Map Phase:</strong> The framework reads the input file and creates splits. Each Mapper task takes a split (e.g., a line of text like "Hello Hadoop, Hello World!") and processes it. The Mapper function breaks the line into words and for each word, it outputs a key-value pair where the word is the key and the count is 1. The output would be `(Hello, 1), (Hadoop, 1), (Hello, 1), (World, 1)`.</li>
+                                <li><strong>Shuffle & Sort Phase:</strong> All the key-value pairs from all the mappers are collected. They are then partitioned and grouped by their keys. All `(Hello, 1)` pairs are grouped, all `(Hadoop, 1)` pairs are grouped, and so on. The values for each key are also sorted.</li>
+                                <li><strong>Reduce Phase:</strong> The framework sends the grouped data to the Reducer. The Reducer function receives a key (e.g., "Hello") and a list of all its values (e.g., `[1, 1]`). The Reducer sums the values and outputs the final result: `(Hello, 2)`. This process is repeated for all keys, giving a final word count for the entire dataset.</li>
+                            </ul>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">26. What is the main drawback of MapReduce?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">The main drawback is its complexity. Writing MapReduce jobs can be difficult and time-consuming. It is also not well-suited for interactive, real-time queries or for jobs that require multiple, chained steps.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>26. What is the main drawback of MapReduce?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">The main drawback is its complexity. Writing MapReduce jobs can be difficult and time-consuming. It is also not well-suited for interactive, real-time queries or for jobs that require multiple, chained steps.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">While revolutionary, MapReduce has several drawbacks that have led to the development of other frameworks (like Spark). The main drawbacks are:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Complexity of Programming:</strong> Writing a MapReduce job is difficult and requires a lot of boilerplate code. Even simple tasks like joining two datasets can be complex to program.</li>
+                                <li><strong>Performance for Multi-Step Jobs:</strong> For jobs that require multiple MapReduce stages, the output of one job must be written to disk before the next job can read it. This heavy disk I/O and network traffic make it slow for iterative algorithms.</li>
+                                <li><strong>Poor for Interactive Queries:</strong> MapReduce is not suitable for quick, real-time queries because of the high overhead of starting a new job.</li>
+                                <li><strong>Inflexible Model:</strong> The strict Map/Reduce model does not fit all types of data processing tasks, especially those that are iterative or require a more complex workflow.</li>
+                            </ul>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">27. What is "data locality"?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">Data locality is the principle of moving the computation to the data, rather than the other way around. In Hadoop, the MapReduce framework tries to run a mapper task on the same machine where the data block is stored. This reduces network traffic and makes the job run much faster.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>27. What is "data locality"?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">Data locality is the principle of moving the computation to the data, rather than the other way around. In Hadoop, the MapReduce framework tries to run a mapper task on the same machine where the data block is stored. This reduces network traffic and makes the job run much faster.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">Data locality is one of the most important concepts for achieving high performance in Hadoop. It is the principle that it is much cheaper and faster to move a small amount of code (computation) to a large amount of data than to move a large amount of data to a small amount of code. This is because network bandwidth is often a major bottleneck in Big Data systems. The Hadoop framework tries to achieve this by:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Scheduling:</strong> The scheduler (YARN) tries to schedule a Map task on a machine that already has a copy of the data block that the task needs to process.</li>
+                                <li><strong>Block Replication:</strong> Because data blocks are replicated across multiple Datanodes, there is a high probability that there will be a copy of the required data on a machine that has idle processing power.</li>
+                            </ul>
+                            <p>By maximizing data locality, Hadoop can significantly reduce the amount of data that needs to be transferred over the network, leading to much faster job completion times.</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">28. What is the role of the "Job History Server"?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">The Job History Server stores all the logs and records of completed MapReduce jobs. This allows administrators to later analyze a job's performance, debug failures, and understand resource usage.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>28. What is the role of the "Job History Server"?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">The Job History Server stores all the logs and records of completed MapReduce jobs. This allows administrators to later analyze a job's performance, debug failures, and understand resource usage.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">The Job History Server is a key component for managing and monitoring Hadoop jobs. Its primary role is to serve as a persistent repository for the history of all completed jobs. This is important for several reasons:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Debugging and Analysis:</strong> It allows developers and administrators to look back at the details of a completed job, including its execution plan, logs, and performance metrics, which is crucial for debugging failed jobs or optimizing slow ones.</li>
+                                <li><strong>Auditing and Compliance:</strong> It provides a record of who ran which jobs and what resources they consumed, which is important for auditing and compliance purposes in a multi-user environment.</li>
+                                <li><strong>Resource Management:</strong> By analyzing past job history, administrators can get a better idea of resource usage patterns and can make more informed decisions about how to allocate resources in the cluster.</li>
+                            </ul>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">29. What is the difference between a "job" and a "task"?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">A **job** is the complete MapReduce program that is submitted by the user. A **task** is a smaller, individual piece of a job. A job is made up of multiple Map tasks and multiple Reduce tasks.</p>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>29. What is the difference between a "job" and a "task"?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">A **job** is the complete MapReduce program that is submitted by the user. A **task** is a smaller, individual piece of a job. A job is made up of multiple Map tasks and multiple Reduce tasks.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">It's important to understand the hierarchy of work in Hadoop:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Job:</strong> A job is the overall unit of work that is submitted by the user to the MapReduce framework. It represents a complete program, for example, a program to count words in a billion-line text file.</li>
+                                <li><strong>Task:</strong> A task is a smaller unit of work that makes up a job. A single MapReduce job is made up of many Map tasks and many Reduce tasks. Each Map task processes a single InputSplit, and each Reduce task processes the data for a specific set of keys. The framework's job is to manage the execution and coordination of all these tasks.</li>
+                            </ul>
+                            <p>In short, a job is the "what" (the goal), and the tasks are the "how" (the steps to achieve the goal).</p>
+                        </div>
                     </div>
                 </details>
                 <details>
-                    <summary class="font-semibold text-gray-200">30. Why is Hadoop a cost-effective solution for Big Data?</summary>
-                    <div class="p-4 bg-gray-700">
-                        <p class="mb-2">Hadoop is cost-effective because it is designed to run on a cluster of standard, low-cost computers (commodity hardware) rather than a single, expensive supercomputer. It uses software to handle the complexity and reliability issues, making the hardware costs much lower.</p>
-                    </div>
+                    <summary class="font-semibold text-gray-200 flex justify-between items-center">
+                        <span>30. Why is Hadoop a cost-effective solution for Big Data?</span>
+                        <div class="flex items-center">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="slider"></span>
+                                <span class="toggle-label short">Short</span>
+                                <span class="toggle-label long">Long</span>
+                            </label>
+                        </div>
+                    </summary>
+                    <div class="p-4 bg-gray-700 answer-container">
+                        <div class="short-answer">
+                            <p class="mb-2">Hadoop is cost-effective because it is designed to run on a cluster of standard, low-cost computers (commodity hardware) rather than a single, expensive supercomputer. It uses software to handle the complexity and reliability issues, making the hardware costs much lower.</p>
+                        </div>
+                        <div class="long-answer hidden">
+                            <p class="mb-4">Hadoop's cost-effectiveness is one of its most compelling advantages for organizations dealing with Big Data. The main reasons are:</p>
+                            <ul class="list-disc list-inside space-y-3">
+                                <li><strong>Commodity Hardware:</strong> Hadoop is designed to run on a cluster of inexpensive, off-the-shelf servers. This means an organization can build a massive data cluster for a fraction of the cost of a single, high-end server or a traditional data warehouse system.</li>
+                                <li><strong>Open Source:</strong> The entire Hadoop framework is open-source, which means there are no expensive licensing fees. This eliminates a huge cost barrier for organizations that want to start working with Big Data.</li>
+                                <li><strong>Linear Scalability:</strong> The ability to scale by adding more low-cost machines means organizations can start small and only pay for the capacity they need as their data grows, avoiding large upfront investments.</li>
+                            </ul>
+                        </div>
+                    </details>
                 </details>
             </div>
         </section>
@@ -386,6 +1042,29 @@ document.addEventListener('DOMContentLoaded', function () {
                         otherDetails.open = false;
                     }
                 });
+            }
+        });
+    });
+
+    const toggleInputs = document.querySelectorAll('.toggle-input');
+    toggleInputs.forEach(input => {
+        input.addEventListener('change', (event) => {
+            const detailsElement = event.target.closest('details');
+            if (!detailsElement) {
+                return; 
+            }
+            const container = detailsElement.querySelector('.answer-container');
+            if (!container) {
+                return; 
+            }
+            const shortAnswer = container.querySelector('.short-answer');
+            const longAnswer = container.querySelector('.long-answer');
+            if (event.target.checked) {
+                shortAnswer.classList.add('hidden');
+                longAnswer.classList.remove('hidden');
+            } else {
+                shortAnswer.classList.remove('hidden');
+                longAnswer.classList.add('hidden');
             }
         });
     });
