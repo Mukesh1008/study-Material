@@ -54,6 +54,16 @@
             background-color: #1E293B;
             border-bottom: 1px solid transparent;
         }
+        details summary .arrow {
+            display: block;
+            transition: transform 0.2s ease;
+        }
+        details[open] summary .arrow {
+            transform: rotate(180deg);
+        }
+        details[open] summary .toggle-label {
+            display: none;
+        }
         details summary::after {
             content: '▼';
             position: absolute;
@@ -64,15 +74,21 @@
             font-size: 0.75rem;
         }
         details[open] summary::after {
-            transform: translateY(-50%) rotate(180deg);
+            content: '';
+            display: none;
         }
         .toggle-switch {
             position: relative;
             display: inline-block;
-            width: 70px;
+            width: 50px;
             height: 28px;
             margin-left: 1rem;
             vertical-align: middle;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        details[open] .toggle-switch {
+            opacity: 1;
         }
         .toggle-switch input {
             opacity: 0;
@@ -105,22 +121,7 @@
             background-color: #2DD4BF;
         }
         input:checked + .slider:before {
-            transform: translateX(42px);
-        }
-        .toggle-label {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #94A3B8;
-        }
-        .toggle-label.short {
-            left: 8px;
-        }
-        .toggle-label.long {
-            right: 8px;
-            color: white;
+            transform: translateX(22px);
         }
         .icon {
             font-size: 1.5rem;
@@ -165,8 +166,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -198,8 +197,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -226,8 +223,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -255,8 +250,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -283,8 +276,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -313,8 +304,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -344,8 +333,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -372,8 +359,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -399,8 +384,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -426,8 +409,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -459,8 +440,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -487,8 +466,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -516,8 +493,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -543,8 +518,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -571,8 +544,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -597,8 +568,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -624,8 +593,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -651,8 +618,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -678,8 +643,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -704,8 +667,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -740,8 +701,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -766,8 +725,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -792,8 +749,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -818,8 +773,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -845,8 +798,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -871,8 +822,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -898,8 +847,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -924,8 +871,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -950,8 +895,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -976,8 +919,6 @@
                             <label class="toggle-switch">
                                 <input type="checkbox" class="toggle-input">
                                 <span class="slider"></span>
-                                <span class="toggle-label short"> </span>
-                                <span class="toggle-label long">  </span>
                             </label>
                         </div>
                     </summary>
@@ -1050,13 +991,7 @@ document.addEventListener('DOMContentLoaded', function () {
     toggleInputs.forEach(input => {
         input.addEventListener('change', (event) => {
             const detailsElement = event.target.closest('details');
-            if (!detailsElement) {
-                return; 
-            }
             const container = detailsElement.querySelector('.answer-container');
-            if (!container) {
-                return; 
-            }
             const shortAnswer = container.querySelector('.short-answer');
             const longAnswer = container.querySelector('.long-answer');
             if (event.target.checked) {
